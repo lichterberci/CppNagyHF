@@ -209,12 +209,12 @@ namespace cstd {
 		}
 
 		Vector& operator+= (const T& rhs) {
-			this->push_back(rhs);
+			this->push(rhs);
 			return *this;
 		}
 
 		Vector& operator+= (T&& rhs) {
-			this->push_back(rhs);
+			this->push(rhs);
 			return *this;
 		}
 

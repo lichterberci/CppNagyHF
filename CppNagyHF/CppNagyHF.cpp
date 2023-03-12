@@ -9,7 +9,7 @@
 int main()
 {
    
-    auto game = game::Game(true, 640, 480);
+    auto game = game::Game(true, game::GameControlType::KEYBOARD);
 
     game.Start();
 
