@@ -19,6 +19,9 @@
     <Filter Include="Source Files\CSTD">
       <UniqueIdentifier>{2a7aae88-4432-47b7-bece-f1ba791973fb}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Model">
+      <UniqueIdentifier>{63371319-4771-4ec8-a6b7-c52893dca0ad}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CppNagyHF.cpp">
@@ -40,6 +43,12 @@
     </ClInclude>
     <ClInclude Include="position.hpp">
       <Filter>Source Files\CSTD</Filter>
+    </ClInclude>
+    <ClInclude Include="ControllerModel.hpp">
+      <Filter>Source Files\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="ModelParams.hpp">
+      <Filter>Source Files\Model</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
