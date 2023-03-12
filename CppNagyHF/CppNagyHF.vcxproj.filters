@@ -13,10 +13,33 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Source Files\Game">
+      <UniqueIdentifier>{87d132e5-5ac1-4264-af6f-4f80990f71e0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\CSTD">
+      <UniqueIdentifier>{2a7aae88-4432-47b7-bece-f1ba791973fb}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CppNagyHF.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="vector.hpp">
+      <Filter>Source Files\CSTD</Filter>
+    </ClCompile>
+    <ClCompile Include="matrix.hpp">
+      <Filter>Source Files\CSTD</Filter>
+    </ClCompile>
+    <ClCompile Include="Game.cpp">
+      <Filter>Source Files\Game</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Game.hpp">
+      <Filter>Source Files\Game</Filter>
+    </ClInclude>
+    <ClInclude Include="position.hpp">
+      <Filter>Source Files\CSTD</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
