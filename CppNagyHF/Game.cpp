@@ -2,6 +2,8 @@
 #include <math.h>
 #include <exception>
 
+#define SNAKE_SIGHT_DISTANCE 9999
+
 namespace game {
 
     void Game::Start() {
@@ -115,11 +117,40 @@ namespace game {
 
         // distance to body
 
-        float newDistance = -1;
+        for (int i = 0; i < 8; i++)
+            result.distancesToBody += SNAKE_SIGHT_DISTANCE;
 
-        for (int x = snake[0].x + 1; x < gameWidth; x++)
-            if ()
+        const cstd::Position& headPos = snake[0];
 
+        for (int i = 1; i < snake.size(); i++) {
+
+            int bodyDeltaX = snake[i].x - headPos.x;
+            int bodyDeltaY = snake[i].y - headPos.y;
+
+            if (bodyDeltaY == 0 && bodyDeltaX > 0)
+                result.distancesToBody[0] = std::min((int)result.distancesToBody[0], bodyDeltaX);
+
+            if (bodyDeltaY == bodyDeltaX && bodyDeltaX > 0)
+                result.distancesToBody[1] = std::min((int)result.distancesToBody[1], bodyDeltaX);
+
+            if (bodyDeltaX == 0 && bodyDeltaY > 0)
+                result.distancesToBody[2] = std::min((int)result.distancesToBody[2], bodyDeltaY);
+
+            if (bodyDeltaY == -bodyDeltaX && bodyDeltaX < 0)
+                result.distancesToBody[3] = std::min((int)result.distancesToBody[3], bodyDeltaY);
+
+            if (bodyDeltaY == 0 && bodyDeltaX < 0)
+                result.distancesToBody[4] = std::min((int)result.distancesToBody[4], -bodyDeltaX);
+
+            if (bodyDeltaY == bodyDeltaX && bodyDeltaX < 0)
+                result.distancesToBody[5] = std::min((int)result.distancesToBody[5], -bodyDeltaY);
+
+            if (bodyDeltaX == 0 && bodyDeltaY < 0)
+                result.distancesToBody[6] = std::min((int)result.distancesToBody[6], -bodyDeltaY);
+
+            if (bodyDeltaY == -bodyDeltaX && bodyDeltaX > 0)
+                result.distancesToBody[7] = std::min((int)result.distancesToBody[7], bodyDeltaX);
+        }
 
         return result;
     }

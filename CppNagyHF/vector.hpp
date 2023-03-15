@@ -5,6 +5,7 @@
 
 namespace cstd {
 
+
 	template<typename T>
 	class Vector {
 
@@ -197,7 +198,7 @@ namespace cstd {
 			return result;
 		}
 
-		const T operator[] (const size_t index) const {
+		T& operator[] (const size_t index) const {
 			if (index >= m_size)
 				throw std::out_of_range("Index is out of range!");
 
