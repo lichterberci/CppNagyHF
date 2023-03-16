@@ -17,6 +17,8 @@ namespace game {
 	void Game::RunWithUI() {
 
         if (controlType == GameControlType::AI && (&controllerModel) == nullptr) {
+            std::cout << controllerModel.Predict(model::ModelParams()) << std::endl;
+            std::cout << "No controller model attached!" << std::endl;
             throw std::exception("No controller model attached!");
         }
 

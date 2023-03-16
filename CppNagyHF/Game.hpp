@@ -4,6 +4,7 @@
 #include "vector.hpp"
 #include "position.hpp"
 #include "ControllerModel.hpp"
+#include <optional>
 
 #define SNAKE_SIGHT_DISTANCE 9999
 
@@ -18,7 +19,9 @@ namespace game {
 	};
 
 	class Game {
-	private:			
+	private:	
+		static model::ControllerModel s_defaultModel;
+
 		bool useUI;
 		int windowWidth, windowHeight;
 		int gameWidth, gameHeight;
@@ -54,7 +57,15 @@ namespace game {
 		void MoveSnake(bool grow = false);
 		void UpdateHeadDirection(const sf::Keyboard::Key& key);
 	public:
-		Game(bool useUI = true, GameControlType controlType = KEYBOARD, int gameWidth = 30, int gameHeight = 20, int windowWidth = 640, int windowHeight = 480, model::ControllerModel& controllModel = *(model::ControllerModel*)nullptr)
+		Game(
+			bool useUI = true, 
+			GameControlType controlType = KEYBOARD, 
+			int gameWidth = 30, 
+			int gameHeight = 20, 
+			int windowWidth = 640, 
+			int windowHeight = 480, 
+			model::ControllerModel& controllModel = s_defaultModel
+		)
 			: useUI(useUI), 
 			controlType(controlType), 
 			gameWidth(gameWidth), 
