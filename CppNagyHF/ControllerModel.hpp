@@ -9,7 +9,7 @@ namespace model {
 	class ControllerModel {
 	public:
 		cstd::Vector<double> Predict(const ModelParams& modelParams) {}
-		void GetKeyPresses(const ModelParams& modelParams, cstd::Vector<sf::Keyboard::Key> keyPresses) {}
+		void GetKeyPresses(const ModelParams& modelParams, cstd::Vector<sf::Keyboard::Key>& out_keyPresses) {}
 	};
 
 }

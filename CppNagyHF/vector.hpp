@@ -35,7 +35,7 @@ namespace cstd {
 		Vector(const Vector& other)
 			: m_capacity(other.m_capacity), m_size(other.m_size)
 		{
-			m_data = new T[m_capacity];
+			m_data = new T[other.m_capacity];
 			memcpy(m_data, other.m_data, m_size * sizeof(T));
 		}
 
@@ -92,7 +92,7 @@ namespace cstd {
 		}
 
 		void push(T&& item) {
-			push(std::move(item));
+			push(item);
 		}
 
 		void pushToFront(const T& item) {
@@ -205,8 +205,30 @@ namespace cstd {
 			return m_data[index];
 		}
 
-		void operator= (const Vector& other) {
-			*this = other;
+		Vector& operator= (const Vector& other) {
+			
+			if (m_size > 0)
+				delete[] m_data;
+
+			m_size = other.m_size;
+			m_capacity = other.m_capacity;
+			m_data = new T[m_capacity];
+			memcpy(m_data, other.m_data, m_size * sizeof(T));
+
+			return *this;
+		}
+
+		Vector& operator= (Vector&& other) {
+
+			if (m_size > 0)
+				delete[] m_data;
+
+			m_size = other.m_size;
+			m_capacity = other.m_capacity;
+			m_data = new T[m_capacity];
+			memcpy(m_data, other.m_data, m_size * sizeof(T));
+
+			return *this;
 		}
 
 		Vector& operator+= (const T& rhs) {

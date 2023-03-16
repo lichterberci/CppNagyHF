@@ -8,8 +8,20 @@
 
 int main()
 {
+    //cstd::Vector<int> v;
+
+    //v += 13;
+    //v += 14;
+
+    //cstd::Vector<int> w;
+
+    //w = v;
+
+    //std::cout << v << std::endl;
+    //std::cout << w << std::endl;
+
    
-    auto game = game::Game(true, game::GameControlType::KEYBOARD);
+    auto game = game::Game(true, game::GameControlType::KEYBOARD, 10, 10, 800, 800);
 
     game.Start();
 

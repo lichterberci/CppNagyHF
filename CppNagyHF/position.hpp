@@ -34,11 +34,11 @@ namespace cstd {
 		}
 
 		Position operator+ (const Position& rhs) {
-			return *this += rhs;
+			return Position(x + rhs.x, y + rhs.y);
 		}
 
 		Position operator- (const Position& rhs) {
-			return *this -= rhs;
+			return Position(x - rhs.x, y - rhs.y);
 		}
 				
 	};
@@ -49,7 +49,5 @@ namespace cstd {
 
 	constexpr bool operator!= (const Position& lhs, const Position& rhs) {
 		return !(lhs == rhs);
-	}
-
-	
+	}	
 }
