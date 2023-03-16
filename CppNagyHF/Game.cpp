@@ -119,30 +119,32 @@ namespace game {
 
         // distance to wall
 
-        const float sqrt2Over2 = std::sqrtf(2) / 2;
+        const float sqrt2 = std::sqrtf(2);
 
         result.distancesToWall += gameWidth - snake[0].x;
-        result.distancesToWall += sqrt2Over2 * std::min(gameWidth - snake[0].x, gameHeight - snake[0].y);
+        result.distancesToWall += sqrt2 * std::min(gameWidth - snake[0].x, gameHeight - snake[0].y);
         result.distancesToWall += gameHeight - snake[0].y;
-        result.distancesToWall += sqrt2Over2 * std::min(snake[0].x + 1, gameHeight - snake[0].y);
+        result.distancesToWall += sqrt2 * std::min(snake[0].x + 1, gameHeight - snake[0].y);
         result.distancesToWall += snake[0].x + 1;
-        result.distancesToWall += sqrt2Over2 * std::min(snake[0].x + 1, snake[0].y + 1);
+        result.distancesToWall += sqrt2 * std::min(snake[0].x + 1, snake[0].y + 1);
         result.distancesToWall += snake[0].y + 1;
-        result.distancesToWall += sqrt2Over2 * std::min(gameWidth - snake[0].x, snake[0].y + 1);
+        result.distancesToWall += sqrt2 * std::min(gameWidth - snake[0].x, snake[0].y + 1);
 
         // distance to apple
 
         const int appleDeltaX = applePosition.x - snake[0].x;
         const int appleDeltaY = applePosition.y - snake[0].y;
 
-        result.distancesToApple += appleDeltaY == 0 && appleDeltaX > 0 ? appleDeltaX : -1;
-        result.distancesToApple += appleDeltaY == appleDeltaX && appleDeltaX > 0 ? appleDeltaX : -1;
-        result.distancesToApple += appleDeltaX == 0 && appleDeltaY > 0 ? appleDeltaY : -1;
-        result.distancesToApple += appleDeltaY == -appleDeltaX && appleDeltaX < 0 ? -appleDeltaX : -1;
-        result.distancesToApple += appleDeltaY == 0 && appleDeltaX < 0 ? -appleDeltaX : -1;
-        result.distancesToApple += appleDeltaY == appleDeltaX && appleDeltaX < 0 ? -appleDeltaX : -1;
-        result.distancesToApple += appleDeltaX == 0 && appleDeltaY < 0 ? -appleDeltaY : -1;
-        result.distancesToApple += appleDeltaY == -appleDeltaX && appleDeltaX > 0 ? appleDeltaX : -1;
+        const int APPLE_NOT_SEEN = SNAKE_SIGHT_DISTANCE;
+
+        result.distancesToApple += appleDeltaY == 0 && appleDeltaX > 0 ? appleDeltaX : APPLE_NOT_SEEN;
+        result.distancesToApple += appleDeltaY == appleDeltaX && appleDeltaX > 0 ? appleDeltaX * sqrt2 : APPLE_NOT_SEEN;
+        result.distancesToApple += appleDeltaX == 0 && appleDeltaY > 0 ? appleDeltaY : APPLE_NOT_SEEN;
+        result.distancesToApple += appleDeltaY == -appleDeltaX && appleDeltaX < 0 ? -appleDeltaX * sqrt2 : APPLE_NOT_SEEN;
+        result.distancesToApple += appleDeltaY == 0 && appleDeltaX < 0 ? -appleDeltaX : APPLE_NOT_SEEN;
+        result.distancesToApple += appleDeltaY == appleDeltaX && appleDeltaX < 0 ? -appleDeltaX * sqrt2 : APPLE_NOT_SEEN;
+        result.distancesToApple += appleDeltaX == 0 && appleDeltaY < 0 ? -appleDeltaY : APPLE_NOT_SEEN;
+        result.distancesToApple += appleDeltaY == -appleDeltaX && appleDeltaX > 0 ? appleDeltaX * sqrt2 : APPLE_NOT_SEEN;
 
         // distance to body
 
@@ -157,28 +159,28 @@ namespace game {
             int bodyDeltaY = snake[i].y - headPos.y;
 
             if (bodyDeltaY == 0 && bodyDeltaX > 0)
-                result.distancesToBody[0] = (float)std::min((int)result.distancesToBody[0], bodyDeltaX);
+                result.distancesToBody[0] = std::min<float>(result.distancesToBody[0], bodyDeltaX);
 
             if (bodyDeltaY == bodyDeltaX && bodyDeltaX > 0)
-                result.distancesToBody[1] = (float)std::min((int)result.distancesToBody[1], bodyDeltaX);
+                result.distancesToBody[1] = std::min<float>(result.distancesToBody[1], bodyDeltaX * sqrt2);
 
             if (bodyDeltaX == 0 && bodyDeltaY > 0)
-                result.distancesToBody[2] = (float)std::min((int)result.distancesToBody[2], bodyDeltaY);
+                result.distancesToBody[2] = std::min<float>(result.distancesToBody[2], bodyDeltaY);
 
             if (bodyDeltaY == -bodyDeltaX && bodyDeltaX < 0)
-                result.distancesToBody[3] = (float)std::min((int)result.distancesToBody[3], bodyDeltaY);
+                result.distancesToBody[3] = std::min<float>(result.distancesToBody[3], bodyDeltaY * sqrt2);
 
             if (bodyDeltaY == 0 && bodyDeltaX < 0)
-                result.distancesToBody[4] = (float)std::min((int)result.distancesToBody[4], -bodyDeltaX);
+                result.distancesToBody[4] = std::min<float>(result.distancesToBody[4], -bodyDeltaX);
 
             if (bodyDeltaY == bodyDeltaX && bodyDeltaX < 0)
-                result.distancesToBody[5] = (float)std::min((int)result.distancesToBody[5], -bodyDeltaY);
+                result.distancesToBody[5] = std::min<float>(result.distancesToBody[5], -bodyDeltaY * sqrt2);
 
             if (bodyDeltaX == 0 && bodyDeltaY < 0)
-                result.distancesToBody[6] = (float)std::min((int)result.distancesToBody[6], -bodyDeltaY);
+                result.distancesToBody[6] = std::min<float>(result.distancesToBody[6], -bodyDeltaY);
 
             if (bodyDeltaY == -bodyDeltaX && bodyDeltaX > 0)
-                result.distancesToBody[7] = (float)std::min((int)result.distancesToBody[7], bodyDeltaX);
+                result.distancesToBody[7] = std::min<float>(result.distancesToBody[7], bodyDeltaX * sqrt2);
         }
 
         return result;

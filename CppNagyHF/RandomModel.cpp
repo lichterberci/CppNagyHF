@@ -3,6 +3,18 @@
 namespace model {
 
 	cstd::Vector<double> RandomModel::Predict(const model::ModelParams& modelParams) {
+
+		std::cout << "Model params:" << std::endl;
+		std::cout << "Distance to walls" << std::endl;
+		for (const auto& d : modelParams.distancesToWall)
+			std::cout << d << std::endl;
+		std::cout << "Distance to apple" << std::endl;
+		for (const auto& d : modelParams.distancesToApple)
+			std::cout << d << std::endl;
+		std::cout << "Distance to body" << std::endl;
+		for (const auto& d : modelParams.distancesToBody)
+			std::cout << d << std::endl;
+
 		cstd::Vector<double> result;
 
 		result += (double)(rand() % 100 - 50);
