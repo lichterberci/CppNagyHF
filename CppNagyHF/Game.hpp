@@ -4,7 +4,7 @@
 #include "vector.hpp"
 #include "position.hpp"
 #include "ControllerModel.hpp"
-#include <optional>
+#include "RandomModel.hpp"
 
 #define SNAKE_SIGHT_DISTANCE 9999
 
@@ -20,12 +20,13 @@ namespace game {
 
 	class Game {
 	private:	
-		static model::ControllerModel s_defaultModel;
+		static model::RandomModel s_defaultModel;
 
 		bool useUI;
 		int windowWidth, windowHeight;
 		int gameWidth, gameHeight;
 		float snakeMovesPerSec;
+		int numSteps;
 		GameState gameState = GameState::UNINITIALIZED;
 		GameControlType controlType;
 		model::ControllerModel& controllerModel;
@@ -64,7 +65,7 @@ namespace game {
 			int gameHeight = 20, 
 			int windowWidth = 640, 
 			int windowHeight = 480, 
-			model::ControllerModel& controllModel = s_defaultModel
+			model::ControllerModel& controllerModel = s_defaultModel
 		)
 			: useUI(useUI), 
 			controlType(controlType), 
@@ -72,15 +73,16 @@ namespace game {
 			gameHeight(gameHeight), 
 			windowWidth(windowWidth), 
 			windowHeight(windowHeight), 
-			controllerModel(controllerModel), 
+			controllerModel(controllerModel),
 			points(0),
-			snakeMovesPerSec(5)
+			snakeMovesPerSec(5),
+			numSteps(0)
 		{}
 
 		void Start();
 
-		void AttachModel(model::ControllerModel& model) {
-			controllerModel = model;
+		void AttachModel(model::ControllerModel& newModel) {
+			controllerModel = newModel;
 		}
 
 		void SetControlType(GameControlType controlType) {

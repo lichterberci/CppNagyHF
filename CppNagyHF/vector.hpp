@@ -218,7 +218,7 @@ namespace cstd {
 			return *this;
 		}
 
-		Vector& operator= (Vector&& other) {
+		Vector& operator= (Vector&& other) noexcept {
 
 			if (m_size > 0)
 				delete[] m_data;

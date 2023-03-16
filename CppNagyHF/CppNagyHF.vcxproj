@@ -142,6 +142,7 @@
     <ClCompile Include="CppNagyHF.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="matrix.hpp" />
+    <ClCompile Include="RandomModel.cpp" />
     <ClCompile Include="vector.hpp" />
   </ItemGroup>
   <ItemGroup>
@@ -149,6 +150,7 @@
     <ClInclude Include="Game.hpp" />
     <ClInclude Include="ModelParams.hpp" />
     <ClInclude Include="position.hpp" />
+    <ClInclude Include="RandomModel.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

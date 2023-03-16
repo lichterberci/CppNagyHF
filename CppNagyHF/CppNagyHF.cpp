@@ -6,6 +6,7 @@
 #include "vector.hpp"
 #include "Game.hpp"
 #include <chrono>
+#include "RandomModel.hpp"
 
 int main()
 {
@@ -41,10 +42,10 @@ int main()
 
     srand(std::chrono::system_clock::now().time_since_epoch().count());
 
-    auto model = model::RandomModel();
-    auto game = game::Game(true, game::GameControlType::AI, 10, 10, 800, 800, model);
+    auto randomModel = model::RandomModel();
+    auto game = game::Game(true, game::GameControlType::AI, 100, 100, 800, 800);
 
-    game.SetSpeed(6);
+    game.SetSpeed(8);
 
     game.Start();
 

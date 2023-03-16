@@ -4,6 +4,8 @@
 
 namespace game {
 
+    model::RandomModel Game::s_defaultModel = model::RandomModel();
+
     void Game::Start() {
 
         deltaClock.restart();
@@ -47,7 +49,6 @@ namespace game {
             }
         }
 
-
         gameState = GameState::RUNNING;
 
         while (window.isOpen() && gameState == GameState::RUNNING)
@@ -75,7 +76,7 @@ namespace game {
                         window.close();
                 }
             }
-            else if (controlType == KEYBOARD) {
+            else if (controlType == GameControlType::AI) {
                 controllerModel.GetKeyPresses(CalculateModelParams(), keyPresses);
             }
 
@@ -156,28 +157,28 @@ namespace game {
             int bodyDeltaY = snake[i].y - headPos.y;
 
             if (bodyDeltaY == 0 && bodyDeltaX > 0)
-                result.distancesToBody[0] = std::min((int)result.distancesToBody[0], bodyDeltaX);
+                result.distancesToBody[0] = (float)std::min((int)result.distancesToBody[0], bodyDeltaX);
 
             if (bodyDeltaY == bodyDeltaX && bodyDeltaX > 0)
-                result.distancesToBody[1] = std::min((int)result.distancesToBody[1], bodyDeltaX);
+                result.distancesToBody[1] = (float)std::min((int)result.distancesToBody[1], bodyDeltaX);
 
             if (bodyDeltaX == 0 && bodyDeltaY > 0)
-                result.distancesToBody[2] = std::min((int)result.distancesToBody[2], bodyDeltaY);
+                result.distancesToBody[2] = (float)std::min((int)result.distancesToBody[2], bodyDeltaY);
 
             if (bodyDeltaY == -bodyDeltaX && bodyDeltaX < 0)
-                result.distancesToBody[3] = std::min((int)result.distancesToBody[3], bodyDeltaY);
+                result.distancesToBody[3] = (float)std::min((int)result.distancesToBody[3], bodyDeltaY);
 
             if (bodyDeltaY == 0 && bodyDeltaX < 0)
-                result.distancesToBody[4] = std::min((int)result.distancesToBody[4], -bodyDeltaX);
+                result.distancesToBody[4] = (float)std::min((int)result.distancesToBody[4], -bodyDeltaX);
 
             if (bodyDeltaY == bodyDeltaX && bodyDeltaX < 0)
-                result.distancesToBody[5] = std::min((int)result.distancesToBody[5], -bodyDeltaY);
+                result.distancesToBody[5] = (float)std::min((int)result.distancesToBody[5], -bodyDeltaY);
 
             if (bodyDeltaX == 0 && bodyDeltaY < 0)
-                result.distancesToBody[6] = std::min((int)result.distancesToBody[6], -bodyDeltaY);
+                result.distancesToBody[6] = (float)std::min((int)result.distancesToBody[6], -bodyDeltaY);
 
             if (bodyDeltaY == -bodyDeltaX && bodyDeltaX > 0)
-                result.distancesToBody[7] = std::min((int)result.distancesToBody[7], bodyDeltaX);
+                result.distancesToBody[7] = (float)std::min((int)result.distancesToBody[7], bodyDeltaX);
         }
 
         return result;
