@@ -55,7 +55,7 @@ namespace game {
             cstd::Vector<sf::Keyboard::Key> keyPresses;
 
             // wait
-            while (deltaClock.getElapsedTime().asSeconds() < 1.0 / SNAKE_MOVES_PER_SEC) {}
+            while (deltaClock.getElapsedTime().asSeconds() < 1.0 / snakeMovesPerSec) {}
 
             if (controlType == GameControlType::KEYBOARD) {
                 while (window.pollEvent(event))
@@ -319,8 +319,8 @@ namespace game {
 
     sf::Vector2f Game::GetPixelOfGamePosition(const cstd::Position& pos) const {
         return sf::Vector2f(
-            std::floor((float)pos.x * windowWidth / gameWidth),
-            std::floor((float)pos.y * windowHeight / gameHeight)
+            (float)pos.x * windowWidth / gameWidth,
+            (float)pos.y * windowHeight / gameHeight
         );
     }
 
@@ -334,14 +334,18 @@ namespace game {
 	void Game::Render(sf::RenderWindow& window) {
 
         sf::RectangleShape appleRect(GetPixelOfGamePosition(cstd::Position(1, 1))); // 1x1 square
+        appleRect.setOrigin(0, 0);
         appleRect.setPosition(GetPixelOfGamePosition(applePosition));
         appleRect.setFillColor(sf::Color::Red);
+        appleRect.setOutlineThickness(0);
         window.draw(appleRect);
 
         for (const auto& bodyPart : snake) {
             sf::RectangleShape bodyRect(GetPixelOfGamePosition(cstd::Position(1, 1))); // 1x1 square
+            bodyRect.setOrigin(0, 0);
             bodyRect.setPosition(GetPixelOfGamePosition(bodyPart));
             bodyRect.setFillColor(sf::Color::Green);
+            bodyRect.setOutlineThickness(0);
             window.draw(bodyRect);
         }
     }

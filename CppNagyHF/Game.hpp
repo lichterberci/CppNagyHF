@@ -5,7 +5,6 @@
 #include "position.hpp"
 #include "ControllerModel.hpp"
 
-#define SNAKE_MOVES_PER_SEC 8
 #define SNAKE_SIGHT_DISTANCE 9999
 
 namespace game {
@@ -23,6 +22,7 @@ namespace game {
 		bool useUI;
 		int windowWidth, windowHeight;
 		int gameWidth, gameHeight;
+		float snakeMovesPerSec;
 		GameState gameState = GameState::UNINITIALIZED;
 		GameControlType controlType;
 		model::ControllerModel& controllerModel;
@@ -62,7 +62,8 @@ namespace game {
 			windowWidth(windowWidth), 
 			windowHeight(windowHeight), 
 			controllerModel(controllerModel), 
-			points(0)
+			points(0),
+			snakeMovesPerSec(5)
 		{}
 
 		void Start();
@@ -73,6 +74,10 @@ namespace game {
 
 		void SetControlType(GameControlType controlType) {
 			controlType = controlType;
+		}
+
+		void SetSpeed(float movesPerSec) {
+			snakeMovesPerSec = movesPerSec;
 		}
 	};
 }
