@@ -5,6 +5,8 @@
 #include "position.hpp"
 #include "ControllerModel.hpp"
 #include "RandomModel.hpp"
+#include "Snake.hpp"
+#include "Apple.hpp"
 
 #define SNAKE_SIGHT_DISTANCE 9999
 
@@ -31,9 +33,8 @@ namespace game {
 		GameControlType controlType;
 		model::ControllerModel& controllerModel;
 
-		cstd::Vector<cstd::Position> snake;
-		cstd::Position headDirection;
-		cstd::Position applePosition;
+		Snake snake;
+		Apple apple;
 		unsigned int points;
 
 		sf::Clock deltaClock;
@@ -47,16 +48,6 @@ namespace game {
 		void Render(sf::RenderWindow& window);
 		
 		model::ModelParams CalculateModelParams();
-
-		sf::Vector2f GetPixelOfGamePosition(const cstd::Position& pos) const;
-
-		void InitializeSnake();
-		void PlaceApple();
-		bool WouldSnakeDieIfItMoved();
-		bool WouldSnakePickUpAppleIfItMoved();
-		void PickUpApple();
-		void MoveSnake(bool grow = false);
-		void UpdateHeadDirection(const sf::Keyboard::Key& key);
 	public:
 		Game(
 			bool useUI = true, 

@@ -39,6 +39,15 @@
     <ClCompile Include="RandomModel.cpp">
       <Filter>Source Files\Model</Filter>
     </ClCompile>
+    <ClCompile Include="Snake.cpp">
+      <Filter>Source Files\Game</Filter>
+    </ClCompile>
+    <ClCompile Include="Apple.cpp">
+      <Filter>Source Files\Game</Filter>
+    </ClCompile>
+    <ClCompile Include="GameUtils.cpp">
+      <Filter>Source Files\Game</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game.hpp">
@@ -55,6 +64,15 @@
     </ClInclude>
     <ClInclude Include="RandomModel.hpp">
       <Filter>Source Files\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="Snake.hpp">
+      <Filter>Source Files\Game</Filter>
+    </ClInclude>
+    <ClInclude Include="GameUtils.hpp">
+      <Filter>Source Files\Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Apple.hpp">
+      <Filter>Source Files\Game</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

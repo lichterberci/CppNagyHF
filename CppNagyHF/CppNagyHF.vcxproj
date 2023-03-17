@@ -139,18 +139,24 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Apple.cpp" />
     <ClCompile Include="CppNagyHF.cpp" />
     <ClCompile Include="Game.cpp" />
+    <ClCompile Include="GameUtils.cpp" />
     <ClCompile Include="matrix.hpp" />
     <ClCompile Include="RandomModel.cpp" />
+    <ClCompile Include="Snake.cpp" />
     <ClCompile Include="vector.hpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Apple.hpp" />
     <ClInclude Include="ControllerModel.hpp" />
     <ClInclude Include="Game.hpp" />
+    <ClInclude Include="GameUtils.hpp" />
     <ClInclude Include="ModelParams.hpp" />
     <ClInclude Include="position.hpp" />
     <ClInclude Include="RandomModel.hpp" />
+    <ClInclude Include="Snake.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

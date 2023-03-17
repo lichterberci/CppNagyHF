@@ -27,8 +27,8 @@ namespace game {
         sf::RenderWindow window(sf::VideoMode(windowWidth, windowHeight), "Snake");
         sf::View view = window.getDefaultView();
         
-        InitializeSnake();
-        PlaceApple();
+        snake = Snake({ gameWidth / 2, gameHeight / 2 });
+        apple.PlaceAtRandom(gameWidth, gameHeight, snake);
         points = 0;
         
         Render(window);
@@ -43,7 +43,7 @@ namespace game {
             cstd::Vector<sf::Keyboard::Key> keyPresses;
             while (window.pollEvent(event)) {
                 if (event.KeyPressed && HandleKeyPresses(event, keyPresses)) {
-                    UpdateHeadDirection(keyPresses[keyPresses.size() - 1]);
+                    snake.UpdateHeadDirection(keyPresses[keyPresses.size() - 1]);
                     waitingForKeyPressToStart = false;
                 }
             }
@@ -89,102 +89,8 @@ namespace game {
             Render(window);
 
             window.display();
-
         }
 	}
-
-    void Game::RunWithoutUI() {
-        return;
-    }
-
-    model::ModelParams Game::CalculateModelParams() {
-
-        model::ModelParams result;
-
-        /*
-        
-        Directions:
-
-             5      6      7
-
-                \   |   /
-                    
-             4  -   H   -  0
-
-                /   |   \
-
-             3      2      1
-        
-        */
-
-        // distance to wall
-
-        const float sqrt2 = std::sqrtf(2);
-
-        result.distancesToWall += gameWidth - snake[0].x;
-        result.distancesToWall += sqrt2 * std::min(gameWidth - snake[0].x, gameHeight - snake[0].y);
-        result.distancesToWall += gameHeight - snake[0].y;
-        result.distancesToWall += sqrt2 * std::min(snake[0].x + 1, gameHeight - snake[0].y);
-        result.distancesToWall += snake[0].x + 1;
-        result.distancesToWall += sqrt2 * std::min(snake[0].x + 1, snake[0].y + 1);
-        result.distancesToWall += snake[0].y + 1;
-        result.distancesToWall += sqrt2 * std::min(gameWidth - snake[0].x, snake[0].y + 1);
-
-        // distance to apple
-
-        const int appleDeltaX = applePosition.x - snake[0].x;
-        const int appleDeltaY = applePosition.y - snake[0].y;
-
-        const int APPLE_NOT_SEEN = SNAKE_SIGHT_DISTANCE;
-
-        result.distancesToApple += appleDeltaY == 0 && appleDeltaX > 0 ? appleDeltaX : APPLE_NOT_SEEN;
-        result.distancesToApple += appleDeltaY == appleDeltaX && appleDeltaX > 0 ? appleDeltaX * sqrt2 : APPLE_NOT_SEEN;
-        result.distancesToApple += appleDeltaX == 0 && appleDeltaY > 0 ? appleDeltaY : APPLE_NOT_SEEN;
-        result.distancesToApple += appleDeltaY == -appleDeltaX && appleDeltaX < 0 ? -appleDeltaX * sqrt2 : APPLE_NOT_SEEN;
-        result.distancesToApple += appleDeltaY == 0 && appleDeltaX < 0 ? -appleDeltaX : APPLE_NOT_SEEN;
-        result.distancesToApple += appleDeltaY == appleDeltaX && appleDeltaX < 0 ? -appleDeltaX * sqrt2 : APPLE_NOT_SEEN;
-        result.distancesToApple += appleDeltaX == 0 && appleDeltaY < 0 ? -appleDeltaY : APPLE_NOT_SEEN;
-        result.distancesToApple += appleDeltaY == -appleDeltaX && appleDeltaX > 0 ? appleDeltaX * sqrt2 : APPLE_NOT_SEEN;
-
-        // distance to body
-
-        for (int i = 0; i < 8; i++)
-            result.distancesToBody += SNAKE_SIGHT_DISTANCE;
-
-        const cstd::Position& headPos = snake[0];
-
-        for (int i = 1; i < snake.size(); i++) {
-
-            int bodyDeltaX = snake[i].x - headPos.x;
-            int bodyDeltaY = snake[i].y - headPos.y;
-
-            if (bodyDeltaY == 0 && bodyDeltaX > 0)
-                result.distancesToBody[0] = std::min<float>(result.distancesToBody[0], bodyDeltaX);
-
-            if (bodyDeltaY == bodyDeltaX && bodyDeltaX > 0)
-                result.distancesToBody[1] = std::min<float>(result.distancesToBody[1], bodyDeltaX * sqrt2);
-
-            if (bodyDeltaX == 0 && bodyDeltaY > 0)
-                result.distancesToBody[2] = std::min<float>(result.distancesToBody[2], bodyDeltaY);
-
-            if (bodyDeltaY == -bodyDeltaX && bodyDeltaX < 0)
-                result.distancesToBody[3] = std::min<float>(result.distancesToBody[3], bodyDeltaY * sqrt2);
-
-            if (bodyDeltaY == 0 && bodyDeltaX < 0)
-                result.distancesToBody[4] = std::min<float>(result.distancesToBody[4], -bodyDeltaX);
-
-            if (bodyDeltaY == bodyDeltaX && bodyDeltaX < 0)
-                result.distancesToBody[5] = std::min<float>(result.distancesToBody[5], -bodyDeltaY * sqrt2);
-
-            if (bodyDeltaX == 0 && bodyDeltaY < 0)
-                result.distancesToBody[6] = std::min<float>(result.distancesToBody[6], -bodyDeltaY);
-
-            if (bodyDeltaY == -bodyDeltaX && bodyDeltaX > 0)
-                result.distancesToBody[7] = std::min<float>(result.distancesToBody[7], bodyDeltaX * sqrt2);
-        }
-
-        return result;
-    }
 
     void Game::HandleResize(sf::Event event, sf::RenderWindow& window, sf::View &view) {
         windowWidth = event.size.width;
@@ -229,130 +135,131 @@ namespace game {
 	void Game::Update(cstd::Vector<sf::Keyboard::Key> keyPresses) {
        
         if (keyPresses.size() > 0)
-            UpdateHeadDirection(keyPresses[keyPresses.size() - 1]);
+            snake.UpdateHeadDirection(keyPresses[keyPresses.size() - 1]);
 
-        if (WouldSnakeDieIfItMoved()) {
+        if (snake.WouldDieIfItMoved(gameWidth, gameHeight)) {
+            std::cout << "Snake hit the wall, game is lost!" << std::endl;
             gameState = GameState::STOPPED;
             return;
         }
 
-        if (WouldSnakePickUpAppleIfItMoved()) {
-            PickUpApple();
-            PlaceApple();
-            MoveSnake(true);
+        if (snake.WouldPickUpAppleIfItMoved(apple.position)) {
+
+            points++;
+
+            if (apple.CanPlace(gameWidth, gameHeight, snake) == false) {
+                std::cout << "No more room for apples, game is won!" << std::endl;
+                gameState = GameState::STOPPED;
+            }
+
+            apple.PlaceAtRandom(gameWidth, gameHeight, snake);
+            snake.Move(true);
         }
         else {
-            MoveSnake(false);
+            snake.Move(false);
         }
-	}
-    
-    void Game::UpdateHeadDirection(const sf::Keyboard::Key& key) {
-
-        switch (key) {
-        case sf::Keyboard::Up:
-            headDirection = cstd::Position(0, -1);
-            break;
-        case sf::Keyboard::Down:
-            headDirection = cstd::Position(0, 1);
-            break;
-        case sf::Keyboard::Right:
-            headDirection = cstd::Position(1, 0);
-            break;
-        case sf::Keyboard::Left:
-            headDirection = cstd::Position(-1, 0);
-            break;
-        default:
-            break;
-        }
-    }
-
-    bool Game::WouldSnakeDieIfItMoved() {
-
-        const auto newHead = snake[0] + headDirection;
-
-        if (newHead.x < 0 || newHead.x >= gameWidth || newHead.y < 0 || newHead.y >= gameHeight)
-            return true;
-
-        for (int i = 1; i < snake.size(); i++) {
-            if (newHead == snake[i])
-                return true;
-        }
-
-        return false;
-    }
-
-    bool Game::WouldSnakePickUpAppleIfItMoved() {
-
-        const auto newHead = snake[0] + headDirection;
-
-        return newHead == applePosition;
-    }
-
-    void Game::PickUpApple() {
-
-        points++;
-    }
-
-    void Game::PlaceApple() {
-
-        bool isApplePlacedOnSnake = false;
-
-        do {
-            isApplePlacedOnSnake = false;
-
-            applePosition = {
-                rand() % gameWidth,
-                rand() % gameHeight
-            };
-
-            for (const auto& bodyPart : snake)
-                if (bodyPart == applePosition)
-                    isApplePlacedOnSnake = true;
-
-        } while (isApplePlacedOnSnake);
-    }
-
-    void Game::MoveSnake(bool grow) {
-
-        const cstd::Position newHead = snake[0] + headDirection;
-        
-        snake.pushToFront(newHead);
-        
-        if (grow == false)
-            snake.pop();
-    }
-
-    sf::Vector2f Game::GetPixelOfGamePosition(const cstd::Position& pos) const {
-        return sf::Vector2f(
-            (float)pos.x * windowWidth / gameWidth,
-            (float)pos.y * windowHeight / gameHeight
-        );
-    }
-
-    void Game::InitializeSnake() {
-        snake = cstd::Vector<cstd::Position>();
-        snake += cstd::Position(gameWidth / 2, gameHeight / 2);
-
-        headDirection = cstd::Position(1, 0);
-    }
+	}   
 
 	void Game::Render(sf::RenderWindow& window) {
 
-        sf::RectangleShape appleRect(GetPixelOfGamePosition(cstd::Position(1, 1))); // 1x1 square
-        appleRect.setOrigin(0, 0);
-        appleRect.setPosition(GetPixelOfGamePosition(applePosition));
-        appleRect.setFillColor(sf::Color::Red);
-        appleRect.setOutlineThickness(0);
-        window.draw(appleRect);
-
-        for (const auto& bodyPart : snake) {
-            sf::RectangleShape bodyRect(GetPixelOfGamePosition(cstd::Position(1, 1))); // 1x1 square
-            bodyRect.setOrigin(0, 0);
-            bodyRect.setPosition(GetPixelOfGamePosition(bodyPart));
-            bodyRect.setFillColor(sf::Color::Green);
-            bodyRect.setOutlineThickness(0);
-            window.draw(bodyRect);
-        }
+        apple.Render(window, gameWidth, gameHeight, windowWidth, windowHeight);
+        snake.Render(window, gameWidth, gameHeight, windowWidth, windowHeight);
     }
+
+    void Game::RunWithoutUI() {
+        return;
+    }
+
+    model::ModelParams Game::CalculateModelParams() {
+
+        model::ModelParams result;
+
+        /*
+
+        Directions:
+
+             5      6      7
+
+                \   |   /
+
+             4  -   H   -  0
+
+                /   |   \
+
+             3      2      1
+
+        */
+
+        // distance to wall
+
+        const auto& snakeBody = snake.Body();
+
+        const float sqrt2 = std::sqrtf(2);
+
+        result.distancesToWall += gameWidth - snakeBody[0].x;
+        result.distancesToWall += sqrt2 * std::min(gameWidth - snakeBody[0].x, gameHeight - snakeBody[0].y);
+        result.distancesToWall += gameHeight - snakeBody[0].y;
+        result.distancesToWall += sqrt2 * std::min(snakeBody[0].x + 1, gameHeight - snakeBody[0].y);
+        result.distancesToWall += snakeBody[0].x + 1;
+        result.distancesToWall += sqrt2 * std::min(snakeBody[0].x + 1, snakeBody[0].y + 1);
+        result.distancesToWall += snakeBody[0].y + 1;
+        result.distancesToWall += sqrt2 * std::min(gameWidth - snakeBody[0].x, snakeBody[0].y + 1);
+
+        // distance to apple
+
+        const int appleDeltaX = apple.position.x - snakeBody[0].x;
+        const int appleDeltaY = apple.position.y - snakeBody[0].y;
+
+        const int APPLE_NOT_SEEN = SNAKE_SIGHT_DISTANCE;
+
+        result.distancesToApple += appleDeltaY == 0 && appleDeltaX > 0 ? appleDeltaX : APPLE_NOT_SEEN;
+        result.distancesToApple += appleDeltaY == appleDeltaX && appleDeltaX > 0 ? appleDeltaX * sqrt2 : APPLE_NOT_SEEN;
+        result.distancesToApple += appleDeltaX == 0 && appleDeltaY > 0 ? appleDeltaY : APPLE_NOT_SEEN;
+        result.distancesToApple += appleDeltaY == -appleDeltaX && appleDeltaX < 0 ? -appleDeltaX * sqrt2 : APPLE_NOT_SEEN;
+        result.distancesToApple += appleDeltaY == 0 && appleDeltaX < 0 ? -appleDeltaX : APPLE_NOT_SEEN;
+        result.distancesToApple += appleDeltaY == appleDeltaX && appleDeltaX < 0 ? -appleDeltaX * sqrt2 : APPLE_NOT_SEEN;
+        result.distancesToApple += appleDeltaX == 0 && appleDeltaY < 0 ? -appleDeltaY : APPLE_NOT_SEEN;
+        result.distancesToApple += appleDeltaY == -appleDeltaX && appleDeltaX > 0 ? appleDeltaX * sqrt2 : APPLE_NOT_SEEN;
+
+        // distance to body
+
+        for (int i = 0; i < 8; i++)
+            result.distancesToBody += SNAKE_SIGHT_DISTANCE;
+
+        const cstd::Position& headPos = snakeBody[0];
+
+        for (int i = 1; i < snakeBody.size(); i++) {
+
+            int bodyDeltaX = snakeBody[i].x - headPos.x;
+            int bodyDeltaY = snakeBody[i].y - headPos.y;
+
+            if (bodyDeltaY == 0 && bodyDeltaX > 0)
+                result.distancesToBody[0] = std::min<float>(result.distancesToBody[0], bodyDeltaX);
+
+            if (bodyDeltaY == bodyDeltaX && bodyDeltaX > 0)
+                result.distancesToBody[1] = std::min<float>(result.distancesToBody[1], bodyDeltaX * sqrt2);
+
+            if (bodyDeltaX == 0 && bodyDeltaY > 0)
+                result.distancesToBody[2] = std::min<float>(result.distancesToBody[2], bodyDeltaY);
+
+            if (bodyDeltaY == -bodyDeltaX && bodyDeltaX < 0)
+                result.distancesToBody[3] = std::min<float>(result.distancesToBody[3], bodyDeltaY * sqrt2);
+
+            if (bodyDeltaY == 0 && bodyDeltaX < 0)
+                result.distancesToBody[4] = std::min<float>(result.distancesToBody[4], -bodyDeltaX);
+
+            if (bodyDeltaY == bodyDeltaX && bodyDeltaX < 0)
+                result.distancesToBody[5] = std::min<float>(result.distancesToBody[5], -bodyDeltaY * sqrt2);
+
+            if (bodyDeltaX == 0 && bodyDeltaY < 0)
+                result.distancesToBody[6] = std::min<float>(result.distancesToBody[6], -bodyDeltaY);
+
+            if (bodyDeltaY == -bodyDeltaX && bodyDeltaX > 0)
+                result.distancesToBody[7] = std::min<float>(result.distancesToBody[7], bodyDeltaX * sqrt2);
+        }
+
+        return result;
+    }
+
 
 }
