@@ -143,17 +143,22 @@
     <ClCompile Include="CppNagyHF.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="GameUtils.cpp" />
+    <ClCompile Include="ConnectionGene.cpp" />
     <ClCompile Include="matrix.hpp" />
+    <ClCompile Include="NeatModel.cpp" />
     <ClCompile Include="RandomModel.cpp" />
     <ClCompile Include="Snake.cpp" />
     <ClCompile Include="vector.hpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ActivationFunction.hpp" />
     <ClInclude Include="Apple.hpp" />
     <ClInclude Include="ControllerModel.hpp" />
     <ClInclude Include="Game.hpp" />
     <ClInclude Include="GameUtils.hpp" />
+    <ClInclude Include="ConnectionGene.hpp" />
     <ClInclude Include="ModelParams.hpp" />
+    <ClInclude Include="NeatModel.hpp" />
     <ClInclude Include="position.hpp" />
     <ClInclude Include="RandomModel.hpp" />
     <ClInclude Include="Snake.hpp" />

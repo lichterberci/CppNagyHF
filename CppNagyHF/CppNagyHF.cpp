@@ -14,9 +14,9 @@ int main()
     srand(std::chrono::system_clock::now().time_since_epoch().count());
 
     auto randomModel = model::RandomModel();
-    auto game = game::Game(true, game::GameControlType::AI, 8, 8, 800, 800);
+    auto game = game::Game(true, game::GameControlType::KEYBOARD, 10, 10, 800, 800);
 
-    game.SetSpeed(6);
+    game.SetSpeed(7);
 
     game.Start();
 

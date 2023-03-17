@@ -15,9 +15,12 @@ namespace game {
                 rand() % gameHeight
             };
 
-            for (const auto& bodyPart : snake.Body())
-                if (bodyPart == position)
+            for (const auto& bodyPart : snake.Body()) {
+                if (bodyPart == position) {
                     isApplePlacedOnSnake = true;
+                    break;
+                }
+            }
 
         } while (isApplePlacedOnSnake);
 	}

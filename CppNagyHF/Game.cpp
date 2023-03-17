@@ -143,17 +143,18 @@ namespace game {
             return;
         }
 
-        if (snake.WouldPickUpAppleIfItMoved(apple.position)) {
+        if (snake.WouldPickUpAppleIfItMoved(apple.position)) {            
 
             points++;
+            snake.Move(true);
 
             if (apple.CanPlace(gameWidth, gameHeight, snake) == false) {
                 std::cout << "No more room for apples, game is won!" << std::endl;
                 gameState = GameState::STOPPED;
+                return;
             }
 
             apple.PlaceAtRandom(gameWidth, gameHeight, snake);
-            snake.Move(true);
         }
         else {
             snake.Move(false);
@@ -234,28 +235,28 @@ namespace game {
             int bodyDeltaY = snakeBody[i].y - headPos.y;
 
             if (bodyDeltaY == 0 && bodyDeltaX > 0)
-                result.distancesToBody[0] = std::min<float>(result.distancesToBody[0], bodyDeltaX);
+                result.distancesToBody[0] = std::min<double>(result.distancesToBody[0], bodyDeltaX);
 
             if (bodyDeltaY == bodyDeltaX && bodyDeltaX > 0)
-                result.distancesToBody[1] = std::min<float>(result.distancesToBody[1], bodyDeltaX * sqrt2);
+                result.distancesToBody[1] = std::min<double>(result.distancesToBody[1], bodyDeltaX * sqrt2);
 
             if (bodyDeltaX == 0 && bodyDeltaY > 0)
-                result.distancesToBody[2] = std::min<float>(result.distancesToBody[2], bodyDeltaY);
+                result.distancesToBody[2] = std::min<double>(result.distancesToBody[2], bodyDeltaY);
 
             if (bodyDeltaY == -bodyDeltaX && bodyDeltaX < 0)
-                result.distancesToBody[3] = std::min<float>(result.distancesToBody[3], bodyDeltaY * sqrt2);
+                result.distancesToBody[3] = std::min<double>(result.distancesToBody[3], bodyDeltaY * sqrt2);
 
             if (bodyDeltaY == 0 && bodyDeltaX < 0)
-                result.distancesToBody[4] = std::min<float>(result.distancesToBody[4], -bodyDeltaX);
+                result.distancesToBody[4] = std::min<double>(result.distancesToBody[4], -bodyDeltaX);
 
             if (bodyDeltaY == bodyDeltaX && bodyDeltaX < 0)
-                result.distancesToBody[5] = std::min<float>(result.distancesToBody[5], -bodyDeltaY * sqrt2);
+                result.distancesToBody[5] = std::min<double>(result.distancesToBody[5], -bodyDeltaY * sqrt2);
 
             if (bodyDeltaX == 0 && bodyDeltaY < 0)
-                result.distancesToBody[6] = std::min<float>(result.distancesToBody[6], -bodyDeltaY);
+                result.distancesToBody[6] = std::min<double>(result.distancesToBody[6], -bodyDeltaY);
 
             if (bodyDeltaY == -bodyDeltaX && bodyDeltaX > 0)
-                result.distancesToBody[7] = std::min<float>(result.distancesToBody[7], bodyDeltaX * sqrt2);
+                result.distancesToBody[7] = std::min<double>(result.distancesToBody[7], bodyDeltaX * sqrt2);
         }
 
         return result;

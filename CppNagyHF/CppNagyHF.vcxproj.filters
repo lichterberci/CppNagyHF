@@ -48,6 +48,12 @@
     <ClCompile Include="GameUtils.cpp">
       <Filter>Source Files\Game</Filter>
     </ClCompile>
+    <ClCompile Include="ConnectionGene.cpp">
+      <Filter>Source Files\Model</Filter>
+    </ClCompile>
+    <ClCompile Include="NeatModel.cpp">
+      <Filter>Source Files\Model</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game.hpp">
@@ -73,6 +79,15 @@
     </ClInclude>
     <ClInclude Include="Apple.hpp">
       <Filter>Source Files\Game</Filter>
+    </ClInclude>
+    <ClInclude Include="ConnectionGene.hpp">
+      <Filter>Source Files\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="NeatModel.hpp">
+      <Filter>Source Files\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="ActivationFunction.hpp">
+      <Filter>Source Files\Model</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

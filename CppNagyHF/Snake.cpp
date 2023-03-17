@@ -15,7 +15,7 @@ namespace game {
 
     bool Snake::WouldDieIfItMoved(int gameWidth, int gameHeight) {
 
-        const auto newHead = body[0] + headDirection;
+        const cstd::Position newHead = body[0] + headDirection;
 
         if (newHead.x < 0 || newHead.x >= gameWidth || newHead.y < 0 || newHead.y >= gameHeight)
             return true;
