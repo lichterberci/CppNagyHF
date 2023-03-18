@@ -16,11 +16,11 @@ int main()
 
     auto neat = model::NeatModel(NUM_SENSORS, NUM_OUTPUTS, model::LReLU());
 
-    auto game = game::Game(false, game::GameControlType::AI, 10, 10, 800, 800);
+    auto game = game::Game(true, game::GameControlType::AI, 10, 10, 800, 800);
 
     game.AttachModel(neat);
 
-    //game.SetSpeed(7);
+    game.SetSpeed(10);
 
     game.Start();
 

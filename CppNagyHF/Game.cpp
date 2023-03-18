@@ -58,24 +58,22 @@ namespace game {
 
             // wait
             while (deltaClock.getElapsedTime().asSeconds() < 1.0 / snakeMovesPerSec) {}
-
-            if (controlType == GameControlType::KEYBOARD) {
-                while (window.pollEvent(event))
-                {
-
-                    if (controlType == GameControlType::KEYBOARD) {
-                        if (event.type == sf::Event::KeyPressed)
-                            HandleKeyPresses(event, keyPresses);
-                    }
-
-                    if (event.type == sf::Event::Resized)
-                        HandleResize(event, window, view);
-
-                    if (event.type == sf::Event::Closed)
-                        window.close();
+                        
+            while (window.pollEvent(event))
+            {
+                if (controlType == GameControlType::KEYBOARD) {
+                    if (event.type == sf::Event::KeyPressed)
+                        HandleKeyPresses(event, keyPresses);
                 }
+
+                if (event.type == sf::Event::Resized)
+                    HandleResize(event, window, view);
+
+                if (event.type == sf::Event::Closed)
+                    window.close();
             }
-            else if (controlType == GameControlType::AI) {
+
+            if (controlType == GameControlType::AI) {
                 p_controllerModel->GetKeyPresses(CalculateModelParams(), keyPresses);
             }
 
