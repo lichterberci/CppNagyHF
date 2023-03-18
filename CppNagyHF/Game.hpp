@@ -9,7 +9,7 @@
 #include "Apple.hpp"
 #include "GameReport.hpp"
 
-#define SNAKE_SIGHT_DISTANCE 9999
+#define SNAKE_SIGHT_DISTANCE 100
 #define MAX_STEPS 10000
 
 namespace game {

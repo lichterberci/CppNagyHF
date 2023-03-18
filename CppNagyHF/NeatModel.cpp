@@ -73,7 +73,15 @@ namespace model {
 		// find max value
 		int choice = 0;
 		double maxValue = result[0];
-		for (size_t i = 1; i < std::min<int>(result.size(), 4); i++) {
+
+		/*std::cout << "------------------------------" << std::endl;
+
+		std::cout << "Output[" << 0 << "] = " << result[0] << std::endl;*/
+
+		for (size_t i = 1; i < std::min<int>(result.size(), NUM_OUTPUTS); i++) {
+
+			//std::cout << "Output[" << i << "] = " << result[i] << std::endl;
+
 			if (result[i] > maxValue) {
 				maxValue = result[i];
 				choice = i;

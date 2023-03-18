@@ -239,6 +239,10 @@ namespace game {
         result.distancesToWall += snakeBody[0].y + 1;
         result.distancesToWall += sqrt2 * std::min(gameWidth - snakeBody[0].x, snakeBody[0].y + 1);
 
+        // normalize
+        for (auto& d : result.distancesToWall)
+            d /= SNAKE_SIGHT_DISTANCE;
+
         // distance to apple
 
         const int appleDeltaX = apple.position.x - snakeBody[0].x;
@@ -254,6 +258,10 @@ namespace game {
         result.distancesToApple += appleDeltaY == appleDeltaX && appleDeltaX < 0 ? -appleDeltaX * sqrt2 : APPLE_NOT_SEEN;
         result.distancesToApple += appleDeltaX == 0 && appleDeltaY < 0 ? -appleDeltaY : APPLE_NOT_SEEN;
         result.distancesToApple += appleDeltaY == -appleDeltaX && appleDeltaX > 0 ? appleDeltaX * sqrt2 : APPLE_NOT_SEEN;
+
+        // normalize
+        for (auto& d : result.distancesToApple)
+            d /= SNAKE_SIGHT_DISTANCE;
 
         // distance to body
 
@@ -291,6 +299,10 @@ namespace game {
             if (bodyDeltaY == -bodyDeltaX && bodyDeltaX > 0)
                 result.distancesToBody[7] = std::min<double>(result.distancesToBody[7], bodyDeltaX * sqrt2);
         }
+
+        // normalize
+        for (auto& d : result.distancesToBody)
+            d /= SNAKE_SIGHT_DISTANCE;
 
         return result;
     }
