@@ -1,4 +1,7 @@
+#pragma once
 
+#include <iostream>
+#include <iomanip>
 
 #define DEFAULT_MIN_RANDOM_WEIGHT -2.0
 #define DEFAULT_MAX_RANDOM_WEIGHT 2.0
@@ -62,11 +65,13 @@ namespace model {
 			return innovationNumber > other.innovationNumber;
 		}
 
+		friend std::ostream& operator<< (std::ostream& os, const ConnectionGene& gene);
+
 		static void SetGlobalInnovationNumber(int newInnovationNumber);	
 
 		void MutateWeight(double changeOfMutationBeingNewRandomValue, double weightSetMin, double weightSetMax, double weightAdjustMin, double weightAdjustMax);
 		void Disable();
 		void Enable();
-	};
+	};	
 
 }

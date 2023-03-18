@@ -4,7 +4,7 @@ namespace model {
 
 	cstd::Vector<double> RandomModel::Predict(const model::ModelParams& modelParams) {
 
-		std::cout << "Model params:" << std::endl;
+		/*std::cout << "Model params:" << std::endl;
 		std::cout << "Distance to walls" << std::endl;
 		for (const auto& d : modelParams.distancesToWall)
 			std::cout << d << std::endl;
@@ -13,7 +13,7 @@ namespace model {
 			std::cout << d << std::endl;
 		std::cout << "Distance to body" << std::endl;
 		for (const auto& d : modelParams.distancesToBody)
-			std::cout << d << std::endl;
+			std::cout << d << std::endl;*/
 
 		cstd::Vector<double> result;
 

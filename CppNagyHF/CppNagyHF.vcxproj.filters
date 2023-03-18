@@ -54,6 +54,9 @@
     <ClCompile Include="NeatModel.cpp">
       <Filter>Source Files\Model</Filter>
     </ClCompile>
+    <ClCompile Include="GameReport.cpp">
+      <Filter>Source Files\Model</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game.hpp">
@@ -88,6 +91,9 @@
     </ClInclude>
     <ClInclude Include="ActivationFunction.hpp">
       <Filter>Source Files\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="GameReport.hpp">
+      <Filter>Source Files\Game</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

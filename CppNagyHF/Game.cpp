@@ -18,8 +18,7 @@ namespace game {
 
 	void Game::RunWithUI() {
 
-        if (controlType == GameControlType::AI && (&controllerModel) == nullptr) {
-            std::cout << controllerModel.Predict(model::ModelParams()) << std::endl;
+        if (controlType == GameControlType::AI && p_controllerModel == nullptr) {
             std::cout << "No controller model attached!" << std::endl;
             throw std::exception("No controller model attached!");
         }
@@ -77,7 +76,7 @@ namespace game {
                 }
             }
             else if (controlType == GameControlType::AI) {
-                controllerModel.GetKeyPresses(CalculateModelParams(), keyPresses);
+                p_controllerModel->GetKeyPresses(CalculateModelParams(), keyPresses);
             }
 
             deltaClock.restart();
@@ -138,7 +137,19 @@ namespace game {
             snake.UpdateHeadDirection(keyPresses[keyPresses.size() - 1]);
 
         if (snake.WouldDieIfItMoved(gameWidth, gameHeight)) {
-            std::cout << "Snake hit the wall, game is lost!" << std::endl;
+
+            if (useUI)
+                std::cout << "Snake hit the wall or its body, game is lost!" << std::endl;
+
+            gameState = GameState::STOPPED;
+            return;
+        }
+
+        if (numSteps >= MAX_STEPS) {
+
+            if (useUI)
+                std::cout << "Game limit reached, session stopped!" << std::endl;
+
             gameState = GameState::STOPPED;
             return;
         }
@@ -149,7 +160,10 @@ namespace game {
             snake.Move(true);
 
             if (apple.CanPlace(gameWidth, gameHeight, snake) == false) {
-                std::cout << "No more room for apples, game is won!" << std::endl;
+
+                if (useUI)
+                    std::cout << "No more room for apples, game is won!" << std::endl;
+
                 gameState = GameState::STOPPED;
                 return;
             }
@@ -159,6 +173,8 @@ namespace game {
         else {
             snake.Move(false);
         }
+
+        numSteps++;
 	}   
 
 	void Game::Render(sf::RenderWindow& window) {
@@ -168,7 +184,26 @@ namespace game {
     }
 
     void Game::RunWithoutUI() {
-        return;
+        
+        if (controlType == KEYBOARD) {
+            std::cout << "ERROR: you are trying playing with keyboards without UI!" << std::endl;
+            throw std::exception("You are trying playing with keyboards without UI!");
+        }
+
+        snake = Snake({ gameWidth / 2, gameHeight / 2 });
+        apple.PlaceAtRandom(gameWidth, gameHeight, snake);
+        points = 0;
+
+        gameState = GameState::RUNNING;
+
+        while (gameState == GameState::RUNNING) {
+
+            cstd::Vector<sf::Keyboard::Key> keyPresses;
+
+            p_controllerModel->GetKeyPresses(CalculateModelParams(), keyPresses);
+
+            Update(keyPresses);
+        }
     }
 
     model::ModelParams Game::CalculateModelParams() {
@@ -262,5 +297,8 @@ namespace game {
         return result;
     }
 
+    GameReport Game::GenerateReport() const {
+        return GameReport(points == snake.Body().size(), points, numSteps);
+    }
 
 }

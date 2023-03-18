@@ -5,7 +5,7 @@
 
 #define BIAS_VALUE 1.0
 
-#define INPUT_SIZE
+#define INPUT_SIZE 25
 
 namespace model {
 
@@ -44,6 +44,20 @@ namespace model {
 			result += bias;
 
 			return result;
+		}
+
+		ModelParams& SetToRandom() {
+
+			for (int i = 0; i < 8; i++)
+				distancesToWall += ((double)rand() / (RAND_MAX + 1.0)) * 2 - 1;
+
+			for (int i = 0; i < 8; i++)
+				distancesToApple += ((double)rand() / (RAND_MAX + 1.0)) * 2 - 1;
+
+			for (int i = 0; i < 8; i++)
+				distancesToBody += ((double)rand() / (RAND_MAX + 1.0)) * 2 - 1;
+
+			return *this;
 		}
 
 	};

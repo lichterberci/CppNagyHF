@@ -7,8 +7,10 @@
 #include "RandomModel.hpp"
 #include "Snake.hpp"
 #include "Apple.hpp"
+#include "GameReport.hpp"
 
 #define SNAKE_SIGHT_DISTANCE 9999
+#define MAX_STEPS 10000
 
 namespace game {
 
@@ -31,7 +33,7 @@ namespace game {
 		int numSteps;
 		GameState gameState = GameState::UNINITIALIZED;
 		GameControlType controlType;
-		model::ControllerModel& controllerModel;
+		model::ControllerModel* p_controllerModel;
 
 		Snake snake;
 		Apple apple;
@@ -64,7 +66,7 @@ namespace game {
 			gameHeight(gameHeight), 
 			windowWidth(windowWidth), 
 			windowHeight(windowHeight), 
-			controllerModel(controllerModel),
+			p_controllerModel(&controllerModel),
 			points(0),
 			snakeMovesPerSec(5),
 			numSteps(0)
@@ -73,7 +75,7 @@ namespace game {
 		void Start();
 
 		void AttachModel(model::ControllerModel& newModel) {
-			controllerModel = newModel;
+			p_controllerModel = &newModel;
 		}
 
 		void SetControlType(GameControlType controlType) {
@@ -83,5 +85,7 @@ namespace game {
 		void SetSpeed(float movesPerSec) {
 			snakeMovesPerSec = movesPerSec;
 		}
+
+		GameReport GenerateReport() const;
 	};
 }

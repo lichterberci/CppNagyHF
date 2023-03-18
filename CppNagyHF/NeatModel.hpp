@@ -8,7 +8,7 @@
 #include <unordered_map>
 
 #define NUM_SENSORS 25
-#define NUM_OUTPUS 4
+#define NUM_OUTPUTS 4
 
 namespace model {
 
@@ -26,6 +26,9 @@ namespace model {
 		std::unordered_map<int, cstd::Vector<int>> geneIndexLookupByOutputNeuron; // this helps reduce the time-complexity of the forwarding
 
 		ActivationFunction activationFunction;
+
+		void GenerateLookUp();
+		void ConstructSimplestModelForInputOutputNeurons();
 
 	public:
 		NeatModel() 
@@ -47,15 +50,20 @@ namespace model {
 		NeatModel(int sensorNeurons, int outputNeurons, ActivationFunction activationFunction = Sigmoid())
 			: activationFunction(activationFunction)
 		{
-			genes = ConstructSimplestModelForInputOutputNeurons();
+			ConstructSimplestModelForInputOutputNeurons();
 			GenerateLookUp();
 		}
-
-		void GenerateLookUp();
-
-		static cstd::Vector<ConnectionGene> ConstructSimplestModelForInputOutputNeurons();
 		
-		double ComputeValueOfNeuron(const cstd::Vector<double>& inputs, const int neuronId) const;
+		const cstd::Vector<ConnectionGene>& Genes() const {
+			return genes;
+		}
+
+		cstd::Vector<ConnectionGene>& Genes() {
+			return genes;
+		}
+
+		double ComputeValueOfNeuron(const cstd::Vector<double>& inputs, int neuronId, std::unordered_map<int, double>& valueMap) const;
+		
 		cstd::Vector<double> Predict(const ModelParams& modelParams);
 		void GetKeyPresses(const ModelParams& modelParams, cstd::Vector<sf::Keyboard::Key>& out_keyPresses);
 	};

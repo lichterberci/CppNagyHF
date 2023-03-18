@@ -21,8 +21,9 @@ namespace cstd {
 		}
 
 		Vector(const size_t capacity)
-			: m_size(0), m_capacity(capacity), m_data(nullptr)
+			: m_size(0), m_capacity(0)
 		{
+			reserve(capacity);
 		}
 
 		Vector(const T* data, const size_t size)

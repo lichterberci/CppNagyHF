@@ -44,4 +44,9 @@ namespace model {
 	void ConnectionGene::Enable() {
 		disabled = false;
 	}
+
+	std::ostream& operator<< (std::ostream& os, const ConnectionGene& gene) {
+		os << "Gene(from=" << gene.from << ", to=" << gene.to << ", innov=" << gene.innovationNumber << ", d=" << (gene.disabled ? "true" : "false") << ", w=" << std::setprecision(3) << gene.weight << ")";
+		return os;
+	}
 }
