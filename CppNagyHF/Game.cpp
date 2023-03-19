@@ -143,7 +143,7 @@ namespace game {
             return;
         }
 
-        if (numSteps >= MAX_STEPS) {
+        if (numIdleSteps >= numMaxIdleSteps) {
 
             if (useUI)
                 std::cout << "Game limit reached, session stopped!" << std::endl;
@@ -167,9 +167,14 @@ namespace game {
             }
 
             apple.PlaceAtRandom(gameWidth, gameHeight, snake);
-        }
-        else {
+
+            numIdleSteps = 0;
+
+        } else {
+
             snake.Move(false);
+
+            numIdleSteps++;
         }
 
         numSteps++;

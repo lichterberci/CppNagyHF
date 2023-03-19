@@ -22,14 +22,23 @@ namespace model {
 
 	class NeatModel : public ControllerModel {
 
+		static int s_globalNeuronCount;
+
+		cstd::Vector<int> neuronIndicies;
 		cstd::Vector<ConnectionGene> genes;
+
 		std::unordered_map<int, cstd::Vector<int>> geneIndexLookupByOutputNeuron; // this helps reduce the time-complexity of the forwarding
 
 		ActivationFunction activationFunction;
 
-		void GenerateLookUp();
-		void ConstructSimplestModelForInputOutputNeurons();
+		double fitness;
 
+		void GenerateNeuronIndiciesList();
+		void GenerateLookUp();
+		void ConstructSimplestModelForInputOutputNeurons(std::unordered_map<long long, int>& innovationNumberTable);
+
+		void InsertNewDentrit(std::unordered_map<long long, int>& innovationNumberTable);
+		void InsertNewNeuron(std::unordered_map<long long, int>& innovationNumberTable);
 	public:
 		NeatModel() 
 			: genes(cstd::Vector<ConnectionGene>()), activationFunction(Sigmoid()), geneIndexLookupByOutputNeuron(std::unordered_map<int, cstd::Vector<int>>())
@@ -47,10 +56,10 @@ namespace model {
 			GenerateLookUp();
 		}
 
-		NeatModel(int sensorNeurons, int outputNeurons, ActivationFunction activationFunction = Sigmoid())
+		NeatModel(int sensorNeurons, int outputNeurons, ActivationFunction activationFunction, std::unordered_map<long long, int>& innovationNumberTable)
 			: activationFunction(activationFunction)
 		{
-			ConstructSimplestModelForInputOutputNeurons();
+			ConstructSimplestModelForInputOutputNeurons(innovationNumberTable);
 			GenerateLookUp();
 		}
 		
@@ -66,6 +75,23 @@ namespace model {
 		
 		cstd::Vector<double> Predict(const ModelParams& modelParams);
 		void GetKeyPresses(const ModelParams& modelParams, cstd::Vector<sf::Keyboard::Key>& out_keyPresses);
+
+		void Mutate(
+			std::unordered_map<long long, int>& innovationNumberTable, 
+			double chanceOfDentritInsertion, 
+			double chanceOfNeuronInsertion, 
+			double chanceOfMutation, 
+			double chanceOfMutationBeingNewValue, 
+			double chanceOfDisabling,
+			double weightSetMin,
+			double weightSetMax,
+			double weightAdjustMin,
+			double weightAdjustMax
+		);
+
+		static void ResetGlobalNeuronCount() {
+			s_globalNeuronCount = 0;
+		}
 	};
 
 }

@@ -147,6 +147,7 @@
     <ClCompile Include="ConnectionGene.cpp" />
     <ClCompile Include="matrix.hpp" />
     <ClCompile Include="NeatModel.cpp" />
+    <ClCompile Include="NeatTrainer.cpp" />
     <ClCompile Include="RandomModel.cpp" />
     <ClCompile Include="Snake.cpp" />
     <ClCompile Include="vector.hpp" />
@@ -160,7 +161,9 @@
     <ClInclude Include="GameUtils.hpp" />
     <ClInclude Include="ConnectionGene.hpp" />
     <ClInclude Include="ModelParams.hpp" />
+    <ClInclude Include="ModelUtils.hpp" />
     <ClInclude Include="NeatModel.hpp" />
+    <ClInclude Include="NeatTrainer.hpp" />
     <ClInclude Include="position.hpp" />
     <ClInclude Include="RandomModel.hpp" />
     <ClInclude Include="Snake.hpp" />

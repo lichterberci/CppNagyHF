@@ -1,11 +1,8 @@
 #include <cstdlib>
 #include "ConnectionGene.hpp"
+#include "ModelUtils.hpp"
 
 namespace model {
-
-	inline double RANDOM_DOUBLE(double min, double max) {
-		return min + ((double)rand() / (RAND_MAX + 1.0)) * (max - min);
-	}
 
 	int ConnectionGene::s_globalInnovationNumber = 0;
 
@@ -15,12 +12,12 @@ namespace model {
 
 	void ConnectionGene::SetWeightToRandom(double lowerBound, double upperBound) {
 
-		weight = RANDOM_DOUBLE(lowerBound, upperBound);
+		weight = utils::RandomDouble(lowerBound, upperBound);
 	}
 
 	void ConnectionGene::OffsetWeightByRandom(double minAmount, double maxAmount) {
 
-		weight += RANDOM_DOUBLE(minAmount, maxAmount);
+		weight += utils::RandomDouble(minAmount, maxAmount);
 	}
 
 	void ConnectionGene::SetGlobalInnovationNumber(int newInnovationNumber) {
@@ -29,7 +26,7 @@ namespace model {
 
 	void ConnectionGene::MutateWeight(double changeOfMutationBeingNewRandomValue, double weightSetMin, double weightSetMax, double weightAdjustMin, double weightAdjustMax) {
 
-		if (RANDOM_DOUBLE(0, 1) < changeOfMutationBeingNewRandomValue) {
+		if (utils::RandomDouble(0, 1) < changeOfMutationBeingNewRandomValue) {
 			SetWeightToRandom(weightSetMin, weightSetMax);
 		}
 		else {
@@ -48,5 +45,19 @@ namespace model {
 	std::ostream& operator<< (std::ostream& os, const ConnectionGene& gene) {
 		os << "Gene(from=" << gene.from << ", to=" << gene.to << ", innov=" << gene.innovationNumber << ", d=" << (gene.disabled ? "true" : "false") << ", w=" << std::setprecision(3) << gene.weight << ")";
 		return os;
+	}
+
+	void ConnectionGene::SetInnovationNumber(std::unordered_map<long long, int>& innovationNumberTable) {
+
+		if (innovationNumberTable.find(utils::MakeHashKeyFromPair(from, to)) != innovationNumberTable.end()) {
+
+			innovationNumber = innovationNumberTable[utils::MakeHashKeyFromPair(from, to)];
+
+			return;
+		}
+
+		innovationNumber = GetNextInnovationNumber();
+
+		innovationNumberTable[utils::MakeHashKeyFromPair(from, to)] = innovationNumber;
 	}
 }

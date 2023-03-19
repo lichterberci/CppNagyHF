@@ -2,9 +2,11 @@
 
 #include <iostream>
 #include <iomanip>
+#include <unordered_map>
 
 #define DEFAULT_MIN_RANDOM_WEIGHT -2.0
 #define DEFAULT_MAX_RANDOM_WEIGHT 2.0
+
 
 namespace model {
 
@@ -15,6 +17,7 @@ namespace model {
 
 		void SetWeightToRandom(double lowerBound = DEFAULT_MIN_RANDOM_WEIGHT, double upperBound = DEFAULT_MAX_RANDOM_WEIGHT);
 		void OffsetWeightByRandom(double minAmount, double maxAmount);
+		void SetInnovationNumber(std::unordered_map<long long, int>& innovationNumberTable);
 
 	public:
 		int from;
@@ -24,13 +27,20 @@ namespace model {
 		double weight;
 
 		ConnectionGene()
-			: from(-1), to(-1), innovationNumber(GetNextInnovationNumber()), disabled(false), weight(0)
+			: from(-1), to(-1), innovationNumber(-1), disabled(true), weight(0)
 		{
 			SetWeightToRandom();
 		}
 
-		ConnectionGene(int from, int to)
-			: from(from), to(to), innovationNumber(GetNextInnovationNumber()), disabled(false), weight(0)
+		ConnectionGene(int from, int to, std::unordered_map<long long, int>& innovationNumberTable)
+			: from(from), to(to), disabled(false), weight(0)
+		{
+			SetWeightToRandom();
+			SetInnovationNumber(innovationNumberTable);
+		}
+
+		ConnectionGene(int from, int to, int innovationNumber)
+			: from(from), to(to), innovationNumber(innovationNumber), disabled(false), weight(0)
 		{
 			SetWeightToRandom();
 		}
