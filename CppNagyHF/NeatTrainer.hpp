@@ -2,28 +2,57 @@
 
 #include "ActivationFunction.hpp"
 #include "vector.hpp"
+#include "NeatModel.hpp"
 
 namespace model {
 
 	class NeatTrainer {
-	private:
 
+		cstd::Vector<cstd::Vector<NeatModel>> organismsByGenerations;
+
+		std::unordered_map<long long, int> innovationNumberTable;
+
+		void ConstructInitialGeneration();
+		void TrainIndividual(NeatModel& neatModel);
+		void TrainGeneration();
+
+	public:
 		int populationCount;
 		int numGenerations;
 		ActivationFunction activationFunction;
 		int numMaxIdleSteps;
 
-		double mutationChance = 0.3;
+		double chanceOfDentritInsertion = 0.2;
+		double chanceOfNeuronInsertion = 0.1;
+		double chanceOfMutation = 0.1;
 		double chanceOfMutationBeingNewValue = 0.1;
+		double chanceOfDisabling = 0.1;
+		double weightSetMin = 0.1;
+		double weightSetMax = 0.1;
+		double weightAdjustMin = 0.1;
+		double weightAdjustMa = 0.1;
 
 		double neatC1 = 1;
 		double neatC2 = 1;
 		double neatC3 = 3;
 		double neatDeltaSubT = 0.2;
 
-	public:
+		NeatTrainer(int populationCount, int numGenerations, ActivationFunction activationFunction, int maxIdleSteps) 
+			: populationCount(populationCount), numGenerations(numGenerations), activationFunction(activationFunction), numMaxIdleSteps(maxIdleSteps)
+		{
+			NeatModel::ResetGlobalNeuronCount();
+			ConnectionGene::SetGlobalInnovationNumber(0);
 
+			ConstructInitialGeneration();
+		}
 
+		void SetNeatConstants(double c1, double c2, double c3, double deltaSubT) {
+			neatC1 = c1;
+			neatC2 = c2;
+			neatC3 = c3;
+			neatDeltaSubT = deltaSubT;
+		}
+
+		void Train();
 	};
-
 }

@@ -9,6 +9,7 @@
 
 #define NUM_SENSORS 25
 #define NUM_OUTPUTS 4
+#define MAX_ATTEMPTS_AT_INSERTING_DENTRIT 30
 
 namespace model {
 

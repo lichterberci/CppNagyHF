@@ -109,10 +109,28 @@ namespace model {
 		// we choose 2 inficies that are in order (to avoid any loops)
 		// --> we choose a separator index at random and then 2 indicies from its left and right
 
-		int separator = utils::RandomInt(NUM_SENSORS, neuronIndicies.size() - 1);
+		int separator, from, to;
 
-		int from = utils::RandomInt(0, separator);
-		int to = utils::RandomInt(separator, neuronIndicies.size());
+		int attempts = 0;
+
+		do {
+
+			separator = utils::RandomInt(NUM_SENSORS, neuronIndicies.size() - 1);
+
+			from = utils::RandomInt(0, separator);
+			to = utils::RandomInt(separator, neuronIndicies.size());
+
+			// we should not create connections between the OG neurons
+			if (from < NUM_SENSORS + NUM_OUTPUTS && to < NUM_SENSORS + NUM_OUTPUTS) {
+				attempts++;
+				continue;
+			}
+
+		} while (innovationNumberTable.find(utils::MakeHashKeyFromPair(from, to)) == innovationNumberTable.end() && ++attempts < MAX_ATTEMPTS_AT_INSERTING_DENTRIT);
+
+		// couldn't find free spot for a new dentrit
+		if (attempts >= MAX_ATTEMPTS_AT_INSERTING_DENTRIT)
+			return;
 
 		ConnectionGene newGene;
 
