@@ -156,6 +156,7 @@
     <ClInclude Include="ActivationFunction.hpp" />
     <ClInclude Include="Apple.hpp" />
     <ClInclude Include="ControllerModel.hpp" />
+    <ClInclude Include="FitnessFunction.hpp" />
     <ClInclude Include="Game.hpp" />
     <ClInclude Include="GameReport.hpp" />
     <ClInclude Include="GameUtils.hpp" />

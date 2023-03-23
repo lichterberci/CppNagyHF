@@ -104,5 +104,8 @@
     <ClInclude Include="ModelUtils.hpp">
       <Filter>Source Files\Model</Filter>
     </ClInclude>
+    <ClInclude Include="FitnessFunction.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
