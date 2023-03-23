@@ -13,7 +13,7 @@ namespace model {
 
 		organismsByGenerations += initialGeneration;
 
-		representativesOfThePrevGeneration += initialGeneration[0];
+		representativesOfThePrevGeneration += &initialGeneration[0];
 	}
 
 	double NeatTrainer::TrainIndividual(NeatModel& neatModel) {
@@ -56,41 +56,82 @@ namespace model {
 		species, a new species is created with g as its representative.
 		*/
 		
+
 		cstd::Vector<int> result;
 
-		cstd::Vector<NeatModel&> representativesOfSpeciesInNewGeneration;
+		cstd::Vector<const NeatModel*> representativesOfSpeciesInNewGeneration;
 
-		for (const auto& organism : organisms) {
+		cstd::Vector<std::tuple<int, const NeatModel*>> representativeCandidatesFromTheNewGeneration;
+
+		for (auto& organism : organisms) {
 
 			bool didFindSpecies = false;
 
-			for (size_t speciesIndex = 0; speciesIndex < representativesOfThePrevGeneration.size(); speciesIndex++) {
+			// we first search in those species that are present in the new generation
+			for (size_t newSpeciesIndex = 0; newSpeciesIndex < representativesOfSpeciesInNewGeneration.size(); newSpeciesIndex++) {
 
-				const double delta = GetSpeciesDifferenceDelta(organism, representativesOfThePrevGeneration[speciesIndex]);
+				const double delta = GetSpeciesDifferenceDelta(organism, *representativesOfSpeciesInNewGeneration[newSpeciesIndex]);
 
 				if (delta <= neatDeltaSubT) {
 					didFindSpecies = true;
-					result += speciesIndex;
-					break;
+					result += newSpeciesIndex;
+				}
+
+			}
+
+			// we then search for species in the previous generation
+			if (didFindSpecies == false) {
+
+				for (size_t speciesIndex = 0; speciesIndex < representativesOfThePrevGeneration.size(); speciesIndex++) {
+
+					const double delta = GetSpeciesDifferenceDelta(organism, *representativesOfThePrevGeneration[speciesIndex]);
+
+					if (delta <= neatDeltaSubT) {
+
+						didFindSpecies = true;
+
+						// if we find someone from the old generation, we move the species' representative to the new vector
+						// this means that in the new vector, there will still remain organisms from the old one
+						// --> at the end, we will have to swap them out for new organisms
+						representativesOfSpeciesInNewGeneration += representativesOfThePrevGeneration[speciesIndex];
+
+						// the new index, this species is inserted in
+						const size_t newIndexOfSpecies = representativesOfSpeciesInNewGeneration.size() - 1;
+
+						// we mark the current organism as a candidate, so after speciation, we can swap the old ones to these
+						representativeCandidatesFromTheNewGeneration += std::make_tuple(speciesIndex, &organism);
+
+						// the species index will be set according to the new vector
+						result += newIndexOfSpecies; 
+
+						// we have succesfully moved this from the old to the new generation, now we can remove it
+						representativesOfThePrevGeneration.removeAt(speciesIndex); 
+
+						break;
+					}
 				}
 			}
 
 			if (didFindSpecies == false) {
 
-				for (size_t newSpeciesIndex = 0; newSpeciesIndex < representativesOfSpeciesInNewGeneration.size(); newSpeciesIndex++) {
+				// we create a new species
 
-					const double delta = GetSpeciesDifferenceDelta(organism, representativesOfSpeciesInNewGeneration[newSpeciesIndex]);
-
-					if (delta <= neatDeltaSubT) {
-						didFindSpecies = true;
-						result += 
-					}
-
-				}
-
+				representativesOfSpeciesInNewGeneration += &organism;
+				result += representativesOfSpeciesInNewGeneration.size() - 1;
 			}
-
 		}
+
+		// remove old representatives, and replace them with new ones
+		for (const auto& newRepresentative : representativeCandidatesFromTheNewGeneration) {
+
+			const int speciesIndex = std::get<0>(newRepresentative);
+			const NeatModel* representative = std::get<1>(newRepresentative);
+
+			representativesOfSpeciesInNewGeneration[speciesIndex] = representative;
+		}
+
+		// replace old representatives with new ones
+		representativesOfThePrevGeneration = representativesOfSpeciesInNewGeneration;
 
 		return result;
 	}
@@ -105,8 +146,6 @@ namespace model {
 		size_t i = 0, j = 0; // indicies of the vectors
 
 		const size_t sizeOfSmaller = std::min(a.Genes().size(), b.Genes().size());
-
-		int i = 0, j = 0;
 
 		const auto& genesOfA = a.Genes();
 		const auto& genesOfB = b.Genes();

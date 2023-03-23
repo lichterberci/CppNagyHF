@@ -10,7 +10,7 @@ namespace model {
 	class NeatTrainer {
 
 		cstd::Vector<cstd::Vector<NeatModel>> organismsByGenerations;
-		cstd::Vector<NeatModel&> representativesOfThePrevGeneration;
+		cstd::Vector<const NeatModel*> representativesOfThePrevGeneration;
 
 		std::unordered_map<long long, int> innovationNumberTable;
 
