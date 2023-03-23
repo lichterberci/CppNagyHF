@@ -109,26 +109,17 @@ namespace model {
 		// we choose 2 inficies that are in order (to avoid any loops)
 		// --> we choose a separator index at random and then 2 indicies from its left and right
 
-		int separator, from, to;
+		int from, to;
 
 		int attempts = 0;
 
 		do {
 
-			separator = utils::RandomInt(NUM_SENSORS, neuronIndicies.size() - 1);
+			from = utils::RandomInt(0, neuronIndicies.size());
+			to = utils::RandomInt(0, neuronIndicies.size());
 
-			from = utils::RandomInt(0, separator);
-			to = utils::RandomInt(separator, neuronIndicies.size());
+		} while (neuronLayerNumbers[from] <= neuronLayerNumbers[to] && attempts++ <= MAX_ATTEMPTS_AT_INSERTING_DENTRIT);
 
-			// we should not create connections between the OG neurons
-			if (from < NUM_SENSORS + NUM_OUTPUTS && to < NUM_SENSORS + NUM_OUTPUTS) {
-				attempts++;
-				continue;
-			}
-
-		} while (innovationNumberTable.find(utils::MakeHashKeyFromPair(from, to)) == innovationNumberTable.end() && ++attempts < MAX_ATTEMPTS_AT_INSERTING_DENTRIT);
-
-		// couldn't find free spot for a new dentrit
 		if (attempts >= MAX_ATTEMPTS_AT_INSERTING_DENTRIT)
 			return;
 
@@ -204,4 +195,26 @@ namespace model {
 				gene.MutateWeight(chanceOfMutationBeingNewValue, weightSetMin, weightSetMax, weightAdjustMin, weightAdjustMax);
 	}
 
+	void NeatModel::OrderNeuronsByLayer() {
+
+		neuronLayerNumbers.reserve(neuronIndicies.size());
+
+		for (int i = NUM_SENSORS; i < NUM_SENSORS + NUM_OUTPUTS; i++)
+			SetNeuronOrder(i, neuronLayerNumbers);
+
+		
+	}
+
+	void NeatModel::SetNeuronOrder(int neuronId, cstd::Vector<int>& orders, int depth) {
+
+		orders[neuronId] = depth;
+
+		if (neuronId < NUM_SENSORS)
+			return;
+
+		const auto& connections = geneIndexLookupByOutputNeuron.at(neuronId);
+
+		for (int inputIndex : connections)
+			SetNeuronOrder(inputIndex, orders, depth + 1);
+	}
 }

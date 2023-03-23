@@ -14,7 +14,11 @@ int main()
 
     srand(std::chrono::system_clock::now().time_since_epoch().count());
 
-   
+    auto game = game::Game(true, game::GameControlType::KEYBOARD, 10, 10, 800, 800);
+
+    game.SetSpeed(6);
+
+    game.Start();
 
     return 0;
 }
