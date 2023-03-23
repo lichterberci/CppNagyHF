@@ -3,6 +3,7 @@
 #include "ActivationFunction.hpp"
 #include "vector.hpp"
 #include "NeatModel.hpp"
+#include "FitnessFunction.hpp"
 
 namespace model {
 
@@ -20,7 +21,11 @@ namespace model {
 		int populationCount;
 		int numGenerations;
 		ActivationFunction activationFunction;
+		FitnessFunction fitnessFunction;
 		int numMaxIdleSteps;
+
+		int gameWidth;
+		int gameHeight;
 
 		double chanceOfDentritInsertion = 0.2;
 		double chanceOfNeuronInsertion = 0.1;
@@ -37,8 +42,22 @@ namespace model {
 		double neatC3 = 3;
 		double neatDeltaSubT = 0.2;
 
-		NeatTrainer(int populationCount, int numGenerations, ActivationFunction activationFunction, int maxIdleSteps) 
-			: populationCount(populationCount), numGenerations(numGenerations), activationFunction(activationFunction), numMaxIdleSteps(maxIdleSteps)
+		NeatTrainer(
+			int populationCount, 
+			int numGenerations, 
+			ActivationFunction activationFunction, 
+			int maxIdleSteps,
+			int gameWidth,
+			int gameHeight,
+			FitnessFunction fitnessFunction
+		) 
+			: populationCount(populationCount), 
+			numGenerations(numGenerations), 
+			activationFunction(activationFunction), 
+			numMaxIdleSteps(maxIdleSteps),
+			gameWidth(gameWidth),
+			gameHeight(gameHeight),
+			fitnessFunction(fitnessFunction)
 		{
 			NeatModel::ResetGlobalNeuronCount();
 			ConnectionGene::SetGlobalInnovationNumber(0);
