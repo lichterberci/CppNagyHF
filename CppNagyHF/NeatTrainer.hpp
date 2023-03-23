@@ -10,12 +10,15 @@ namespace model {
 	class NeatTrainer {
 
 		cstd::Vector<cstd::Vector<NeatModel>> organismsByGenerations;
+		cstd::Vector<NeatModel&> representativesOfThePrevGeneration;
 
 		std::unordered_map<long long, int> innovationNumberTable;
 
 		void ConstructInitialGeneration();
-		void TrainIndividual(NeatModel& neatModel);
+		double TrainIndividual(NeatModel& neatModel);
 		void TrainGeneration();
+		cstd::Vector<int> Speciate(const cstd::Vector<NeatModel>& organisms);
+		double GetSpeciesDifferenceDelta(const NeatModel& a, const NeatModel& b);
 
 	public:
 		int populationCount;

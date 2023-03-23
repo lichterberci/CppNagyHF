@@ -206,6 +206,13 @@ namespace cstd {
 			return m_data[index];
 		}
 
+		T& last() const {
+			if (m_size == 0)
+				throw std::out_of_range("Cannot get last element of empty vector!");
+
+			return m_data[m_size - 1];
+		}
+
 		Vector& operator= (const Vector& other) {
 			
 			if (m_size > 0)

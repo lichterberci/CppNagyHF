@@ -75,6 +75,14 @@ namespace model {
 			return innovationNumber > other.innovationNumber;
 		}
 
+		bool operator<= (const ConnectionGene& other) const {
+			return innovationNumber <= other.innovationNumber;
+		}
+
+		bool operator>= (const ConnectionGene& other) const {
+			return innovationNumber >= other.innovationNumber;
+		}
+
 		friend std::ostream& operator<< (std::ostream& os, const ConnectionGene& gene);
 
 		static void SetGlobalInnovationNumber(int newInnovationNumber);	
