@@ -49,5 +49,5 @@ namespace cstd {
 
 	constexpr bool operator!= (const Position& lhs, const Position& rhs) {
 		return !(lhs == rhs);
-	}	
+	}
 }

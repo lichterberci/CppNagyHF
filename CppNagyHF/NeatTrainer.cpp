@@ -5,10 +5,11 @@ namespace model {
 
 	void NeatTrainer::ConstructInitialGeneration() {
 
-		cstd::Vector<NeatModel> initialGeneration(populationCount);
+		cstd::Vector<NeatModel> initialGeneration;
+		initialGeneration.reserve(populationCount);
 
 		for (size_t i = 0; i < populationCount; i++) {
-			initialGeneration[i] = NeatModel(NUM_SENSORS, NUM_OUTPUTS, activationFunction, innovationNumberTable);
+			initialGeneration += NeatModel(NUM_SENSORS, NUM_OUTPUTS, activationFunction, innovationNumberTable);
 		}
 
 		organismsByGenerations += initialGeneration;

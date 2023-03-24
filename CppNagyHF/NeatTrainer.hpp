@@ -9,6 +9,8 @@ namespace model {
 
 	class NeatTrainer {
 
+	public: // !!!TEMP!!!
+
 		cstd::Vector<cstd::Vector<NeatModel>> organismsByGenerations;
 		cstd::Vector<const NeatModel*> representativesOfThePrevGeneration;
 

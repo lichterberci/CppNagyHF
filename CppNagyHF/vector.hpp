@@ -33,7 +33,7 @@ namespace cstd {
 			memcpy(m_data, data, size);
 		}
 
-		Vector(const Vector& other)
+		Vector(const Vector& other) noexcept
 			: m_capacity(other.m_capacity), m_size(other.m_size)
 		{
 			m_data = new T[other.m_capacity];
@@ -51,6 +51,8 @@ namespace cstd {
 		}
 
 		~Vector() {
+			if (m_data == nullptr) return;
+
 			delete[] m_data;
 		}
 
@@ -215,6 +217,8 @@ namespace cstd {
 
 		Vector& operator= (const Vector& other) {
 			
+			if (this == &other) return *this;
+
 			if (m_size > 0)
 				delete[] m_data;
 
@@ -235,6 +239,10 @@ namespace cstd {
 			m_capacity = other.m_capacity;
 			m_data = new T[m_capacity];
 			memcpy(m_data, other.m_data, m_size * sizeof(T));
+
+			other.m_size = 0;
+			other.m_capacity = 0;
+			delete[] other.m_data;
 
 			return *this;
 		}

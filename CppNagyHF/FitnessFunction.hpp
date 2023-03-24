@@ -7,7 +7,7 @@ namespace model {
 
 	struct FitnessFunction {
 		virtual double operator()(const game::GameReport& report) {
-			utils::RandomDouble(0, 100);
+			return utils::RandomDouble(0, 100);
 		}
 	};
 
