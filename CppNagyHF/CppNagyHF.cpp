@@ -35,8 +35,14 @@ int main()
         cstd::Position pos = { 1, 3 };
         inner += pos;
         inner += pos;
+
+        inner[1] = { 1, 4 };
+
         outer += inner;
         outer += inner;
+
+        auto& _inner = outer[0];
+        _inner[0] = { 4, 5 };
 
         for (const auto& o : outer)
             for (const auto& i : inner)
