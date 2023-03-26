@@ -197,7 +197,7 @@ namespace model {
 
 	void NeatModel::OrderNeuronsByLayer() {
 
-		neuronLayerNumbers.reserve(neuronIndicies.size());
+		neuronLayerNumbers.reserve_and_copy(neuronIndicies.size());
 
 		for (int i = NUM_SENSORS; i < NUM_SENSORS + NUM_OUTPUTS; i++)
 			SetNeuronOrder(i, neuronLayerNumbers);

@@ -19,36 +19,16 @@ int main()
 
     //game.Start();
 
-    //auto trainer = model::NeatTrainer(
-    //    3, 
-    //    2, 
-    //    model::Sigmoid(), 
-    //    100, 
-    //    10, 
-    //    10, 
-    //    model::FitnessByApplesAndStepsAndWin<100, 1, 1000>()
-    //);
+    auto trainer = model::NeatTrainer(
+        3, 
+        2, 
+        model::Sigmoid(), 
+        100, 
+        10, 
+        10, 
+        model::FitnessByApplesAndStepsAndWin<100, 1, 1000>()
+    );
 
-    {
-        cstd::Vector<cstd::Vector<cstd::Position>> outer;
-        cstd::Vector<cstd::Position> inner;
-        cstd::Position pos = { 1, 3 };
-        inner += pos;
-        inner += pos;
-
-        inner[1] = { 1, 4 };
-
-        outer += inner;
-        outer += inner;
-
-        auto& _inner = outer[0];
-        _inner[0] = { 4, 5 };
-
-        for (const auto& o : outer)
-            for (const auto& i : inner)
-                std::cout << i << std::endl;
-
-    }
 
     return 0;
 }

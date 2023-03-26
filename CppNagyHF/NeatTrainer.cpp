@@ -6,7 +6,7 @@ namespace model {
 	void NeatTrainer::ConstructInitialGeneration() {
 
 		cstd::Vector<NeatModel> initialGeneration;
-		initialGeneration.reserve(populationCount);
+		initialGeneration.reserve_and_copy(populationCount);
 
 		for (size_t i = 0; i < populationCount; i++) {
 			initialGeneration += NeatModel(NUM_SENSORS, NUM_OUTPUTS, activationFunction, innovationNumberTable);
