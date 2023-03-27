@@ -151,7 +151,9 @@ namespace model {
 		ConnectionGene newFromThroughGene(fromIndex, throughIndex, innovationNumberTable);
 		ConnectionGene newThroughToGene(throughIndex, toIndex, innovationNumberTable);
 
-		newFromThroughGene.weight = 1.0; // in order for new mutations not to have too much an effect
+		// in order for new mutations not to have too much an effect
+		newFromThroughGene.weight = 1.0; 
+		newThroughToGene.weight = oldGene.weight;
 
 		oldGene.Disable();
 	}

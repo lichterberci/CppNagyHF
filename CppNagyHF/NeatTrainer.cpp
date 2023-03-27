@@ -115,6 +115,8 @@ namespace model {
 		// reproduction
 
 		auto newGeneration = ProduceNewGenerationByReproduction(currentGeneration, speciesIndicies, placesAllocatedForSpecies, fitnessScores);
+
+		organismsByGenerations += newGeneration;
 	}
 
 	cstd::Vector<int> NeatTrainer::Speciate(const cstd::Vector<NeatModel>& organisms) {
@@ -246,30 +248,26 @@ namespace model {
 				continue;
 			}
 
-			if (aGene < bGene) {
+			// cannot be excess, because it is smaller than another gene in the genom of the other organism
+			if (aGene < bGene) { 
 				i++;
 
-				if (aGene.innovationNumber < innovationNumberInGenomWithSmallerMaxInnovationNumber)
-					numDisjointGenes++;
-				else
-					numExcessGenes++;
+				numDisjointGenes++;
 
 				continue;
 			}
 
+			// cannot be excess, because it is smaller than another gene in the genom of the other organism
 			if (bGene < aGene) {
 				j++;
 
-				if (bGene.innovationNumber < innovationNumberInGenomWithSmallerMaxInnovationNumber)
-					numDisjointGenes++;
-				else
-					numExcessGenes++;
-
+				numDisjointGenes++;
+				
 				continue;
 			}
 		}
 
-		numDisjointGenes += genesOfA.size() - i + genesOfB.size() - j;
+		numExcessGenes += genesOfA.size() - i + genesOfB.size() - j;
 
 		const double wBar = sumDifferenceOfWeights / numAllignedGenes;
 
@@ -292,6 +290,9 @@ namespace model {
 
 		cstd::Vector<cstd::Vector<int>> organismIndiciesBySpecies;
 
+		for (int i = 0; i < numPlacesAllocatedForSpecies.size(); i++)
+			organismIndiciesBySpecies += cstd::Vector<int>();
+
 		// generate lookup
 		for (int i = 0; i < populationCount; i++)
 			organismIndiciesBySpecies[speciesIndicies[i]] += i;
@@ -307,15 +308,127 @@ namespace model {
 
 			auto& species = organismIndiciesBySpecies[speciesIndex];
 
-			while (species.size() >= std::floor(portionOfSpeciesToKeepForReproduction * numPlacesAllocatedForSpecies[speciesIndex]))
+			while (species.size() > std::floor(portionOfSpeciesToKeepForReproduction * numPlacesAllocatedForSpecies[speciesIndex]))
 				species.pop();
 		}
 
+		// from every species, select couples at random to reproduce
+		// if a species only contains 1 organism, just copy it
+		
+		cstd::Vector<NeatModel> newGeneration;
+		newGeneration.reserve_and_copy(populationCount);
 
+		for (int speciesIndex = 0; speciesIndex < organismIndiciesBySpecies.size(); speciesIndex++) {
+
+			const auto& species = organismIndiciesBySpecies[speciesIndex];
+
+			if (species.size() == 0) {
+				std::cout << "ERROR: species has no members!" << std::endl;
+				throw std::length_error("Species has no members!");
+			}
+
+			if (species.size() == 1) {
+				for (int i = 0; i < numPlacesAllocatedForSpecies[speciesIndex]; i++)
+					newGeneration += currentGeneration[species[0]];
+			}
+
+			for (int i = 0; i < numPlacesAllocatedForSpecies[speciesIndex]; i++) {
+
+				int indexInSpeciesOfParentA = utils::RandomInt(0, species.size());
+				int indexInSpeciesOfParentB = utils::RandomInt(0, species.size());
+
+				int indexOfParentA = species[indexInSpeciesOfParentA];
+				int indexOfParentB = species[indexInSpeciesOfParentB];
+
+				NeatModel offspring = GenerateOffSpring(
+					currentGeneration[indexOfParentA], 
+					currentGeneration[indexOfParentB], 
+					rawFitnessScores[indexOfParentA], 
+					rawFitnessScores[indexOfParentB]
+				);
+
+				newGeneration += offspring;
+			}
+		}
+
+		return newGeneration;
 	}
 
 	NeatModel NeatTrainer::GenerateOffSpring(const NeatModel& a, const NeatModel& b, double fitnessOfA, double fitnessOfB) {
 
-	}
+		/*
+		In composing the offspring, genes are randomly chosen from either parent at matching genes, 
+		whereas all excess or disjoint genes are always included from the more fit parent.
+		*/
 
+		const auto& genesOfA = a.Genes();
+		const auto& genesOfB = b.Genes();
+
+		cstd::Vector<ConnectionGene> newGenes;
+
+		const int innovationNumberInGenomWithSmallerMaxInnovationNumber = std::min(
+			genesOfA.last().innovationNumber,
+			genesOfB.last().innovationNumber
+		);
+
+		size_t i = 0, j = 0; // indicies of the vectors
+
+		const size_t sizeOfSmaller = std::min(a.Genes().size(), b.Genes().size());
+
+		const bool isParentAFitter = fitnessOfA > fitnessOfB;
+
+		while (i < sizeOfSmaller && j < sizeOfSmaller) {
+
+			const auto& aGene = genesOfA[i];
+			const auto& bGene = genesOfB[j];
+
+			if (aGene == bGene) {
+				i++; j++;
+
+				// alligned
+
+				if (utils::RandomDouble(0, 1) < 0.5)
+					newGenes += aGene;
+				else
+					newGenes += bGene;
+
+				continue;
+			}
+
+			if (aGene < bGene) {
+				i++;
+
+				// disjoint
+
+				if (isParentAFitter)
+					newGenes += aGene;
+
+				continue;
+			}
+
+			if (bGene < aGene) {
+				j++;
+
+				// disjoint
+
+				if (isParentAFitter == false)
+					newGenes += bGene;
+
+				continue;
+			}
+		}
+
+		// handle excess genes
+
+		if (isParentAFitter) {
+			while (i < genesOfA.size())
+				newGenes += genesOfA[i++];
+		}
+		else {
+			while (j < genesOfB.size())
+				newGenes += genesOfB[j++];
+		}
+
+		return NeatModel(newGenes, NUM_SENSORS, NUM_OUTPUTS, activationFunction);
+	}
 }

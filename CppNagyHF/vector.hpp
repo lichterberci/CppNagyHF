@@ -284,6 +284,10 @@ namespace cstd {
 		}
 
 		T pop() {
+
+			if (m_size == 0 || m_data == nullptr)
+				throw std::out_of_range("Cannot pop from empty vector!");
+
 			T result = m_data[--m_size];
 
 			m_data[m_size] = T(); // this will call the destructor and leave the memory fresh for new data in the future
@@ -292,6 +296,10 @@ namespace cstd {
 		}
 
 		T popFront() {
+
+			if (m_size == 0 || m_data == nullptr)
+				throw std::out_of_range("Cannot pop from empty vector!");
+
 			T result = m_data[0];
 
 			for (size_t i = 0; i < m_data - 1; i++)
