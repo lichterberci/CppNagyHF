@@ -9,7 +9,7 @@ namespace model {
 
 	class NeatTrainer {
 
-	public: // !!!TEMP!!!
+	public: // !!!TEMP!!! ---- ONLY FOR DEBUG PRUPOSES
 
 		cstd::Vector<cstd::Vector<NeatModel>> organismsByGenerations;
 		cstd::Vector<const NeatModel*> representativesOfThePrevGeneration;
@@ -18,9 +18,19 @@ namespace model {
 
 		void ConstructInitialGeneration();
 		double TrainIndividual(NeatModel& neatModel);
-		void TrainGeneration();
+		void TrainCurrentGeneration();
+
 		cstd::Vector<int> Speciate(const cstd::Vector<NeatModel>& organisms);
 		double GetSpeciesDifferenceDelta(const NeatModel& a, const NeatModel& b);
+
+		cstd::Vector<NeatModel> ProduceNewGenerationByReproduction(
+			const cstd::Vector<NeatModel>& currentGeneration, 
+			const cstd::Vector<int>& speciesIndicies, 
+			const cstd::Vector<int>& numPlacesAllocatedForSpecies,
+			const cstd::Vector<double>& rawFitnessScores
+		);
+		NeatModel GenerateOffSpring(const NeatModel& a, const NeatModel& b, double fitnessOfA, double fitnessOfB);
+
 
 	public:
 		int populationCount;
@@ -40,7 +50,8 @@ namespace model {
 		double weightSetMin = 0.1;
 		double weightSetMax = 0.1;
 		double weightAdjustMin = 0.1;
-		double weightAdjustMa = 0.1;
+		double weightAdjustMax = 0.1;
+		double portionOfSpeciesToKeepForReproduction = 0.5;
 
 		double neatC1 = 1;
 		double neatC2 = 1;

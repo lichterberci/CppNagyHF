@@ -14,7 +14,7 @@ namespace model {
 
 		organismsByGenerations += initialGeneration;
 
-		representativesOfThePrevGeneration += &initialGeneration[0];
+		representativesOfThePrevGeneration += &organismsByGenerations[0][0];
 	}
 
 	double NeatTrainer::TrainIndividual(NeatModel& neatModel) {
@@ -30,7 +30,7 @@ namespace model {
 		return fitness;
 	}
 
-	void NeatTrainer::TrainGeneration() {
+	void NeatTrainer::TrainCurrentGeneration() {
 
 		auto& currentGeneration = organismsByGenerations.last();
 
@@ -42,6 +42,79 @@ namespace model {
 		// speciation
 
 		cstd::Vector<int> speciesIndicies = Speciate(currentGeneration);
+
+		// sum up species sizes
+
+		std::unordered_map<int, int> speciesSizes;
+
+		int numSpecies = 0;
+
+		for (int speciesIndex : speciesIndicies) {
+
+			if (speciesSizes.find(speciesIndex) == speciesSizes.end()) {
+
+				speciesSizes[speciesIndex] = 1;
+				numSpecies++;
+
+				continue;
+			}
+
+			speciesSizes[speciesIndex]++;
+		}
+
+		// allocate places in the new generation in proportion to the adjusted fitness scores
+		// this means we divide the sum of the fitness score by the size of the species
+
+		cstd::Vector<double> sumOfAdjustedFitnessForEachSpecies;
+		sumOfAdjustedFitnessForEachSpecies.reserve_and_copy(numSpecies);
+
+		for (int i = 0; i < numSpecies; i++)
+			sumOfAdjustedFitnessForEachSpecies += 0;
+
+		// sum up fitness scores by species
+
+		for (int i = 0; i < numSpecies; i++) {
+
+			int speciesIndex = speciesIndicies[i];
+
+			sumOfAdjustedFitnessForEachSpecies[speciesIndex] += fitnessScores[i];
+		}
+
+		// divide them by their respective sizes
+
+		for (int i = 0; i < numSpecies; i++)
+			sumOfAdjustedFitnessForEachSpecies[i] /= speciesSizes[i];
+
+		// allocate places accordingly
+
+		double totalSum = 0;
+
+		for (double adjustedFitness : sumOfAdjustedFitnessForEachSpecies)
+			totalSum += adjustedFitness;
+
+		int numTotalPlacesAllocated = 0;
+
+		cstd::Vector<int> placesAllocatedForSpecies;
+		placesAllocatedForSpecies.reserve_and_copy(numSpecies);
+
+		for (int i = 0; i < numSpecies; i++) {
+
+			int places = std::floor(sumOfAdjustedFitnessForEachSpecies[i] / totalSum);
+
+			placesAllocatedForSpecies += places;
+
+			numTotalPlacesAllocated += places;
+		}
+
+		// if we have rounding errors, we just give all places to the first species by default
+		if (numTotalPlacesAllocated < populationCount)
+			placesAllocatedForSpecies[0] += populationCount - numTotalPlacesAllocated;
+
+		// TODO: if sum of raw fitness does not rise for more than 20 generations, only keep the top 2 species
+
+		// reproduction
+
+		auto newGeneration = ProduceNewGenerationByReproduction(currentGeneration, speciesIndicies, placesAllocatedForSpecies, fitnessScores);
 	}
 
 	cstd::Vector<int> NeatTrainer::Speciate(const cstd::Vector<NeatModel>& organisms) {
@@ -204,4 +277,45 @@ namespace model {
 
 		return delta;
 	}
+
+	cstd::Vector<NeatModel> NeatTrainer::ProduceNewGenerationByReproduction(
+		const cstd::Vector<NeatModel>& currentGeneration, 
+		const cstd::Vector<int>& speciesIndicies, 
+		const cstd::Vector<int>& numPlacesAllocatedForSpecies,
+		const cstd::Vector<double>& rawFitnessScores
+	) {
+
+		/*
+		Species then reproduce by first eliminating the lowest performing members from the population. 
+		The entire population is then replaced by the offspring of the remaining organisms in each species.
+		*/
+
+		cstd::Vector<cstd::Vector<int>> organismIndiciesBySpecies;
+
+		// generate lookup
+		for (int i = 0; i < populationCount; i++)
+			organismIndiciesBySpecies[speciesIndicies[i]] += i;
+
+		// sort according to fitness scores
+		for (auto& species : organismIndiciesBySpecies)
+			std::sort(species.begin(), species.end(), [&rawFitnessScores](const int a, const int b) {
+				return rawFitnessScores[a] > rawFitnessScores[b]; // sort in desc. order
+			});
+
+		// chop off those deemed useless
+		for (int speciesIndex = 0; speciesIndex < organismIndiciesBySpecies.size(); speciesIndex++) {
+
+			auto& species = organismIndiciesBySpecies[speciesIndex];
+
+			while (species.size() >= std::floor(portionOfSpeciesToKeepForReproduction * numPlacesAllocatedForSpecies[speciesIndex]))
+				species.pop();
+		}
+
+
+	}
+
+	NeatModel NeatTrainer::GenerateOffSpring(const NeatModel& a, const NeatModel& b, double fitnessOfA, double fitnessOfB) {
+
+	}
+
 }

@@ -197,17 +197,27 @@ namespace model {
 
 	void NeatModel::OrderNeuronsByLayer() {
 
+		neuronLayerNumbers = cstd::Vector<int>();
 		neuronLayerNumbers.reserve_and_copy(neuronIndicies.size());
+
+		for (int i = 0; i < neuronLayerNumbers.size(); i++)
+			neuronLayerNumbers += 99999;
+
+		if (geneIndexLookupByOutputNeuron.size() == 0)
+			GenerateLookUp();
 
 		for (int i = NUM_SENSORS; i < NUM_SENSORS + NUM_OUTPUTS; i++)
 			SetNeuronOrder(i, neuronLayerNumbers);
-
-		
 	}
 
 	void NeatModel::SetNeuronOrder(int neuronId, cstd::Vector<int>& orders, int depth) {
 
-		orders[neuronId] = depth;
+		// implements DFS with always setting to the min
+
+		if (orders[neuronId] == -1)
+			orders[neuronId] = depth;
+		else 
+			orders[neuronId] = std::min(depth, orders[neuronId]);
 
 		if (neuronId < NUM_SENSORS)
 			return;

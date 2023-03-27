@@ -77,6 +77,11 @@ namespace cstd {
 
 			T* new_data = new T[m_capacity];
 
+			if (m_data == nullptr) {
+				m_data = new_data;
+				return;
+			}
+
 			for (size_t i = 0; i < m_size; i++)
 				new_data[i] = std::move(m_data[i]);
 
@@ -270,7 +275,7 @@ namespace cstd {
 
 			T result = m_data[index];
 
-			for (size_t i = index; i < (size_t)(m_data - 1); i++)
+			for (size_t i = index; i < (size_t)(m_size - 1); i++)
 				m_data[i] = std::move(m_data[i + 1]);
 
 			m_size--;
@@ -279,7 +284,11 @@ namespace cstd {
 		}
 
 		T pop() {
-			return m_data[--m_size];
+			T result = m_data[--m_size];
+
+			m_data[m_size] = T(); // this will call the destructor and leave the memory fresh for new data in the future
+
+			return result;
 		}
 
 		T popFront() {
@@ -347,14 +356,11 @@ namespace cstd {
 			m_size = other.m_size;
 			m_capacity = other.m_capacity;
 
-			m_data = new T[m_capacity];
+			m_data = other.m_data;
 
-			for (size_t i = 0; i < m_capacity; i++)
-				m_data[i] = std::move(other.m_data[i]);
-
-			delete[] other.m_data;
 			other.m_size = 0;
 			other.m_capacity = 0;
+			other.m_data = nullptr;
 
 			return *this;
 		}

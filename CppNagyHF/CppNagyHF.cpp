@@ -19,7 +19,7 @@ int main()
 
     //game.Start();
 
-    auto trainer = new model::NeatTrainer(
+    auto trainer = model::NeatTrainer(
         3, 
         2, 
         model::Sigmoid(), 
@@ -29,7 +29,7 @@ int main()
         model::FitnessByApplesAndStepsAndWin<100, 1, 1000>()
     );
 
-    delete trainer;
+    trainer.TrainCurrentGeneration();
 
     return 0;
 }
