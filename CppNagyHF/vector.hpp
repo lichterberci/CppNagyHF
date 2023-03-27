@@ -23,37 +23,25 @@ namespace cstd {
 		Vector(const size_t capacity)
 			: m_size(0), m_capacity(capacity)
 		{
-			std::allocator<T> alloc;
-
-			m_data = alloc.allocate(m_capacity);
-
-			for (size_t i = 0; i < m_capacity; i++)
-				alloc.construct(&m_data[i]);
+			m_data = new T[m_capacity];
 		}
 
 		Vector(const T* data, const size_t size)
 			: m_size(size), m_capacity(size)
 		{
-			std::allocator<T> alloc;
-
-			m_data = alloc.allocate(m_capacity);
+			m_data = new T[m_capacity];
 
 			for (size_t i = 0; i < m_size; i++)
-				m_data[i] = T(data[i]);
+				m_data[i] = data[i];
 		}
 
 		Vector(const Vector& other) noexcept
 			: m_capacity(other.m_capacity), m_size(other.m_size)
 		{
-			std::allocator<T> alloc;
-
-			m_data = alloc.allocate(m_capacity);
-
-			for (size_t i = 0; i < m_capacity; i++)
-				alloc.construct(&m_data[i]);
+			m_data = new T[m_capacity];
 
 			for (size_t i = 0; i < m_size; i++)
-				m_data[i] = T(other.m_data[i]);
+				m_data[i] = other.m_data[i];
 		}
 
 		Vector(Vector&& other) noexcept
@@ -67,11 +55,9 @@ namespace cstd {
 		}
 
 		~Vector() {
-			std::allocator<T> alloc;
-
 			if (m_data == nullptr) return;
 
-			alloc.deallocate(m_data, m_size);
+			delete[] m_data;
 		}
 
 		size_t size() const {
@@ -84,30 +70,17 @@ namespace cstd {
 
 		void reserve_and_copy(const size_t new_capacity) {
 
-			std::allocator<T> alloc;
-
 			if (new_capacity <= m_capacity)
 				return;
 
-			size_t prev_capacity = m_capacity;
-
 			m_capacity = new_capacity;
 
-			T* new_data = alloc.allocate(m_capacity);
+			T* new_data = new T[m_capacity];
 
-			try {
-				for (size_t i = 0; i < m_capacity; i++)
-					alloc.construct(&new_data[i]);
+			for (size_t i = 0; i < m_size; i++)
+				new_data[i] = std::move(m_data[i]);
 
-				for (size_t i = 0; i < m_size; i++)
-					new_data[i] = std::move(m_data[i]);
-			}
-			catch (...) {
-				alloc.deallocate(new_data, prev_capacity);
-				throw;
-			}
-
-			alloc.deallocate(m_data, prev_capacity);
+			delete[] m_data;
 
 			m_data = new_data;
 		}
@@ -134,16 +107,15 @@ namespace cstd {
 
 			if (m_capacity > m_size) {
 
-				memcpy(m_data + 1, m_data, m_size * sizeof(T));
+				for (size_t i = 1; i < m_size; i++)
+					m_data[i + 1] = std::move(m_data[i]);
 
 				m_data[0] = item;
 				m_size++;
 
 				return;
 			}
-
-			std::allocator<T> alloc;
-			
+						
 			size_t prev_capacity = m_capacity;
 
 			if (m_capacity == 0)
@@ -151,15 +123,12 @@ namespace cstd {
 			else if (m_capacity <= m_size)
 				m_capacity = m_capacity * 2;
 
-			T* new_data = alloc.allocate(m_capacity);
-
-			for (size_t i = 0; i < m_capacity; i++)
-				alloc.construct(&new_data[i]);
+			T* new_data = new T[m_capacity];
 
 			for (size_t i = 1; i < m_size; i++)
 				new_data[i + 1] = std::move(m_data[i]);
 
-			alloc.deallocate(m_data, prev_capacity);
+			delete[] m_data;
 
 			m_data = new_data;
 
@@ -169,7 +138,36 @@ namespace cstd {
 		}
 
 		void pushToFront(T&& item) {
-			pushToFront(std::move(item));
+			if (m_capacity > m_size) {
+
+				for (size_t i = 1; i < m_size; i++)
+					m_data[i + 1] = std::move(m_data[i]);
+
+				m_data[0] = std::move(item);
+				m_size++;
+
+				return;
+			}
+
+			size_t prev_capacity = m_capacity;
+
+			if (m_capacity == 0)
+				m_capacity = 1;
+			else if (m_capacity <= m_size)
+				m_capacity = m_capacity * 2;
+
+			T* new_data = new T[m_capacity];
+
+			for (size_t i = 1; i < m_size; i++)
+				new_data[i + 1] = std::move(m_data[i]);
+
+			delete[] m_data;
+
+			m_data = new_data;
+
+			m_data[0] = std::move(item);
+
+			m_size++;
 		}
 
 		void insert(const T& item, const size_t index) {
@@ -187,25 +185,21 @@ namespace cstd {
 			}
 
 			if (m_capacity > m_size) {
-				memcpy(m_data + index + 1, m_data + index, (m_size - index) * sizeof(T));
+				
+				for (int i = m_size - 1; i > index; i--)
+					m_data[i] = std::move(m_data[i - 1]);
+
 				m_data[index] = item;
 				m_size++;
 				return;
 			}
-
-			std::allocator<T> alloc;
-
-			size_t prev_capacity = m_capacity;
 
 			if (m_capacity == 0)
 				m_capacity = 1;
 			else if (m_capacity == m_size)
 				m_capacity *= 2;
 
-			T* new_data = alloc.allocate(m_capacity);
-
-			for (size_t i = 0; i < m_capacity; i++)
-				alloc.construct(&new_data[i]);
+			T* new_data = new T[m_capacity];
 
 			for (size_t i = 0; i < m_size; i++) {
 				if (i < index)
@@ -216,7 +210,7 @@ namespace cstd {
 					new_data[i + 1] = std::move(m_data[i]);
 			}			
 
-			alloc.deallocate(m_data, prev_capacity);
+			delete[] m_data;
 
 			m_data = new_data;
 
@@ -224,7 +218,50 @@ namespace cstd {
 		}
 
 		void insert(T&& item, const size_t index) {
-			insert(std::move(item), index);
+			if (index > m_size)
+				throw std::out_of_range("Could not insert! (index out of range)");
+
+			if (index == m_size) {
+				push_back(item);
+				return;
+			}
+
+			if (index == 0) {
+				push_front(item);
+				return;
+			}
+
+			if (m_capacity > m_size) {
+
+				for (int i = m_size - 1; i > index; i--)
+					m_data[i] = std::move(m_data[i - 1]);
+
+				m_data[index] = std::move(item);
+				m_size++;
+				return;
+			}
+
+			if (m_capacity == 0)
+				m_capacity = 1;
+			else if (m_capacity == m_size)
+				m_capacity *= 2;
+
+			T* new_data = new T[m_capacity];
+
+			for (size_t i = 0; i < m_size; i++) {
+				if (i < index)
+					new_data[i] = std::move(m_data[i]);
+				else if (i == index)
+					new_data[i] = std::move(item);
+				else
+					new_data[i + 1] = std::move(m_data[i]);
+			}
+
+			delete[] m_data;
+
+			m_data = new_data;
+
+			m_size++;
 		}
 
 		T removeAt(const size_t index) {
@@ -233,7 +270,8 @@ namespace cstd {
 
 			T result = m_data[index];
 
-			memcpy(m_data + index, m_data + index + 1, (m_size - index) * sizeof(T));
+			for (size_t i = index; i < (size_t)(m_data - 1); i++)
+				m_data[i] = std::move(m_data[i + 1]);
 
 			m_size--;
 
@@ -247,7 +285,9 @@ namespace cstd {
 		T popFront() {
 			T result = m_data[0];
 
-			memcpy(m_data, m_data + 1, m_size * sizeof(T));
+			for (size_t i = 0; i < m_data - 1; i++)
+				m_data[i] = std::move(m_data[i + 1]);
+
 			m_size--;
 
 			return result;
@@ -285,38 +325,34 @@ namespace cstd {
 			
 			if (this == &other) return *this;
 
-			std::allocator<T> alloc;
-
 			if (m_data != nullptr)
-				alloc.deallocate(m_data, m_capacity);
+				delete[] m_data;
 
 			m_size = other.m_size;
 			m_capacity = other.m_capacity;
 
-			m_data = alloc.allocate(m_capacity);
+			m_data = new T[m_capacity];
 
 			for (size_t i = 0; i < m_capacity; i++)
-				m_data[i] = std::move(other.m_data[i]);
+				m_data[i] = other.m_data[i];
 
 			return *this;
 		}
 
 		Vector& operator= (Vector&& other) noexcept {
 
-			std::allocator<T> alloc;
-
 			if (m_data != nullptr)
-				alloc.deallocate(m_data, m_capacity);
+				delete[] m_data;
 
 			m_size = other.m_size;
 			m_capacity = other.m_capacity;
 
-			m_data = alloc.allocate(m_capacity);
+			m_data = new T[m_capacity];
 
 			for (size_t i = 0; i < m_capacity; i++)
 				m_data[i] = std::move(other.m_data[i]);
 
-			alloc.deallocate(other.m_data, other.m_capacity);
+			delete[] other.m_data;
 			other.m_size = 0;
 			other.m_capacity = 0;
 
