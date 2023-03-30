@@ -6,6 +6,7 @@
 #include "ControllerModel.hpp"
 #include "ModelParams.hpp"
 #include <unordered_map>
+#include <iostream>
 
 #define NUM_SENSORS 25
 #define NUM_OUTPUTS 4
@@ -32,8 +33,6 @@ namespace model {
 		std::unordered_map<int, cstd::Vector<int>> geneIndexLookupByOutputNeuron; // this helps reduce the time-complexity of the forwarding
 
 		ActivationFunction activationFunction;
-
-		double fitness;
 
 		void GenerateNeuronIndiciesList();
 		void GenerateLookUp();
@@ -97,6 +96,7 @@ namespace model {
 		static void ResetGlobalNeuronCount() {
 			s_globalNeuronCount = 0;
 		}
-	};
 
+		friend std::ostream& operator<< (std::ostream& os, const NeatModel& model);
+	};
 }

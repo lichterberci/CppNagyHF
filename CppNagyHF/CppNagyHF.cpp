@@ -31,5 +31,7 @@ int main()
 
     trainer.TrainCurrentGeneration();
 
+    for (const auto& organism : trainer.organismsByGenerations[0])
+
     return 0;
 }

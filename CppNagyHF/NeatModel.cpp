@@ -8,6 +8,11 @@ namespace model {
 
 	int NeatModel::s_globalNeuronCount = 0;
 
+	std::ostream& operator<< (std::ostream& os, const NeatModel& model) {
+		os << "NeatModel(n=" << model.neuronIndicies.size() << ", c=" << model.genes.size() << ")";
+		return os;
+	}
+
 	void NeatModel::GenerateLookUp() {
 
 		for (int i = 0; i < genes.size(); i++)

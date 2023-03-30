@@ -90,6 +90,8 @@ namespace model {
 		void MutateWeight(double changeOfMutationBeingNewRandomValue, double weightSetMin, double weightSetMax, double weightAdjustMin, double weightAdjustMax);
 		void Disable();
 		void Enable();
+
+		friend std::ostream& operator<< (std::ostream& os, const ConnectionGene& gene);
 	};	
 
 }

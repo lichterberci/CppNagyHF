@@ -322,10 +322,9 @@ namespace model {
 
 			const auto& species = organismIndiciesBySpecies[speciesIndex];
 
-			if (species.size() == 0) {
-				std::cout << "ERROR: species has no members!" << std::endl;
-				throw std::length_error("Species has no members!");
-			}
+			// in the prev generation, there was a corresponding species, but it got extinct
+			if (species.size() == 0) 
+				continue;
 
 			if (species.size() == 1) {
 				for (int i = 0; i < numPlacesAllocatedForSpecies[speciesIndex]; i++)
