@@ -42,14 +42,14 @@ namespace model {
 		int gameWidth;
 		int gameHeight;
 
-		double chanceOfDentritInsertion = 0.2;
+		double chanceOfDentritInsertion = 0.3;
 		double chanceOfNeuronInsertion = 0.1;
-		double chanceOfMutation = 0.1;
+		double chanceOfMutation = 0.3;
 		double chanceOfMutationBeingNewValue = 0.1;
 		double chanceOfDisabling = 0.1;
-		double weightSetMin = 0.1;
-		double weightSetMax = 0.1;
-		double weightAdjustMin = 0.1;
+		double weightSetMin = -2;
+		double weightSetMax = 2;
+		double weightAdjustMin = -0.1;
 		double weightAdjustMax = 0.1;
 		double portionOfSpeciesToKeepForReproduction = 0.5;
 

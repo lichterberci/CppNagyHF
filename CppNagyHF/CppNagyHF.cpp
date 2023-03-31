@@ -29,6 +29,9 @@ int main()
         model::FitnessByApplesAndStepsAndWin<100, 1, 1000>()
     );
 
+    trainer.chanceOfDentritInsertion = 1;
+    trainer.chanceOfNeuronInsertion = 1;
+
     trainer.TrainCurrentGeneration();
 
     for (const auto& organism : trainer.organismsByGenerations[0]) {

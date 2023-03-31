@@ -28,7 +28,7 @@ namespace model {
 
 		cstd::Vector<int> neuronIndicies;
 		cstd::Vector<ConnectionGene> genes;
-		cstd::Vector<int> neuronLayerNumbers; // 0 for output, 1 if it is connected to output, etc.
+		std::unordered_map<int, int> neuronLayerNumbers; // 0 for output, 1 if it is connected to output, etc.
 
 		std::unordered_map<int, cstd::Vector<int>> geneIndexLookupByOutputNeuronIfDentritIsActive; // this helps reduce the time-complexity of the forwarding
 
@@ -39,11 +39,14 @@ namespace model {
 		void ConstructSimplestModelForInputOutputNeurons(std::unordered_map<long long, int>& innovationNumberTable);
 
 		void OrderNeuronsByLayer();
-		void SetNeuronOrder(int neuronId, cstd::Vector<int>& orders, int depth = 0);
 
 		void InsertNewDentrit(std::unordered_map<long long, int>& innovationNumberTable);
 		void InsertNewNeuron(std::unordered_map<long long, int>& innovationNumberTable);
 	public:
+
+		double rawFitness = 0;
+		double adjustedFitness = 0;
+
 		NeatModel() 
 			: genes(cstd::Vector<ConnectionGene>()), activationFunction(Sigmoid()), geneIndexLookupByOutputNeuronIfDentritIsActive(std::unordered_map<int, cstd::Vector<int>>())
 		{ }

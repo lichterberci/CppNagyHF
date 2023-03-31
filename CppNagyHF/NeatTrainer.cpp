@@ -77,6 +77,9 @@ namespace model {
 
 			int speciesIndex = speciesIndicies[i];
 
+			currentGeneration[speciesIndex].rawFitness = fitnessScores[i];
+			currentGeneration[speciesIndex].adjustedFitness = fitnessScores[i] / speciesSizes[speciesIndicies[i]];
+
 			sumOfAdjustedFitnessForEachSpecies[speciesIndex] += fitnessScores[i];
 		}
 
@@ -343,6 +346,8 @@ namespace model {
 			if (species.size() == 1) {
 				for (int i = 0; i < numPlacesAllocatedForSpecies[speciesIndex]; i++)
 					newGeneration += currentGeneration[species[0]];
+
+				continue;
 			}
 
 			for (int i = 0; i < numPlacesAllocatedForSpecies[speciesIndex]; i++) {

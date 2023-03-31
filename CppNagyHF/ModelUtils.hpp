@@ -15,7 +15,7 @@ namespace model {
 		}
 
 		inline long long MakeHashKeyFromPair(int from, int to) {
-			return static_cast<long long>(from) << 32 | to;
+			return static_cast<unsigned long long>((unsigned int)from) << 32 | (unsigned int)to;
 		}
 
 	}

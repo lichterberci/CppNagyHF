@@ -173,6 +173,9 @@
     <ClInclude Include="RandomModel.hpp" />
     <ClInclude Include="Snake.hpp" />
   </ItemGroup>
+  <ItemGroup>
+    <Natvis Include="CustomDebuggerVisualization.natvis" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

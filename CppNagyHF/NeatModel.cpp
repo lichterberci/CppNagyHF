@@ -9,7 +9,7 @@ namespace model {
 	int NeatModel::s_globalNeuronCount = 0;
 
 	std::ostream& operator<< (std::ostream& os, const NeatModel& model) {
-		os << "NeatModel(n=" << model.neuronIndicies.size() << ", c=" << model.genes.size() << ")";
+		os << "NeatModel(f_raw=" << model.rawFitness << ", f_adjusted=" << model.adjustedFitness<< ", n=" << model.neuronIndicies.size() << ", c=" << model.genes.size() << ")";
 		return os;
 	}
 
@@ -118,17 +118,52 @@ namespace model {
 		// --> we choose a separator index at random and then 2 indicies from its left and right
 
 		int from, to;
+		bool didCreateDentritThatIsNotYetPresentInThisOrganism;
 
-		int attempts = 0;
+		bool didFindGoodCombination = false;
 
-		do {
+		for (size_t attempts = 0; attempts < MAX_ATTEMPTS_AT_INSERTING_DENTRIT && didFindGoodCombination == false; attempts++) {
 
-			from = utils::RandomInt(0, (int)neuronIndicies.size());
-			to = utils::RandomInt(0, (int)neuronIndicies.size());
+			from = neuronIndicies[utils::RandomInt(0, (int)neuronIndicies.size())];
+			to = neuronIndicies[utils::RandomInt(0, (int)neuronIndicies.size())];
 
-		} while (neuronLayerNumbers[from] <= neuronLayerNumbers[to] && attempts++ <= MAX_ATTEMPTS_AT_INSERTING_DENTRIT);
+			if (
+				from < NUM_SENSORS + NUM_OUTPUTS && to < NUM_SENSORS + NUM_OUTPUTS // both are sensor / output
+				|| (NUM_SENSORS <= from && from < NUM_SENSORS + NUM_OUTPUTS) // from is invalid
+				|| to < NUM_SENSORS // to is invalid)
+			)
+				continue;
 
-		if (attempts >= MAX_ATTEMPTS_AT_INSERTING_DENTRIT)
+			if (neuronLayerNumbers[from] < neuronLayerNumbers[to]) // layering is wrong)
+				continue;
+
+			// if it has never been made
+			if (innovationNumberTable.find(utils::MakeHashKeyFromPair(from, to)) == innovationNumberTable.end()) {
+				didFindGoodCombination = true;
+				continue;
+			}
+
+			didCreateDentritThatIsNotYetPresentInThisOrganism = true;
+
+			const int inovationNumberOfPotentialDentrit = innovationNumberTable[utils::MakeHashKeyFromPair(from, to)];
+
+			for (const auto& gene : genes) {
+
+				if (gene.innovationNumber == inovationNumberOfPotentialDentrit) {
+
+					didCreateDentritThatIsNotYetPresentInThisOrganism = false;
+
+					break;
+				}
+			}
+
+			if (didCreateDentritThatIsNotYetPresentInThisOrganism == false)
+				continue;
+
+			didFindGoodCombination = true;
+		}
+
+		if (didFindGoodCombination == false)
 			return;
 
 		ConnectionGene newGene;
@@ -144,6 +179,10 @@ namespace model {
 		}
 
 		genes.push(newGene);
+
+		// regenerate lookups
+		GenerateLookUp();
+		OrderNeuronsByLayer();
 	}
 
 	void NeatModel::InsertNewNeuron(std::unordered_map<long long, int>& innovationNumberTable) {
@@ -164,6 +203,13 @@ namespace model {
 		newThroughToGene.weight = oldGene.weight;
 
 		oldGene.Disable();
+
+		genes += newFromThroughGene;
+		genes += newThroughToGene;
+
+		GenerateNeuronIndiciesList();
+		GenerateLookUp();
+		OrderNeuronsByLayer();
 	}
 
 	void NeatModel::GenerateNeuronIndiciesList() {
@@ -203,19 +249,14 @@ namespace model {
 		for (auto& gene : genes)
 			if (utils::RandomDouble(0, 1) < chanceOfMutation)
 				gene.MutateWeight(chanceOfMutationBeingNewValue, weightSetMin, weightSetMax, weightAdjustMin, weightAdjustMax);
-	
-		// regenerate lookups
-		GenerateLookUp();
-		GenerateNeuronIndiciesList();
-		OrderNeuronsByLayer();
 	}
 
 	void NeatModel::OrderNeuronsByLayer() {
 
-		neuronLayerNumbers = cstd::Vector<int>();
+		neuronLayerNumbers.clear();
 
-		for (int i = 0; i < neuronIndicies.size(); i++)
-			neuronLayerNumbers += -1;
+		for (int index : neuronIndicies)
+			neuronLayerNumbers[index] = -1;
 
 		if (geneIndexLookupByOutputNeuronIfDentritIsActive.size() == 0)
 			GenerateLookUp();
@@ -225,8 +266,10 @@ namespace model {
 		// index to search, layer it was called from
 		std::list<std::tuple<int, int>> queue;
 
-		for (int i = NUM_SENSORS; i < NUM_SENSORS + NUM_OUTPUTS; i++)
+		for (int i = NUM_SENSORS; i < NUM_SENSORS + NUM_OUTPUTS; i++) {
+			neuronLayerNumbers[i] = 0;
 			queue.push_back(std::make_tuple(i, 0));
+		}
 
 		while (queue.empty() == false) {
 
