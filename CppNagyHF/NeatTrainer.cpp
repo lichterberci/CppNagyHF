@@ -116,6 +116,20 @@ namespace model {
 
 		auto newGeneration = ProduceNewGenerationByReproduction(currentGeneration, speciesIndicies, placesAllocatedForSpecies, fitnessScores);
 
+		for (auto& organism : newGeneration)
+			organism.Mutate(
+				innovationNumberTable, 
+				chanceOfDentritInsertion, 
+				chanceOfNeuronInsertion,
+				chanceOfMutation, 
+				chanceOfMutationBeingNewValue, 
+				chanceOfDisabling, 
+				weightSetMin, 
+				weightSetMax, 
+				weightAdjustMin, 
+				weightAdjustMax
+			);
+
 		organismsByGenerations += newGeneration;
 	}
 

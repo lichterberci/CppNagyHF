@@ -15,6 +15,8 @@ namespace model {
 
 	void NeatModel::GenerateLookUp() {
 
+		geneIndexLookupByOutputNeuron.clear();
+
 		for (int i = 0; i < genes.size(); i++)
 			geneIndexLookupByOutputNeuron[genes[i].to] += i;
 	}
@@ -200,15 +202,19 @@ namespace model {
 		for (auto& gene : genes)
 			if (utils::RandomDouble(0, 1) < chanceOfMutation)
 				gene.MutateWeight(chanceOfMutationBeingNewValue, weightSetMin, weightSetMax, weightAdjustMin, weightAdjustMax);
+	
+		// regenerate lookups
+		GenerateLookUp();
+		GenerateNeuronIndiciesList();
+		OrderNeuronsByLayer();
 	}
 
 	void NeatModel::OrderNeuronsByLayer() {
 
 		neuronLayerNumbers = cstd::Vector<int>();
-		neuronLayerNumbers.reserve_and_copy(neuronIndicies.size());
 
-		for (int i = 0; i < neuronLayerNumbers.size(); i++)
-			neuronLayerNumbers += 99999;
+		for (int i = 0; i < neuronIndicies.size(); i++)
+			neuronLayerNumbers += std::numeric_limits<int>::max();
 
 		if (geneIndexLookupByOutputNeuron.size() == 0)
 			GenerateLookUp();
@@ -221,7 +227,7 @@ namespace model {
 
 		// implements DFS with always setting to the min
 
-		if (orders[neuronId] == -1)
+		if (orders[neuronId] == std::numeric_limits<int>::max())
 			orders[neuronId] = depth;
 		else 
 			orders[neuronId] = std::min(depth, orders[neuronId]);

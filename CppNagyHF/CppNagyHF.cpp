@@ -31,7 +31,20 @@ int main()
 
     trainer.TrainCurrentGeneration();
 
-    for (const auto& organism : trainer.organismsByGenerations[0])
+    for (const auto& organism : trainer.organismsByGenerations[0]) {
+        std::cout << organism << std::endl;
+        for (const auto& gene : organism.Genes())
+            std::cout << gene << std::endl;
+    }
+     
+    std::cout << "---------------------------------------------------" << std::endl;
+
+    for (const auto& organism : trainer.organismsByGenerations[1]) {
+        std::cout << organism << std::endl;
+        for (const auto& gene : organism.Genes())
+            std::cout << gene << std::endl;
+    }
+
 
     return 0;
 }

@@ -52,12 +52,16 @@ namespace model {
 			: genes(genes), activationFunction(activationFunction)
 		{ 
 			GenerateLookUp();
+			GenerateNeuronIndiciesList();
+			OrderNeuronsByLayer();
 		}
 
 		NeatModel(const NeatModel& other)
 			: genes(other.genes), activationFunction(other.activationFunction)
 		{ 
 			GenerateLookUp();
+			GenerateNeuronIndiciesList();
+			OrderNeuronsByLayer();
 		}
 
 		NeatModel(int sensorNeurons, int outputNeurons, ActivationFunction activationFunction, std::unordered_map<long long, int>& innovationNumberTable)
@@ -65,6 +69,8 @@ namespace model {
 		{
 			ConstructSimplestModelForInputOutputNeurons(innovationNumberTable);
 			GenerateLookUp();
+			GenerateNeuronIndiciesList();
+			OrderNeuronsByLayer();
 		}
 		
 		const cstd::Vector<ConnectionGene>& Genes() const {
