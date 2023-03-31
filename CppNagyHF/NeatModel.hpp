@@ -30,7 +30,7 @@ namespace model {
 		cstd::Vector<ConnectionGene> genes;
 		cstd::Vector<int> neuronLayerNumbers; // 0 for output, 1 if it is connected to output, etc.
 
-		std::unordered_map<int, cstd::Vector<int>> geneIndexLookupByOutputNeuron; // this helps reduce the time-complexity of the forwarding
+		std::unordered_map<int, cstd::Vector<int>> geneIndexLookupByOutputNeuronIfDentritIsActive; // this helps reduce the time-complexity of the forwarding
 
 		ActivationFunction activationFunction;
 
@@ -45,7 +45,7 @@ namespace model {
 		void InsertNewNeuron(std::unordered_map<long long, int>& innovationNumberTable);
 	public:
 		NeatModel() 
-			: genes(cstd::Vector<ConnectionGene>()), activationFunction(Sigmoid()), geneIndexLookupByOutputNeuron(std::unordered_map<int, cstd::Vector<int>>())
+			: genes(cstd::Vector<ConnectionGene>()), activationFunction(Sigmoid()), geneIndexLookupByOutputNeuronIfDentritIsActive(std::unordered_map<int, cstd::Vector<int>>())
 		{ }
 	
 		NeatModel(cstd::Vector<ConnectionGene> genes, int numSensors, int numOutputs, ActivationFunction activationFunction = Sigmoid())
@@ -105,4 +105,6 @@ namespace model {
 
 		friend std::ostream& operator<< (std::ostream& os, const NeatModel& model);
 	};
+
+	
 }

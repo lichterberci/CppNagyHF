@@ -11,7 +11,7 @@
 int main()
 {
 
-    srand(std::chrono::system_clock::now().time_since_epoch().count());
+    srand((uint32_t)std::chrono::system_clock::now().time_since_epoch().count());
 
     //auto game = game::Game(true, game::GameControlType::AI, 10, 10, 800, 800);
 
@@ -34,7 +34,8 @@ int main()
     for (const auto& organism : trainer.organismsByGenerations[0]) {
         std::cout << organism << std::endl;
         for (const auto& gene : organism.Genes())
-            std::cout << gene << std::endl;
+            if (gene.innovationNumber > 90)
+                std::cout << gene << std::endl;
     }
      
     std::cout << "---------------------------------------------------" << std::endl;
@@ -42,7 +43,8 @@ int main()
     for (const auto& organism : trainer.organismsByGenerations[1]) {
         std::cout << organism << std::endl;
         for (const auto& gene : organism.Genes())
-            std::cout << gene << std::endl;
+            if (gene.innovationNumber > 90)
+                std::cout << gene << std::endl;
     }
 
 

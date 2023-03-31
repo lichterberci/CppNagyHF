@@ -15,10 +15,11 @@ namespace model {
 
 	void NeatModel::GenerateLookUp() {
 
-		geneIndexLookupByOutputNeuron.clear();
+		geneIndexLookupByOutputNeuronIfDentritIsActive.clear();
 
 		for (int i = 0; i < genes.size(); i++)
-			geneIndexLookupByOutputNeuron[genes[i].to] += i;
+			if (genes[i].disabled == false)
+				geneIndexLookupByOutputNeuronIfDentritIsActive[genes[i].to] += genes[i].from;
 	}
 
 	void NeatModel::ConstructSimplestModelForInputOutputNeurons(std::unordered_map<long long, int>& innovationNumberTable) {
@@ -58,12 +59,12 @@ namespace model {
 
 		double sum = 0;
 
-		if (geneIndexLookupByOutputNeuron.find(neuronId) == geneIndexLookupByOutputNeuron.end()) {
+		if (geneIndexLookupByOutputNeuronIfDentritIsActive.find(neuronId) == geneIndexLookupByOutputNeuronIfDentritIsActive.end()) {
 			std::cout << "ERROR: neuron id not found in lookup!" << std::endl;
 			throw std::out_of_range("Neuron id not found in lookup!");
 		}
 
-		const auto& connections = geneIndexLookupByOutputNeuron.at(neuronId);
+		const auto& connections = geneIndexLookupByOutputNeuronIfDentritIsActive.at(neuronId);
 
 		for (int inputIndex : connections) {
 
@@ -91,7 +92,7 @@ namespace model {
 
 		std::cout << "Output[" << 0 << "] = " << result[0] << std::endl;*/
 
-		for (int i = 1; i < std::min<int>(result.size(), NUM_OUTPUTS); i++) {
+		for (int i = 1; i < std::min<int>((int)result.size(), NUM_OUTPUTS); i++) {
 
 			//std::cout << "Output[" << i << "] = " << result[i] << std::endl;
 
@@ -122,8 +123,8 @@ namespace model {
 
 		do {
 
-			from = utils::RandomInt(0, neuronIndicies.size());
-			to = utils::RandomInt(0, neuronIndicies.size());
+			from = utils::RandomInt(0, (int)neuronIndicies.size());
+			to = utils::RandomInt(0, (int)neuronIndicies.size());
 
 		} while (neuronLayerNumbers[from] <= neuronLayerNumbers[to] && attempts++ <= MAX_ATTEMPTS_AT_INSERTING_DENTRIT);
 
@@ -147,7 +148,7 @@ namespace model {
 
 	void NeatModel::InsertNewNeuron(std::unordered_map<long long, int>& innovationNumberTable) {
 
-		int dentritToInsertNeuronIn = utils::RandomInt(0, genes.size());
+		int dentritToInsertNeuronIn = utils::RandomInt(0, (int)genes.size());
 
 		auto& oldGene = genes[dentritToInsertNeuronIn];
 
@@ -214,30 +215,34 @@ namespace model {
 		neuronLayerNumbers = cstd::Vector<int>();
 
 		for (int i = 0; i < neuronIndicies.size(); i++)
-			neuronLayerNumbers += std::numeric_limits<int>::max();
+			neuronLayerNumbers += -1;
 
-		if (geneIndexLookupByOutputNeuron.size() == 0)
+		if (geneIndexLookupByOutputNeuronIfDentritIsActive.size() == 0)
 			GenerateLookUp();
 
+		// implement BFS
+
+		// index to search, layer it was called from
+		std::list<std::tuple<int, int>> queue;
+
 		for (int i = NUM_SENSORS; i < NUM_SENSORS + NUM_OUTPUTS; i++)
-			SetNeuronOrder(i, neuronLayerNumbers);
-	}
+			queue.push_back(std::make_tuple(i, 0));
 
-	void NeatModel::SetNeuronOrder(int neuronId, cstd::Vector<int>& orders, int depth) {
+		while (queue.empty() == false) {
 
-		// implements DFS with always setting to the min
+			const auto [toIndex, toLayer] = queue.front();
+			queue.pop_front();
 
-		if (orders[neuronId] == std::numeric_limits<int>::max())
-			orders[neuronId] = depth;
-		else 
-			orders[neuronId] = std::min(depth, orders[neuronId]);
+			const auto& connections = geneIndexLookupByOutputNeuronIfDentritIsActive[toIndex];
 
-		if (neuronId < NUM_SENSORS)
-			return;
+			for (const int fromIndex : connections) {
 
-		const auto& connections = geneIndexLookupByOutputNeuron.at(neuronId);
+				if (neuronLayerNumbers[fromIndex] != -1)
+					continue;
 
-		for (int inputIndex : connections)
-			SetNeuronOrder(inputIndex, orders, depth + 1);
+				neuronLayerNumbers[fromIndex] = toLayer + 1;
+				queue.push_back(std::make_tuple(fromIndex, toLayer + 1));
+			}
+		}
 	}
 }

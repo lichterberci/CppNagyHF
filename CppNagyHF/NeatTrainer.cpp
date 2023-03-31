@@ -99,7 +99,7 @@ namespace model {
 
 		for (int i = 0; i < numSpecies; i++) {
 
-			int places = std::floor(sumOfAdjustedFitnessForEachSpecies[i] / totalSum);
+			int places = std::floor<int>(sumOfAdjustedFitnessForEachSpecies[i] / totalSum);
 
 			placesAllocatedForSpecies += places;
 
@@ -158,7 +158,7 @@ namespace model {
 			bool didFindSpecies = false;
 
 			// we first search in those species that are present in the new generation
-			for (size_t newSpeciesIndex = 0; newSpeciesIndex < representativesOfSpeciesInNewGeneration.size(); newSpeciesIndex++) {
+			for (int newSpeciesIndex = 0; newSpeciesIndex < (int)representativesOfSpeciesInNewGeneration.size(); newSpeciesIndex++) {
 
 				const double delta = GetSpeciesDifferenceDelta(organism, *representativesOfSpeciesInNewGeneration[newSpeciesIndex]);
 
@@ -172,7 +172,7 @@ namespace model {
 			// we then search for species in the previous generation
 			if (didFindSpecies == false) {
 
-				for (size_t speciesIndex = 0; speciesIndex < representativesOfThePrevGeneration.size(); speciesIndex++) {
+				for (int speciesIndex = 0; speciesIndex < (int)representativesOfThePrevGeneration.size(); speciesIndex++) {
 
 					const double delta = GetSpeciesDifferenceDelta(organism, *representativesOfThePrevGeneration[speciesIndex]);
 
@@ -207,7 +207,7 @@ namespace model {
 				// we create a new species
 
 				representativesOfSpeciesInNewGeneration += &organism;
-				result += representativesOfSpeciesInNewGeneration.size() - 1;
+				result += (int)representativesOfSpeciesInNewGeneration.size() - 1;
 			}
 		}
 
@@ -228,7 +228,7 @@ namespace model {
 
 	double NeatTrainer::GetSpeciesDifferenceDelta(const NeatModel& a, const NeatModel& b) {
 
-		const unsigned int N = std::max(a.Genes().size(), b.Genes().size());
+		const unsigned int N = std::max<const unsigned int>(a.Genes().size(), b.Genes().size());
 
 		unsigned int numDisjointGenes = 0;
 		unsigned int numExcessGenes = 0;
@@ -281,7 +281,7 @@ namespace model {
 			}
 		}
 
-		numExcessGenes += genesOfA.size() - i + genesOfB.size() - j;
+		numExcessGenes += (int)genesOfA.size() - i + (int)genesOfB.size() - j;
 
 		const double wBar = sumDifferenceOfWeights / numAllignedGenes;
 
@@ -347,8 +347,8 @@ namespace model {
 
 			for (int i = 0; i < numPlacesAllocatedForSpecies[speciesIndex]; i++) {
 
-				int indexInSpeciesOfParentA = utils::RandomInt(0, species.size());
-				int indexInSpeciesOfParentB = utils::RandomInt(0, species.size());
+				int indexInSpeciesOfParentA = (int)utils::RandomInt(0, species.size());
+				int indexInSpeciesOfParentB = (int)utils::RandomInt(0, species.size());
 
 				int indexOfParentA = species[indexInSpeciesOfParentA];
 				int indexOfParentB = species[indexInSpeciesOfParentB];
