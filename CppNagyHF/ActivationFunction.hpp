@@ -8,9 +8,7 @@ namespace model {
 
 	struct ActivationFunction {
 
-		virtual double operator()(double x) const {
-			return x;
-		};
+		virtual double operator()(double x) const = 0;
 	};
 
 	struct Sigmoid : public ActivationFunction {

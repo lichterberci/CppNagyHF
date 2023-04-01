@@ -6,9 +6,7 @@
 namespace model {
 
 	struct FitnessFunction {
-		virtual double operator()(const game::GameReport& report) const {
-			return utils::RandomDouble(0, 100);
-		}
+		virtual double operator()(const game::GameReport& report) const = 0;
 	};
 
 	struct FitnessByApplesOnly : public FitnessFunction {
