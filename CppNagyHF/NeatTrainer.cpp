@@ -25,7 +25,7 @@ namespace model {
 
 		auto report = game.GenerateReport();
 
-		double fitness = fitnessFunction(report);
+		double fitness = fitnessFunction->operator()(report);
 
 		return fitness;
 	}
@@ -73,12 +73,12 @@ namespace model {
 
 		// sum up fitness scores by species
 
-		for (int i = 0; i < numSpecies; i++) {
+		for (int i = 0; i < populationCount; i++) {
 
 			int speciesIndex = speciesIndicies[i];
 
-			currentGeneration[speciesIndex].rawFitness = fitnessScores[i];
-			currentGeneration[speciesIndex].adjustedFitness = fitnessScores[i] / speciesSizes[speciesIndicies[i]];
+			currentGeneration[i].rawFitness = fitnessScores[i];
+			currentGeneration[i].adjustedFitness = fitnessScores[i] / speciesSizes[speciesIndicies[i]];
 
 			sumOfAdjustedFitnessForEachSpecies[speciesIndex] += fitnessScores[i];
 		}
@@ -88,32 +88,53 @@ namespace model {
 		for (int i = 0; i < numSpecies; i++)
 			sumOfAdjustedFitnessForEachSpecies[i] /= speciesSizes[i];
 
+		// save best fitness
+
+		bestFitnessesOfGenerations += *std::max_element(fitnessScores.begin(), fitnessScores.end());
+
 		// allocate places accordingly
 
-		double totalSum = 0;
+		auto placesAllocatedForSpecies = AllocatePlacesForSpecies(sumOfAdjustedFitnessForEachSpecies);
 
-		for (double adjustedFitness : sumOfAdjustedFitnessForEachSpecies)
-			totalSum += adjustedFitness;
+		// if sum of raw fitness does not rise for more than X generations, only keep the top Y species
+		if (bestFitnessesOfGenerations.size() >= numGenerationsWithSameFitnessBeforeOnlyLookingAtTopSpecies) {
 
-		int numTotalPlacesAllocated = 0;
+			bool hasThereBeenImprovement = false;
 
-		cstd::Vector<int> placesAllocatedForSpecies;
-		placesAllocatedForSpecies.reserve_and_copy(numSpecies);
+			double firstFitnessInObservedRange = bestFitnessesOfGenerations[bestFitnessesOfGenerations.size() - numGenerationsWithSameFitnessBeforeOnlyLookingAtTopSpecies];
 
-		for (int i = 0; i < numSpecies; i++) {
+			for (
+				unsigned int generationIndex = bestFitnessesOfGenerations.size() - numGenerationsWithSameFitnessBeforeOnlyLookingAtTopSpecies + 1; 
+				generationIndex < bestFitnessesOfGenerations.size(); 
+				generationIndex++
+			) {
+				if (firstFitnessInObservedRange + minVarianceInBestFitnessesToConsiderItImprovement <= bestFitnessesOfGenerations[generationIndex]) {
+					hasThereBeenImprovement = true;
+					break;
+				}
+			}
 
-			int places = std::floor<int>(sumOfAdjustedFitnessForEachSpecies[i] / totalSum);
+			if (hasThereBeenImprovement == false) {
 
-			placesAllocatedForSpecies += places;
+				// only keep top Y species
 
-			numTotalPlacesAllocated += places;
+				cstd::Vector<int> speciesOrderedByFitness;
+
+				for (int i = 0; i < numSpecies; i++)
+					speciesOrderedByFitness += i;
+
+				std::sort(speciesOrderedByFitness.begin(), speciesOrderedByFitness.end(), [&sumOfAdjustedFitnessForEachSpecies](int a, int b) {
+					return sumOfAdjustedFitnessForEachSpecies[a] < sumOfAdjustedFitnessForEachSpecies[b];
+				});
+
+				for (int i = numSpecies - 1; i >= numberOfTopSpeciesToLookAtIfFitnessIsStableForTooLong; i--) {
+					sumOfAdjustedFitnessForEachSpecies[i] = 0; // dont allocate anything for this species
+				}
+
+				placesAllocatedForSpecies = AllocatePlacesForSpecies(sumOfAdjustedFitnessForEachSpecies);
+			}
 		}
 
-		// if we have rounding errors, we just give all places to the first species by default
-		if (numTotalPlacesAllocated < populationCount)
-			placesAllocatedForSpecies[0] += populationCount - numTotalPlacesAllocated;
-
-		// TODO: if sum of raw fitness does not rise for more than 20 generations, only keep the top 2 species
 
 		// reproduction
 
@@ -215,13 +236,8 @@ namespace model {
 		}
 
 		// remove old representatives, and replace them with new ones
-		for (const auto& newRepresentative : representativeCandidatesFromTheNewGeneration) {
-
-			const int speciesIndex = std::get<0>(newRepresentative);
-			const NeatModel* representative = std::get<1>(newRepresentative);
-
+		for (const auto [speciesIndex, representative] : representativeCandidatesFromTheNewGeneration)
 			representativesOfSpeciesInNewGeneration[speciesIndex] = representative;
-		}
 
 		// replace old representatives with new ones
 		representativesOfThePrevGeneration = representativesOfSpeciesInNewGeneration;
@@ -448,5 +464,62 @@ namespace model {
 		}
 
 		return NeatModel(newGenes, NUM_SENSORS, NUM_OUTPUTS, activationFunction);
+	}
+
+	cstd::Vector<int> NeatTrainer::AllocatePlacesForSpecies(const cstd::Vector<double>& sumOfAdjustedFitnessForEachSpecies) {
+
+		const int numSpecies = (int)sumOfAdjustedFitnessForEachSpecies.size();
+		double totalSum = 0;
+
+		for (double adjustedFitness : sumOfAdjustedFitnessForEachSpecies)
+			totalSum += adjustedFitness;
+
+		int numTotalPlacesAllocated = 0;
+
+		cstd::Vector<int> placesAllocatedForSpecies;
+		placesAllocatedForSpecies.reserve_and_copy(numSpecies);
+
+		for (int i = 0; i < numSpecies; i++) {
+
+			int places = std::floor<int>(sumOfAdjustedFitnessForEachSpecies[i] / totalSum);
+
+			placesAllocatedForSpecies += places;
+
+			numTotalPlacesAllocated += places;
+		}
+
+		// if we have rounding errors, we just give all places to the first species by default
+		if (numTotalPlacesAllocated < populationCount)
+			placesAllocatedForSpecies[0] += populationCount - numTotalPlacesAllocated;
+
+		return placesAllocatedForSpecies;
+	}
+
+	void NeatTrainer::Train() {
+
+		std::cout << "Training " << numGenerations << " generation with " << populationCount << " organisms in each..." << std::endl;
+
+		for (size_t generationIndex = 0; generationIndex < numGenerations; generationIndex++) {
+
+			std::cout << "\33[2K\rTraining generation " << generationIndex << "/" << numGenerations << " (" << std::setprecision(3) << (100.0 * generationIndex / numGenerations) << "%)";
+
+			// slider 
+
+			const int sliderLength = 30;
+
+			std::cout << "   <";
+
+			for (int i = 0; i < sliderLength * generationIndex / numGenerations; i++)
+				std::cout << '=';
+
+			for (int i = sliderLength * generationIndex / numGenerations; i < sliderLength; i++)
+				std::cout << '-';
+
+			std::cout << ">";
+
+			TrainCurrentGeneration();
+		}
+
+		std::cout << "\33[2K\rTraining done!" << std::endl;
 	}
 }

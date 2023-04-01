@@ -32,7 +32,7 @@ namespace model {
 
 		std::unordered_map<int, cstd::Vector<int>> geneIndexLookupByOutputNeuronIfDentritIsActive; // this helps reduce the time-complexity of the forwarding
 
-		ActivationFunction activationFunction;
+		const ActivationFunction* activationFunction;
 
 		void GenerateNeuronIndiciesList();
 		void GenerateLookUp();
@@ -48,10 +48,10 @@ namespace model {
 		double adjustedFitness = 0;
 
 		NeatModel() 
-			: genes(cstd::Vector<ConnectionGene>()), activationFunction(Sigmoid()), geneIndexLookupByOutputNeuronIfDentritIsActive(std::unordered_map<int, cstd::Vector<int>>())
+			: genes(cstd::Vector<ConnectionGene>()), geneIndexLookupByOutputNeuronIfDentritIsActive(std::unordered_map<int, cstd::Vector<int>>())
 		{ }
 	
-		NeatModel(cstd::Vector<ConnectionGene> genes, int numSensors, int numOutputs, ActivationFunction activationFunction = Sigmoid())
+		NeatModel(cstd::Vector<ConnectionGene> genes, int numSensors, int numOutputs, const ActivationFunction* activationFunction)
 			: genes(genes), activationFunction(activationFunction)
 		{ 
 			GenerateLookUp();
@@ -67,7 +67,7 @@ namespace model {
 			OrderNeuronsByLayer();
 		}
 
-		NeatModel(int sensorNeurons, int outputNeurons, ActivationFunction activationFunction, std::unordered_map<long long, int>& innovationNumberTable)
+		NeatModel(int sensorNeurons, int outputNeurons, const ActivationFunction* activationFunction, std::unordered_map<long long, int>& innovationNumberTable)
 			: activationFunction(activationFunction)
 		{
 			ConstructSimplestModelForInputOutputNeurons(innovationNumberTable);
@@ -102,8 +102,8 @@ namespace model {
 			double weightAdjustMax
 		);
 
-		static void ResetGlobalNeuronCount() {
-			s_globalNeuronCount = 0;
+		static void ResetGlobalNeuronCount(int to = 0) {
+			s_globalNeuronCount = to;
 		}
 
 		friend std::ostream& operator<< (std::ostream& os, const NeatModel& model);

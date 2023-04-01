@@ -19,37 +19,89 @@ int main()
 
     //game.Start();
 
+    const auto activationFunction = model::Sigmoid();
+    const auto fitnessFunction = model::FitnessByApplesAndSteps<100, 1>();
+
     auto trainer = model::NeatTrainer(
-        3, 
-        2, 
-        model::Sigmoid(), 
+        400, 
+        300, 
+        &activationFunction, 
         100, 
-        10, 
-        10, 
-        model::FitnessByApplesAndStepsAndWin<100, 1, 1000>()
+        8, 
+        8, 
+        &fitnessFunction
     );
 
-    trainer.chanceOfDentritInsertion = 1;
-    trainer.chanceOfNeuronInsertion = 1;
+    trainer.chanceOfDentritInsertion = 0.1;
+    trainer.chanceOfNeuronInsertion = 0.2;
+    trainer.portionOfSpeciesToKeepForReproduction = 0.5;
+    trainer.chanceOfMutation = 0.8;
 
-    trainer.TrainCurrentGeneration();
+    trainer.SetNeatConstants(1, 1, 0.4, 3);
 
-    for (const auto& organism : trainer.organismsByGenerations[0]) {
-        std::cout << organism << std::endl;
-        for (const auto& gene : organism.Genes())
-            if (gene.innovationNumber > 90)
-                std::cout << gene << std::endl;
+    //trainer.TrainCurrentGeneration();
+
+    //for (const auto& organism : trainer.organismsByGenerations[0]) {
+    //    std::cout << organism << std::endl;
+    //    for (const auto& gene : organism.Genes())
+    //        if (gene.innovationNumber > 90)
+    //            std::cout << gene << std::endl;
+    //}
+    // 
+    //std::cout << "---------------------------------------------------" << std::endl;
+
+    //for (const auto& organism : trainer.organismsByGenerations[1]) {
+    //    std::cout << organism << std::endl;
+    //    for (const auto& gene : organism.Genes())
+    //        if (gene.innovationNumber > 90)
+    //            std::cout << gene << std::endl;
+    //}
+
+    //trainer.TrainCurrentGeneration();
+
+    //std::cout << "---------------------------------------------------" << std::endl;
+
+    //for (const auto& organism : trainer.organismsByGenerations[2]) {
+    //    std::cout << organism << std::endl;
+    //    for (const auto& gene : organism.Genes())
+    //        if (gene.innovationNumber > 90)
+    //            std::cout << gene << std::endl;
+    //}
+
+    trainer.Train();
+
+    for (const auto& gen : trainer.organismsByGenerations) {
+
+        /*for (const auto& organism : gen) {
+            std::cout << std::setprecision(3) << organism.rawFitness << " ";
+        }*/
+
+        //std::cout << std::endl;
+
+        const auto& best = std::max_element(gen.begin(), gen.end(), [](const model::NeatModel& a, const model::NeatModel& b) {
+            return a.rawFitness < b.rawFitness;
+        });
+
+        std::cout << *best << std::endl;
     }
-     
-    std::cout << "---------------------------------------------------" << std::endl;
 
-    for (const auto& organism : trainer.organismsByGenerations[1]) {
-        std::cout << organism << std::endl;
-        for (const auto& gene : organism.Genes())
-            if (gene.innovationNumber > 90)
-                std::cout << gene << std::endl;
+    while (true) {
+
+        model::NeatModel* bestOfLastGen = std::max_element(trainer.organismsByGenerations.last().begin(), trainer.organismsByGenerations.last().end(), [](const model::NeatModel& a, const model::NeatModel& b) {
+            return a.rawFitness < b.rawFitness;
+        });
+
+        auto game = game::Game(true, game::GameControlType::AI, 10, 10, 800, 800, *bestOfLastGen, 100);
+
+        game.SetSpeed(5);
+
+        game.Start();
+
+        std::cout << "Type in 'q' to quit... ";
+
+        if (std::cin.get() == 'q')
+            break;
     }
-
 
     return 0;
 }

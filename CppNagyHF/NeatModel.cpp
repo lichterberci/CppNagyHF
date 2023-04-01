@@ -19,7 +19,7 @@ namespace model {
 
 		for (int i = 0; i < genes.size(); i++)
 			if (genes[i].disabled == false)
-				geneIndexLookupByOutputNeuronIfDentritIsActive[genes[i].to] += genes[i].from;
+				geneIndexLookupByOutputNeuronIfDentritIsActive[genes[i].to] += i; // we care about the index of the GENE
 	}
 
 	void NeatModel::ConstructSimplestModelForInputOutputNeurons(std::unordered_map<long long, int>& innovationNumberTable) {
@@ -43,7 +43,7 @@ namespace model {
 
 		std::unordered_map<int, double> valueMap;
 
-		for (int i = 0; i < NUM_OUTPUTS; i++)
+		for (int i = NUM_SENSORS; i < NUM_SENSORS + NUM_OUTPUTS; i++)
 			result += ComputeValueOfNeuron(inputs, i, valueMap);
 
 		return result;
@@ -64,16 +64,16 @@ namespace model {
 			throw std::out_of_range("Neuron id not found in lookup!");
 		}
 
-		const auto& connections = geneIndexLookupByOutputNeuronIfDentritIsActive.at(neuronId);
+		const auto& geneIndicies = geneIndexLookupByOutputNeuronIfDentritIsActive.at(neuronId);
 
-		for (int inputIndex : connections) {
+		for (int geneIndex : geneIndicies) {
 
-			const ConnectionGene& gene = genes[inputIndex];
+			const auto& gene = genes[geneIndex];
 
-			sum += gene.weight * ComputeValueOfNeuron(inputs, inputIndex, valueMap);
+			sum += gene.weight * ComputeValueOfNeuron(inputs, gene.from, valueMap);
 		}
 
-		const double result = activationFunction.operator()(sum);
+		const double result = activationFunction->operator()(sum);
 
 		valueMap[neuronId] = result;
 
@@ -131,10 +131,11 @@ namespace model {
 				from < NUM_SENSORS + NUM_OUTPUTS && to < NUM_SENSORS + NUM_OUTPUTS // both are sensor / output
 				|| (NUM_SENSORS <= from && from < NUM_SENSORS + NUM_OUTPUTS) // from is invalid
 				|| to < NUM_SENSORS // to is invalid)
+				|| from == to
 			)
 				continue;
 
-			if (neuronLayerNumbers[from] < neuronLayerNumbers[to]) // layering is wrong)
+			if (neuronLayerNumbers[from] < neuronLayerNumbers[to]) // layering is wrong
 				continue;
 
 			// if it has never been made
@@ -246,9 +247,12 @@ namespace model {
 		if (utils::RandomDouble(0, 1) < chanceOfDentritInsertion)
 			InsertNewDentrit(innovationNumberTable);
 
-		for (auto& gene : genes)
+		for (auto& gene : genes) {
 			if (utils::RandomDouble(0, 1) < chanceOfMutation)
 				gene.MutateWeight(chanceOfMutationBeingNewValue, weightSetMin, weightSetMax, weightAdjustMin, weightAdjustMax);
+			if (utils::RandomDouble(0, 1) < chanceOfDisabling)
+				gene.disabled ? gene.Enable() : gene.Disable();
+		}
 	}
 
 	void NeatModel::OrderNeuronsByLayer() {
@@ -278,14 +282,28 @@ namespace model {
 
 			const auto& connections = geneIndexLookupByOutputNeuronIfDentritIsActive[toIndex];
 
-			for (const int fromIndex : connections) {
+			for (const int geneIndex : connections) {
 
-				if (neuronLayerNumbers[fromIndex] != -1)
+				const auto& gene = genes[geneIndex];
+
+				if (neuronLayerNumbers[gene.from] != -1)
 					continue;
 
-				neuronLayerNumbers[fromIndex] = toLayer + 1;
-				queue.push_back(std::make_tuple(fromIndex, toLayer + 1));
+				neuronLayerNumbers[gene.from] = toLayer + 1;
+				queue.push_back(std::make_tuple(gene.from, toLayer + 1));
 			}
 		}
+
+		// set each sensor neuron to the maximum depth
+
+		int maxDepth = 0;
+
+		for (const auto [index, depth] : neuronLayerNumbers) {
+			if (depth > maxDepth)
+				maxDepth = depth;
+		}
+
+		for (int i = 0; i < NUM_SENSORS; i++)
+			neuronLayerNumbers[i] = maxDepth;
 	}
 }

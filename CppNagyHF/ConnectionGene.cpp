@@ -58,7 +58,7 @@ namespace model {
 
 		innovationNumber = GetNextInnovationNumber();
 
-		std::cout << "Set innovation number: from=" << from << ", to=" << to << ", hash=" << utils::MakeHashKeyFromPair(from, to) << " --> " << innovationNumber << std::endl;
+		//std::cout << "Set innovation number: from=" << from << ", to=" << to << ", hash=" << utils::MakeHashKeyFromPair(from, to) << " --> " << innovationNumber << std::endl;
 
 		innovationNumberTable[utils::MakeHashKeyFromPair(from, to)] = innovationNumber;
 	}

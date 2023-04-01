@@ -9,10 +9,11 @@ namespace model {
 
 	class NeatTrainer {
 
-	public: // !!!TEMP!!! ---- ONLY FOR DEBUG PRUPOSES
+	public:
 
 		cstd::Vector<cstd::Vector<NeatModel>> organismsByGenerations;
 		cstd::Vector<const NeatModel*> representativesOfThePrevGeneration;
+		cstd::Vector<double> bestFitnessesOfGenerations;
 
 		std::unordered_map<long long, int> innovationNumberTable;
 
@@ -22,6 +23,7 @@ namespace model {
 
 		cstd::Vector<int> Speciate(const cstd::Vector<NeatModel>& organisms);
 		double GetSpeciesDifferenceDelta(const NeatModel& a, const NeatModel& b);
+		cstd::Vector<int> AllocatePlacesForSpecies(const cstd::Vector<double>& sumOfAdjustedFitnessForEachSpecies);
 
 		cstd::Vector<NeatModel> ProduceNewGenerationByReproduction(
 			const cstd::Vector<NeatModel>& currentGeneration, 
@@ -31,12 +33,11 @@ namespace model {
 		);
 		NeatModel GenerateOffSpring(const NeatModel& a, const NeatModel& b, double fitnessOfA, double fitnessOfB);
 
-
 	public:
 		int populationCount;
 		int numGenerations;
-		ActivationFunction activationFunction;
-		FitnessFunction fitnessFunction;
+		const ActivationFunction* activationFunction;
+		const FitnessFunction* fitnessFunction;
 		int numMaxIdleSteps;
 
 		int gameWidth;
@@ -52,6 +53,9 @@ namespace model {
 		double weightAdjustMin = -0.1;
 		double weightAdjustMax = 0.1;
 		double portionOfSpeciesToKeepForReproduction = 0.5;
+		unsigned int numGenerationsWithSameFitnessBeforeOnlyLookingAtTopSpecies = 20;
+		double minVarianceInBestFitnessesToConsiderItImprovement = 3.0;
+		unsigned int numberOfTopSpeciesToLookAtIfFitnessIsStableForTooLong = 2;
 
 		double neatC1 = 1;
 		double neatC2 = 1;
@@ -61,11 +65,11 @@ namespace model {
 		NeatTrainer(
 			int populationCount, 
 			int numGenerations, 
-			ActivationFunction activationFunction, 
+			const ActivationFunction* activationFunction, 
 			int maxIdleSteps,
 			int gameWidth,
 			int gameHeight,
-			FitnessFunction fitnessFunction
+			const FitnessFunction* fitnessFunction
 		) 
 			: populationCount(populationCount), 
 			numGenerations(numGenerations), 
@@ -79,6 +83,8 @@ namespace model {
 			ConnectionGene::SetGlobalInnovationNumber(0);
 
 			ConstructInitialGeneration();
+
+			NeatModel::ResetGlobalNeuronCount(NUM_SENSORS + NUM_OUTPUTS);
 		}
 
 		void SetNeatConstants(double c1, double c2, double c3, double deltaSubT) {
