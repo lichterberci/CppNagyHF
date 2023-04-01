@@ -13,18 +13,20 @@ int main()
 
     srand((uint32_t)std::chrono::system_clock::now().time_since_epoch().count());
 
-    //auto game = game::Game(true, game::GameControlType::AI, 10, 10, 800, 800);
+    auto game = game::Game(true, game::GameControlType::KEYBOARD, 10, 10, 800, 800);
 
-    //game.SetSpeed(6);
+    game.SetSpeed(6);
 
-    //game.Start();
+    game.Start();
+
+    return 0;
 
     const auto activationFunction = model::Sigmoid();
-    const auto fitnessFunction = model::FitnessByApplesAndSteps<100, 1>();
+    const auto fitnessFunction = model::FitnessByApplesOnly();
 
     auto trainer = model::NeatTrainer(
-        1000, 
-        50, 
+        2, 
+        5, 
         &activationFunction, 
         100, 
         3, 
@@ -37,7 +39,7 @@ int main()
     trainer.portionOfSpeciesToKeepForReproduction = 0.4;
     trainer.chanceOfMutation = 0.8;
 
-    trainer.SetNeatConstants(1, 1, 1, 1);
+    trainer.SetNeatConstants(1, 1, 3, 1);
 
     //trainer.TrainCurrentGeneration();
 
@@ -96,6 +98,10 @@ int main()
         game.SetSpeed(5);
 
         game.Start();
+
+        auto report = game.GenerateReport();
+
+        std::cout << report << std::endl;
 
         std::cout << "Type in 'q' to quit... ";
 

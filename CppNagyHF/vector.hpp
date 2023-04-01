@@ -112,11 +112,12 @@ namespace cstd {
 
 			if (m_capacity > m_size) {
 
-				for (size_t i = 1; i < m_size; i++)
-					m_data[i + 1] = std::move(m_data[i]);
+				m_size++;
+
+				for (size_t i = m_size - 1; i >= 1; i--)
+					m_data[i] = std::move(m_data[i - 1]);
 
 				m_data[0] = item;
-				m_size++;
 
 				return;
 			}
@@ -130,23 +131,23 @@ namespace cstd {
 
 			T* new_data = new T[m_capacity];
 
-			for (size_t i = 1; i < m_size; i++)
-				new_data[i + 1] = std::move(m_data[i]);
+			m_size++;
+
+			for (size_t i = m_size - 1; i >= 1; i--)
+				new_data[i] = std::move(m_data[i - 1]);
 
 			delete[] m_data;
 
 			m_data = new_data;
 
 			m_data[0] = item;
-
-			m_size++;
 		}
 
 		void pushToFront(T&& item) {
 			if (m_capacity > m_size) {
 
-				for (size_t i = 1; i < m_size; i++)
-					m_data[i + 1] = std::move(m_data[i]);
+				for (size_t i = m_size - 1; i >= 1; i--)
+					m_data[i] = std::move(m_data[i - 1]);
 
 				m_data[0] = std::move(item);
 				m_size++;
@@ -163,8 +164,8 @@ namespace cstd {
 
 			T* new_data = new T[m_capacity];
 
-			for (size_t i = 1; i < m_size; i++)
-				new_data[i + 1] = std::move(m_data[i]);
+			for (size_t i = m_size - 1; i >= 1; i--)
+				new_data[i] = std::move(m_data[i - 1]);
 
 			delete[] m_data;
 

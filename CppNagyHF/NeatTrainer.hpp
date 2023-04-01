@@ -83,6 +83,7 @@ namespace model {
 			NeatModel::ResetGlobalNeuronCount();
 			ConnectionGene::SetGlobalInnovationNumber(0);
 
+			organismsByGenerations.reserve_and_copy(numGenerations); // this is essential, so the pointers can safely point to these places
 			ConstructInitialGeneration();
 
 			NeatModel::ResetGlobalNeuronCount(NUM_SENSORS + NUM_OUTPUTS);

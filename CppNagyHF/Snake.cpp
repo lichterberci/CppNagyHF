@@ -5,6 +5,9 @@ namespace game {
 
     void Snake::Move(bool grow) {
 
+        if (grow)
+            int a = 0;
+
         const auto newHead = body[0] + headDirection;
 
         body.pushToFront(newHead);
@@ -58,6 +61,9 @@ namespace game {
     void Snake::Render(sf::RenderWindow& window, int gameWidth, int gameHeight, int windowWidth, int windowHeight) {
 
         for (const auto& bodyPart : body) {
+
+            if (bodyPart == cstd::Position(0, 0))
+                int a = 0;
 
             auto size = Utils::GameUtils::GetPixelOfGamePosition(cstd::Position(1, 1), gameWidth, gameHeight, windowWidth, windowHeight);
 

@@ -19,7 +19,7 @@ namespace model {
 
 	double NeatTrainer::TrainIndividual(NeatModel& neatModel) {
 
-		auto game = game::Game(false, game::GameControlType::AI, gameWidth, gameHeight, -1, -1, neatModel, numMaxIdleSteps);
+		auto game = game::Game(true, game::GameControlType::AI, gameWidth, gameHeight, 800, 800, neatModel, numMaxIdleSteps);
 
 		game.Start();
 
@@ -41,7 +41,7 @@ namespace model {
 
 		// speciation
 
-		cstd::Vector<int> speciesIndicies = Speciate(currentGeneration);
+		const cstd::Vector<int> speciesIndicies = Speciate(currentGeneration);
 
 		// sum up species sizes
 
@@ -230,7 +230,7 @@ namespace model {
 						const int newIndexOfSpecies = representativesOfSpeciesInNewGeneration.size() - 1;
 
 						// we mark the current organism as a candidate, so after speciation, we can swap the old ones to these
-						representativeCandidatesFromTheNewGeneration += std::make_tuple(speciesIndex, &organism);
+						representativeCandidatesFromTheNewGeneration += std::make_tuple(newIndexOfSpecies, &organism);
 
 						// the species index will be set according to the new vector
 						result += newIndexOfSpecies; 
@@ -358,7 +358,7 @@ namespace model {
 
 			auto& species = organismIndiciesBySpecies[speciesIndex];
 
-			while (species.size() > std::floor(portionOfSpeciesToKeepForReproduction * numPlacesAllocatedForSpecies[speciesIndex]))
+			while (species.size() > std::ceil(portionOfSpeciesToKeepForReproduction * numPlacesAllocatedForSpecies[speciesIndex]))
 				species.pop();
 		}
 
@@ -485,8 +485,8 @@ namespace model {
 
 	cstd::Vector<int> NeatTrainer::AllocatePlacesForSpecies(const cstd::Vector<double>& sumOfAdjustedFitnessForEachSpecies) {
 
-		const int numSpecies = (int)sumOfAdjustedFitnessForEachSpecies.size();
-		double totalSum = 0;
+ 		const int numSpecies = (int)sumOfAdjustedFitnessForEachSpecies.size();
+		double totalSum = 1e-10; // prevents divide by zero exception
 
 		for (double adjustedFitness : sumOfAdjustedFitnessForEachSpecies)
 			totalSum += adjustedFitness;

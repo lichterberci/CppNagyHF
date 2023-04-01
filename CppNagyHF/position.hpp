@@ -16,6 +16,31 @@ namespace cstd {
 			: x(_x), y(_y)
 		{}
 
+		Position(const Position& other)
+			: x(other.x), y(other.y)
+		{}
+
+		Position(Position&& other) noexcept
+			: x(other.x), y(other.y)
+		{
+			other.x = 0;
+			other.y = 0;
+		}
+
+		Position& operator= (const Position& other) {
+			x = other.x;
+			y = other.y;
+			return *this;
+		}
+
+		Position& operator= (Position&& other) {
+			x = other.x;
+			y = other.y;
+			other.x = 0;
+			other.y = 0;
+			return *this;
+		}
+
 		Position& operator+= (const Position& rhs) {
 			x += rhs.x;
 			y += rhs.y;
