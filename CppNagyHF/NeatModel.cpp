@@ -3,6 +3,7 @@
 #include <algorithm>
 #include "ModelUtils.hpp"
 #include <set>
+#include <functional>
 
 namespace model {
 
@@ -15,11 +16,12 @@ namespace model {
 
 	void NeatModel::GenerateLookUp() {
 
-		geneIndexLookupByOutputNeuronIfDentritIsActive.clear();
+		geneIndexLookupByOutputNeuronOfAllDentrits.clear();
 
-		for (int i = 0; i < genes.size(); i++)
-			if (genes[i].disabled == false)
-				geneIndexLookupByOutputNeuronIfDentritIsActive[genes[i].to] += i; // we care about the index of the GENE
+		for (int i = 0; i < genes.size(); i++) {
+
+			geneIndexLookupByOutputNeuronOfAllDentrits[genes[i].to] += i;
+		}
 	}
 
 	void NeatModel::ConstructSimplestModelForInputOutputNeurons(std::unordered_map<long long, int>& innovationNumberTable) {
@@ -59,18 +61,18 @@ namespace model {
 
 		double sum = 0;
 
-		if (geneIndexLookupByOutputNeuronIfDentritIsActive.find(neuronId) == geneIndexLookupByOutputNeuronIfDentritIsActive.end()) {
+		if (geneIndexLookupByOutputNeuronOfAllDentrits.find(neuronId) == geneIndexLookupByOutputNeuronOfAllDentrits.end()) {
 			std::cout << "ERROR: neuron id not found in lookup!" << std::endl;
 			throw std::out_of_range("Neuron id not found in lookup!");
 		}
 
-		const auto& geneIndicies = geneIndexLookupByOutputNeuronIfDentritIsActive.at(neuronId);
+		const auto& geneIndicies = geneIndexLookupByOutputNeuronOfAllDentrits.at(neuronId);
 
 		for (int geneIndex : geneIndicies) {
 
 			const auto& gene = genes[geneIndex];
 
-			sum += gene.weight * ComputeValueOfNeuron(inputs, gene.from, valueMap);
+			sum += (gene.disabled == false) * gene.weight * ComputeValueOfNeuron(inputs, gene.from, valueMap);
 		}
 
 		const double result = activationFunction->operator()(sum);
@@ -135,7 +137,7 @@ namespace model {
 			)
 				continue;
 
-			if (neuronLayerNumbers[from] < neuronLayerNumbers[to]) // layering is wrong
+			if (topologicalOrderOfNeurons[from] > topologicalOrderOfNeurons[to]) // layering is wrong
 				continue;
 
 			// if it has never been made
@@ -257,53 +259,45 @@ namespace model {
 
 	void NeatModel::OrderNeuronsByLayer() {
 
-		neuronLayerNumbers.clear();
+		topologicalOrderOfNeurons.clear();
 
-		for (int index : neuronIndicies)
-			neuronLayerNumbers[index] = -1;
-
-		if (geneIndexLookupByOutputNeuronIfDentritIsActive.size() == 0)
+		if (geneIndexLookupByOutputNeuronOfAllDentrits.size() == 0)
 			GenerateLookUp();
 
-		// implement BFS
+		// implement DFS
+		// --> we will get the top. order from the order we finish in
 
-		// index to search, layer it was called from
-		std::list<std::tuple<int, int>> queue;
+		int numFinishedNeurons = 0;
 
-		for (int i = NUM_SENSORS; i < NUM_SENSORS + NUM_OUTPUTS; i++) {
-			neuronLayerNumbers[i] = 0;
-			queue.push_back(std::make_tuple(i, 0));
-		}
+		const std::function<void(int)> DFS = [&](int neuronId) -> void {
 
-		while (queue.empty() == false) {
+			if (topologicalOrderOfNeurons.find(neuronId) != topologicalOrderOfNeurons.end())
+				return;
 
-			const auto [toIndex, toLayer] = queue.front();
-			queue.pop_front();
-
-			const auto& connections = geneIndexLookupByOutputNeuronIfDentritIsActive[toIndex];
-
-			for (const int geneIndex : connections) {
-
-				const auto& gene = genes[geneIndex];
-
-				if (neuronLayerNumbers[gene.from] != -1)
-					continue;
-
-				neuronLayerNumbers[gene.from] = toLayer + 1;
-				queue.push_back(std::make_tuple(gene.from, toLayer + 1));
+			if (neuronId < NUM_SENSORS) {
+				topologicalOrderOfNeurons[neuronId] = numFinishedNeurons++;
+				return;
 			}
-		}
 
-		// set each sensor neuron to the maximum depth
+			const auto& geneIndicies = geneIndexLookupByOutputNeuronOfAllDentrits[neuronId];
 
-		int maxDepth = 0;
+			for (const int geneIndex : geneIndicies) {
 
-		for (const auto [index, depth] : neuronLayerNumbers) {
-			if (depth > maxDepth)
-				maxDepth = depth;
-		}
+				const auto gene = genes[geneIndex];
 
-		for (int i = 0; i < NUM_SENSORS; i++)
-			neuronLayerNumbers[i] = maxDepth;
+				DFS(gene.from);
+			}
+
+			if (NUM_SENSORS <= neuronId && neuronId < NUM_SENSORS + NUM_OUTPUTS)
+				return; // we don't yet want to give these orderings (we will do it at the very end) --> we don't have to insert dummy edges
+
+			topologicalOrderOfNeurons[neuronId] = numFinishedNeurons++;
+		};
+
+		for (int i = NUM_SENSORS; i < NUM_SENSORS + NUM_OUTPUTS; i++)
+			DFS(i);
+
+		for (int i = NUM_SENSORS; i < NUM_SENSORS + NUM_OUTPUTS; i++)
+			topologicalOrderOfNeurons[i] = numFinishedNeurons++;
 	}
 }

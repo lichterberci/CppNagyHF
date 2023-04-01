@@ -39,6 +39,7 @@ namespace model {
 		const ActivationFunction* activationFunction;
 		const FitnessFunction* fitnessFunction;
 		int numMaxIdleSteps;
+		int numBestOrganismsToKeepFromPrevGenerations = 1;
 
 		int gameWidth;
 		int gameHeight;

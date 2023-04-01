@@ -28,9 +28,9 @@ namespace model {
 
 		cstd::Vector<int> neuronIndicies;
 		cstd::Vector<ConnectionGene> genes;
-		std::unordered_map<int, int> neuronLayerNumbers; // 0 for output, 1 if it is connected to output, etc.
+		std::unordered_map<int, int> topologicalOrderOfNeurons; // 0 for output, 1 if it is connected to output, etc.
 
-		std::unordered_map<int, cstd::Vector<int>> geneIndexLookupByOutputNeuronIfDentritIsActive; // this helps reduce the time-complexity of the forwarding
+		std::unordered_map<int, cstd::Vector<int>> geneIndexLookupByOutputNeuronOfAllDentrits; // this helps reduce the time-complexity of the forwarding
 
 		const ActivationFunction* activationFunction;
 
@@ -47,8 +47,7 @@ namespace model {
 		double rawFitness = 0;
 		double adjustedFitness = 0;
 
-		NeatModel() 
-			: genes(cstd::Vector<ConnectionGene>()), geneIndexLookupByOutputNeuronIfDentritIsActive(std::unordered_map<int, cstd::Vector<int>>())
+		NeatModel()
 		{ }
 	
 		NeatModel(cstd::Vector<ConnectionGene> genes, int numSensors, int numOutputs, const ActivationFunction* activationFunction)

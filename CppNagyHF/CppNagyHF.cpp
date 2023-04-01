@@ -23,21 +23,21 @@ int main()
     const auto fitnessFunction = model::FitnessByApplesAndSteps<100, 1>();
 
     auto trainer = model::NeatTrainer(
-        400, 
-        300, 
+        1000, 
+        50, 
         &activationFunction, 
         100, 
-        8, 
-        8, 
+        3, 
+        3, 
         &fitnessFunction
     );
 
-    trainer.chanceOfDentritInsertion = 0.1;
-    trainer.chanceOfNeuronInsertion = 0.2;
-    trainer.portionOfSpeciesToKeepForReproduction = 0.5;
+    trainer.chanceOfDentritInsertion = 0.2;
+    trainer.chanceOfNeuronInsertion = 0.05;
+    trainer.portionOfSpeciesToKeepForReproduction = 0.4;
     trainer.chanceOfMutation = 0.8;
 
-    trainer.SetNeatConstants(1, 1, 0.4, 3);
+    trainer.SetNeatConstants(1, 1, 1, 1);
 
     //trainer.TrainCurrentGeneration();
 
@@ -91,7 +91,7 @@ int main()
             return a.rawFitness < b.rawFitness;
         });
 
-        auto game = game::Game(true, game::GameControlType::AI, 10, 10, 800, 800, *bestOfLastGen, 100);
+        auto game = game::Game(true, game::GameControlType::AI, 3, 3, 800, 800, *bestOfLastGen, 100);
 
         game.SetSpeed(5);
 

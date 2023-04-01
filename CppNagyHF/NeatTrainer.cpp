@@ -155,6 +155,23 @@ namespace model {
 			);
 
 		organismsByGenerations += newGeneration;
+
+		if (organismsByGenerations.size() > 2) {
+			// remove unwanted organisms from earlier gen (that we dont use)
+			auto& gen = organismsByGenerations[organismsByGenerations.size() - 3];
+
+			std::sort(gen.begin(), gen.end(), [](const NeatModel& a, const NeatModel& b) {
+				return a.rawFitness < b.rawFitness;
+			});
+
+			cstd::Vector<NeatModel> remainingGen;
+
+			for (int i = 0; i < numBestOrganismsToKeepFromPrevGenerations; i++) {
+				remainingGen += gen[i];
+			}
+
+			gen = remainingGen;
+		}
 	}
 
 	cstd::Vector<int> NeatTrainer::Speciate(const cstd::Vector<NeatModel>& organisms) {
@@ -210,7 +227,7 @@ namespace model {
 						representativesOfSpeciesInNewGeneration += representativesOfThePrevGeneration[speciesIndex];
 
 						// the new index, this species is inserted in
-						const size_t newIndexOfSpecies = representativesOfSpeciesInNewGeneration.size() - 1;
+						const int newIndexOfSpecies = representativesOfSpeciesInNewGeneration.size() - 1;
 
 						// we mark the current organism as a candidate, so after speciation, we can swap the old ones to these
 						representativeCandidatesFromTheNewGeneration += std::make_tuple(speciesIndex, &organism);
