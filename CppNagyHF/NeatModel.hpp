@@ -49,17 +49,57 @@ namespace model {
 
 		NeatModel()
 		{ }
+
+		NeatModel(const NeatModel& other) 
+			: neuronIndicies(other.neuronIndicies), 
+			genes(other.genes), 
+			topologicalOrderOfNeurons(other.topologicalOrderOfNeurons), 
+			geneIndexLookupByOutputNeuronOfAllDentrits(geneIndexLookupByOutputNeuronOfAllDentrits),
+			activationFunction(other.activationFunction),
+			rawFitness(other.rawFitness),
+			adjustedFitness(other.adjustedFitness)
+		{ }
+
+		NeatModel(NeatModel&& other) noexcept
+			: neuronIndicies(std::move(other.neuronIndicies)),
+			genes(std::move(other.genes)),
+			topologicalOrderOfNeurons(std::move(other.topologicalOrderOfNeurons)),
+			geneIndexLookupByOutputNeuronOfAllDentrits(std::move(geneIndexLookupByOutputNeuronOfAllDentrits)),
+			activationFunction(other.activationFunction),
+			rawFitness(other.rawFitness),
+			adjustedFitness(other.adjustedFitness)
+		{ }
+
+		NeatModel& operator= (const NeatModel& other) {
+			neuronIndicies = other.neuronIndicies;
+			genes = other.genes;
+			topologicalOrderOfNeurons = other.topologicalOrderOfNeurons;
+			geneIndexLookupByOutputNeuronOfAllDentrits = other.geneIndexLookupByOutputNeuronOfAllDentrits;
+			activationFunction = other.activationFunction;
+			rawFitness = other.rawFitness;
+			adjustedFitness = other.adjustedFitness;
+
+			return *this;
+		}
+
+		NeatModel& operator= (NeatModel&& other) {
+			neuronIndicies = std::move(other.neuronIndicies);
+			genes = std::move(other.genes);
+			topologicalOrderOfNeurons = std::move(other.topologicalOrderOfNeurons);
+			geneIndexLookupByOutputNeuronOfAllDentrits = std::move(other.geneIndexLookupByOutputNeuronOfAllDentrits);
+			activationFunction = other.activationFunction;
+			rawFitness = other.rawFitness;
+			adjustedFitness = other.adjustedFitness;
+
+			other.activationFunction = nullptr;
+			other.rawFitness = 0;
+			other.adjustedFitness = 0;
+
+			return *this;
+		}
 	
 		NeatModel(cstd::Vector<ConnectionGene> genes, int numSensors, int numOutputs, const ActivationFunction* activationFunction)
 			: genes(genes), activationFunction(activationFunction)
-		{ 
-			GenerateLookUp();
-			GenerateNeuronIndiciesList();
-			OrderNeuronsByLayer();
-		}
-
-		NeatModel(const NeatModel& other)
-			: genes(other.genes), activationFunction(other.activationFunction)
 		{ 
 			GenerateLookUp();
 			GenerateNeuronIndiciesList();

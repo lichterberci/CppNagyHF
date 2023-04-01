@@ -19,7 +19,7 @@ namespace model {
 
 	double NeatTrainer::TrainIndividual(NeatModel& neatModel) {
 
-		auto game = game::Game(true, game::GameControlType::AI, gameWidth, gameHeight, 800, 800, neatModel, numMaxIdleSteps);
+		auto game = game::Game(false, game::GameControlType::AI, gameWidth, gameHeight, 800, 800, neatModel, numMaxIdleSteps);
 
 		game.Start();
 
@@ -161,16 +161,11 @@ namespace model {
 			auto& gen = organismsByGenerations[organismsByGenerations.size() - 3];
 
 			std::sort(gen.begin(), gen.end(), [](const NeatModel& a, const NeatModel& b) {
-				return a.rawFitness < b.rawFitness;
+				return a.rawFitness > b.rawFitness;
 			});
 
-			cstd::Vector<NeatModel> remainingGen;
-
-			for (int i = 0; i < numBestOrganismsToKeepFromPrevGenerations; i++) {
-				remainingGen += gen[i];
-			}
-
-			gen = remainingGen;
+			for (int i = populationCount - 1; i >= numBestOrganismsToKeepFromPrevGenerations; i--)
+				gen.pop();
 		}
 	}
 

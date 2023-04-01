@@ -13,33 +13,33 @@ int main()
 
     srand((uint32_t)std::chrono::system_clock::now().time_since_epoch().count());
 
-    auto game = game::Game(true, game::GameControlType::KEYBOARD, 10, 10, 800, 800);
+    //auto game = game::Game(true, game::GameControlType::KEYBOARD, 10, 10, 800, 800);
 
-    game.SetSpeed(6);
+    //game.SetSpeed(6);
 
-    game.Start();
+    //game.Start();
 
-    return 0;
+    //return 0;
 
     const auto activationFunction = model::Sigmoid();
-    const auto fitnessFunction = model::FitnessByApplesOnly();
+    const auto fitnessFunction = model::FitnessByApplesAndSteps<1000, 1>();
 
     auto trainer = model::NeatTrainer(
-        2, 
-        5, 
+        300, 
+        1000, 
         &activationFunction, 
-        100, 
-        3, 
-        3, 
+        50, 
+        5, 
+        5, 
         &fitnessFunction
     );
 
-    trainer.chanceOfDentritInsertion = 0.2;
+    trainer.chanceOfDentritInsertion = 0.1;
     trainer.chanceOfNeuronInsertion = 0.05;
-    trainer.portionOfSpeciesToKeepForReproduction = 0.4;
+    trainer.portionOfSpeciesToKeepForReproduction = 0.5;
     trainer.chanceOfMutation = 0.8;
 
-    trainer.SetNeatConstants(1, 1, 3, 1);
+    trainer.SetNeatConstants(1, 1, 3, 2);
 
     //trainer.TrainCurrentGeneration();
 
@@ -93,15 +93,17 @@ int main()
             return a.rawFitness < b.rawFitness;
         });
 
-        auto game = game::Game(true, game::GameControlType::AI, 3, 3, 800, 800, *bestOfLastGen, 100);
+        auto game = game::Game(true, game::GameControlType::AI, 5, 5, 800, 800, *bestOfLastGen, 100);
 
         game.SetSpeed(5);
 
         game.Start();
 
-        auto report = game.GenerateReport();
+        const auto report = game.GenerateReport();
 
         std::cout << report << std::endl;
+
+        std::cout << fitnessFunction.operator()(report) << std::endl;
 
         std::cout << "Type in 'q' to quit... ";
 
