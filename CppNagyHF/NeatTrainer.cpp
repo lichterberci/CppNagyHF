@@ -88,27 +88,32 @@ namespace model {
 		for (int i = 0; i < numSpecies; i++)
 			sumOfAdjustedFitnessForEachSpecies[i] /= speciesSizes[i];
 
-		// save best fitness
+		// save avg. fitness
 
-		bestFitnessesOfGenerations += *std::max_element(fitnessScores.begin(), fitnessScores.end());
+		double avgFitness = 0;
+
+		for (int i = 0; i < numSpecies; i++)
+			avgFitness += sumOfAdjustedFitnessForEachSpecies[i];
+
+		avgFitnessOfGenerations += avgFitness;
 
 		// allocate places accordingly
 
 		auto placesAllocatedForSpecies = AllocatePlacesForSpecies(sumOfAdjustedFitnessForEachSpecies);
 
 		// if sum of raw fitness does not rise for more than X generations, only keep the top Y species
-		if (bestFitnessesOfGenerations.size() >= numGenerationsWithSameFitnessBeforeOnlyLookingAtTopSpecies) {
+		if (avgFitnessOfGenerations.size() >= numGenerationsWithSameFitnessBeforeOnlyLookingAtTopSpecies) {
 
 			bool hasThereBeenImprovement = false;
 
-			double firstFitnessInObservedRange = bestFitnessesOfGenerations[bestFitnessesOfGenerations.size() - numGenerationsWithSameFitnessBeforeOnlyLookingAtTopSpecies];
+			double firstFitnessInObservedRange = avgFitnessOfGenerations[avgFitnessOfGenerations.size() - numGenerationsWithSameFitnessBeforeOnlyLookingAtTopSpecies];
 
 			for (
-				unsigned int generationIndex = bestFitnessesOfGenerations.size() - numGenerationsWithSameFitnessBeforeOnlyLookingAtTopSpecies + 1; 
-				generationIndex < bestFitnessesOfGenerations.size(); 
+				unsigned int generationIndex = avgFitnessOfGenerations.size() - numGenerationsWithSameFitnessBeforeOnlyLookingAtTopSpecies + 1; 
+				generationIndex < avgFitnessOfGenerations.size(); 
 				generationIndex++
 			) {
-				if (firstFitnessInObservedRange + minVarianceInBestFitnessesToConsiderItImprovement <= bestFitnessesOfGenerations[generationIndex]) {
+				if (firstFitnessInObservedRange + minVarianceInBestFitnessesToConsiderItImprovement <= avgFitnessOfGenerations[generationIndex]) {
 					hasThereBeenImprovement = true;
 					break;
 				}
@@ -154,6 +159,13 @@ namespace model {
 				weightAdjustMax
 			);
 
+		std::cout << "Species: (" << speciesSizes.size() << ")" << std::endl;
+
+		for (int i = 0; i < speciesSizes.size(); i++) {
+			std::cout << "size: " << speciesSizes[i] << " avg. fitness: " << sumOfAdjustedFitnessForEachSpecies[i] << std::endl;
+		}
+
+
 		organismsByGenerations += newGeneration;
 
 		if (organismsByGenerations.size() > 2) {
@@ -189,6 +201,9 @@ namespace model {
 
 		cstd::Vector<std::tuple<int, const NeatModel*>> representativeCandidatesFromTheNewGeneration;
 
+		// these are only for debug purposes
+		int inNewSpecies = 0, inOldSpecies = 0, generateSpecies = 0;
+
 		for (auto& organism : organisms) {
 
 			bool didFindSpecies = false;
@@ -201,6 +216,8 @@ namespace model {
 				if (delta <= neatDeltaSubT) {
 					didFindSpecies = true;
 					result += newSpeciesIndex;
+					inNewSpecies++;
+					break;
 				}
 
 			}
@@ -233,6 +250,8 @@ namespace model {
 						// we have succesfully moved this from the old to the new generation, now we can remove it
 						representativesOfThePrevGeneration.removeAt(speciesIndex); 
 
+						inOldSpecies++;
+
 						break;
 					}
 				}
@@ -242,8 +261,12 @@ namespace model {
 
 				// we create a new species
 
+				generateSpecies++;
+
 				representativesOfSpeciesInNewGeneration += &organism;
 				result += (int)representativesOfSpeciesInNewGeneration.size() - 1;
+
+				didFindSpecies = true;
 			}
 		}
 
@@ -324,7 +347,7 @@ namespace model {
 	cstd::Vector<NeatModel> NeatTrainer::ProduceNewGenerationByReproduction(
 		const cstd::Vector<NeatModel>& currentGeneration, 
 		const cstd::Vector<int>& speciesIndicies, 
-		const cstd::Vector<int>& numPlacesAllocatedForSpecies,
+		cstd::Vector<int>& numPlacesAllocatedForSpecies,
 		const cstd::Vector<double>& rawFitnessScores
 	) {
 
@@ -353,7 +376,7 @@ namespace model {
 
 			auto& species = organismIndiciesBySpecies[speciesIndex];
 
-			while (species.size() > std::ceil(portionOfSpeciesToKeepForReproduction * numPlacesAllocatedForSpecies[speciesIndex]))
+			while (species.size() > std::floor(portionOfSpeciesToKeepForReproduction * numPlacesAllocatedForSpecies[speciesIndex]))
 				species.pop();
 		}
 
@@ -363,12 +386,43 @@ namespace model {
 		cstd::Vector<NeatModel> newGeneration;
 		newGeneration.reserve_and_copy(populationCount);
 
+		// if a species' organisms were killed off in the decimation part, but places were allocated, 
+		// we want to give them away for another species
+		for (int speciesIndex = 0; speciesIndex < organismIndiciesBySpecies.size(); speciesIndex++) {
+
+			const auto& species = organismIndiciesBySpecies[speciesIndex];
+
+			if (species.size() != 0)
+				continue;
+
+			if (numPlacesAllocatedForSpecies[speciesIndex] == 0)
+				continue;
+
+			int recievingSpeciesIndex = 0;
+
+			while (recievingSpeciesIndex < numPlacesAllocatedForSpecies.size()) {
+				if (organismIndiciesBySpecies[recievingSpeciesIndex].size() > 0)
+					break;
+
+				recievingSpeciesIndex++;
+			}
+
+			if (recievingSpeciesIndex == numPlacesAllocatedForSpecies.size()) {
+				std::cout << "ERROR: all species got lost in the decimation process!" << std::endl;
+				throw std::out_of_range("All species got lost in the decimation process!");
+			}
+
+			numPlacesAllocatedForSpecies[recievingSpeciesIndex] += numPlacesAllocatedForSpecies[speciesIndex];
+
+			numPlacesAllocatedForSpecies[speciesIndex] = 0;
+		}
+
 		for (int speciesIndex = 0; speciesIndex < organismIndiciesBySpecies.size(); speciesIndex++) {
 
 			const auto& species = organismIndiciesBySpecies[speciesIndex];
 
 			// in the prev generation, there was a corresponding species, but it got extinct
-			if (species.size() == 0) 
+			if (species.size() == 0)
 				continue;
 
 			if (species.size() == 1) {
@@ -396,6 +450,12 @@ namespace model {
 				newGeneration += offspring;
 			}
 		}
+
+		if (newGeneration.size() != populationCount) {
+			std::cout << "ERROR: new generation has invalid length!" << std::endl;
+			throw std::exception("New generation has invalid length!");
+		}
+
 
 		return newGeneration;
 	}
@@ -437,6 +497,10 @@ namespace model {
 					newGenes += aGene;
 				else
 					newGenes += bGene;
+
+				if (aGene.disabled || bGene.disabled)
+					if (utils::RandomDouble(0, 1) < chanceOfGeneDisablingIfEitherGeneIsDisabled)
+						newGenes.last().Disable();
 
 				continue;
 			}
@@ -493,7 +557,7 @@ namespace model {
 
 		for (int i = 0; i < numSpecies; i++) {
 
-			int places = std::floor<int>(sumOfAdjustedFitnessForEachSpecies[i] / totalSum);
+			int places = std::floor<int>(populationCount * sumOfAdjustedFitnessForEachSpecies[i] / totalSum);
 
 			placesAllocatedForSpecies += places;
 

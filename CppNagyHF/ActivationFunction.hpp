@@ -34,7 +34,7 @@ namespace model {
 
 	struct LReLU : public ActivationFunction {
 
-		double operator()(double x) {
+		double operator()(double x) const override {
 			return x >= 0 ? x : x * LEAKY_RELU_ALPHA;
 		}
 	};

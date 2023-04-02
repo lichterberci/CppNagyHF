@@ -13,7 +13,7 @@ namespace model {
 
 		cstd::Vector<cstd::Vector<NeatModel>> organismsByGenerations;
 		cstd::Vector<const NeatModel*> representativesOfThePrevGeneration;
-		cstd::Vector<double> bestFitnessesOfGenerations;
+		cstd::Vector<double> avgFitnessOfGenerations;
 
 		std::unordered_map<long long, int> innovationNumberTable;
 
@@ -28,7 +28,7 @@ namespace model {
 		cstd::Vector<NeatModel> ProduceNewGenerationByReproduction(
 			const cstd::Vector<NeatModel>& currentGeneration, 
 			const cstd::Vector<int>& speciesIndicies, 
-			const cstd::Vector<int>& numPlacesAllocatedForSpecies,
+			cstd::Vector<int>& numPlacesAllocatedForSpecies,
 			const cstd::Vector<double>& rawFitnessScores
 		);
 		NeatModel GenerateOffSpring(const NeatModel& a, const NeatModel& b, double fitnessOfA, double fitnessOfB);
@@ -49,10 +49,12 @@ namespace model {
 		double chanceOfMutation = 0.3;
 		double chanceOfMutationBeingNewValue = 0.1;
 		double chanceOfDisabling = 0.1;
+		double chanceOfGeneDisablingIfEitherGeneIsDisabled = 0.1;
 		double weightSetMin = -2;
 		double weightSetMax = 2;
 		double weightAdjustMin = -0.1;
 		double weightAdjustMax = 0.1;
+
 		double portionOfSpeciesToKeepForReproduction = 0.5;
 		unsigned int numGenerationsWithSameFitnessBeforeOnlyLookingAtTopSpecies = 20;
 		double minVarianceInBestFitnessesToConsiderItImprovement = 3.0;

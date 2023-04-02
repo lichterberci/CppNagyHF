@@ -21,14 +21,14 @@ int main()
 
     //return 0;
 
-    const auto activationFunction = model::Sigmoid();
-    const auto fitnessFunction = model::FitnessByApplesAndSteps<1000, 1>();
+    const auto activationFunction = model::Tanh();
+    const auto fitnessFunction = model::FitnessByApplesAndSteps<2000, 1>();
 
     auto trainer = model::NeatTrainer(
-        300, 
-        1000, 
+        1500, 
+        500, 
         &activationFunction, 
-        50, 
+        40, 
         5, 
         5, 
         &fitnessFunction
@@ -37,9 +37,13 @@ int main()
     trainer.chanceOfDentritInsertion = 0.1;
     trainer.chanceOfNeuronInsertion = 0.05;
     trainer.portionOfSpeciesToKeepForReproduction = 0.5;
-    trainer.chanceOfMutation = 0.8;
+    trainer.chanceOfDisabling = 0.1;
+    trainer.chanceOfMutation = 0.1;
+    trainer.weightAdjustMin = -0.10;
+    trainer.weightAdjustMax = 0.10;
+    trainer.minVarianceInBestFitnessesToConsiderItImprovement = 0.05;
 
-    trainer.SetNeatConstants(1, 1, 3, 2);
+    trainer.SetNeatConstants(1, 1, 3, 5);
 
     //trainer.TrainCurrentGeneration();
 
