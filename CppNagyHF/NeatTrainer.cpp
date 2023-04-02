@@ -159,11 +159,11 @@ namespace model {
 				weightAdjustMax
 			);
 
-		std::cout << "Species: (" << speciesSizes.size() << ")" << std::endl;
+		//std::cout << "Species: (" << speciesSizes.size() << ")" << std::endl;
 
-		for (int i = 0; i < speciesSizes.size(); i++) {
-			std::cout << "size: " << speciesSizes[i] << " avg. fitness: " << sumOfAdjustedFitnessForEachSpecies[i] << std::endl;
-		}
+		//for (int i = 0; i < speciesSizes.size(); i++) {
+		//	std::cout << "size: " << speciesSizes[i] << " avg. fitness: " << sumOfAdjustedFitnessForEachSpecies[i] << std::endl;
+		//}
 
 
 		organismsByGenerations += newGeneration;

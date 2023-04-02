@@ -33,7 +33,7 @@ namespace model {
 		}
 
 		ConnectionGene(int from, int to, std::unordered_map<long long, int>& innovationNumberTable)
-			: from(from), to(to), disabled(false), weight(0)
+			: from(from), to(to), disabled(false)
 		{
 			SetWeightToRandom();
 			SetInnovationNumber(innovationNumberTable);
@@ -82,8 +82,6 @@ namespace model {
 		bool operator>= (const ConnectionGene& other) const {
 			return innovationNumber >= other.innovationNumber;
 		}
-
-		friend std::ostream& operator<< (std::ostream& os, const ConnectionGene& gene);
 
 		static void SetGlobalInnovationNumber(int newInnovationNumber);	
 
