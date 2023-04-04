@@ -32,34 +32,9 @@ namespace model {
 		cstd::Vector<double> distancesToApple;
 		double bias = BIAS_VALUE;
 
-		cstd::Vector<double> GetInputVector() const {
-			auto result = distancesToWall;
+		cstd::Vector<double> GetInputVector() const;
 
-			for (const double distanceToApple : distancesToApple)
-				result += distanceToApple;
-
-			for (const double distanceToBody : distancesToBody)
-				result += distanceToBody;
-
-			result += bias;
-
-			return result;
-		}
-
-		ModelParams& SetToRandom() {
-
-			for (int i = 0; i < 8; i++)
-				distancesToWall += ((double)rand() / (RAND_MAX + 1.0)) * 2 - 1;
-
-			for (int i = 0; i < 8; i++)
-				distancesToApple += ((double)rand() / (RAND_MAX + 1.0)) * 2 - 1;
-
-			for (int i = 0; i < 8; i++)
-				distancesToBody += ((double)rand() / (RAND_MAX + 1.0)) * 2 - 1;
-
-			return *this;
-		}
-
+		ModelParams& SetToRandom();
 	};
 
 }

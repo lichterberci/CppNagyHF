@@ -260,7 +260,7 @@ namespace game {
         const int appleDeltaX = apple.position.x - snakeBody[0].x;
         const int appleDeltaY = apple.position.y - snakeBody[0].y;
 
-        const int APPLE_NOT_SEEN = SNAKE_SIGHT_DISTANCE;
+        const int APPLE_NOT_SEEN = -1;
 
         result.distancesToApple += appleDeltaY == 0 && appleDeltaX > 0 ? appleDeltaX : APPLE_NOT_SEEN;
         result.distancesToApple += appleDeltaY == appleDeltaX && appleDeltaX > 0 ? appleDeltaX * sqrt2 : APPLE_NOT_SEEN;
@@ -311,6 +311,10 @@ namespace game {
             if (bodyDeltaY == -bodyDeltaX && bodyDeltaX > 0)
                 result.distancesToBody[7] = std::min<double>(result.distancesToBody[7], bodyDeltaX * sqrt2);
         }
+
+        for (double& distanceToBody : result.distancesToBody)
+            if (distanceToBody == SNAKE_SIGHT_DISTANCE)
+                distanceToBody = -1;
 
         // normalize
         //for (auto& d : result.distancesToBody)

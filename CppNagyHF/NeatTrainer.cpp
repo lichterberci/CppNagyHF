@@ -78,26 +78,26 @@ namespace model {
 			int speciesIndex = speciesIndicies[i];
 
 			currentGeneration[i].rawFitness = fitnessScores[i];
-			currentGeneration[i].adjustedFitness = fitnessScores[i] / speciesSizes[speciesIndicies[i]];
 
-			sumOfAdjustedFitnessForEachSpecies[speciesIndex] += fitnessScores[i];
+			const double adjustedFitness = fitnessScores[i] / speciesSizes[speciesIndex];
+
+			currentGeneration[i].adjustedFitness = adjustedFitness;
+
+			sumOfAdjustedFitnessForEachSpecies[speciesIndex] += adjustedFitness;
 		}
-
-		// divide them by their respective sizes
-
-		for (int i = 0; i < numSpecies; i++)
-			sumOfAdjustedFitnessForEachSpecies[i] /= speciesSizes[i];
 
 		// save avg. fitness
 
 		double avgFitness = 0;
 
-		for (int i = 0; i < numSpecies; i++)
-			avgFitness += sumOfAdjustedFitnessForEachSpecies[i];
+		for (int i = 0; i < populationCount; i++)
+			avgFitness += fitnessScores[i];
+
+		avgFitness /= populationCount;
 
 		avgFitnessOfGenerations += avgFitness;
 
-		// allocate places accordingly
+		// allocate places accordingly 
 
 		auto placesAllocatedForSpecies = AllocatePlacesForSpecies(sumOfAdjustedFitnessForEachSpecies);
 
@@ -113,7 +113,7 @@ namespace model {
 				generationIndex < avgFitnessOfGenerations.size(); 
 				generationIndex++
 			) {
-				if (firstFitnessInObservedRange + minVarianceInBestFitnessesToConsiderItImprovement <= avgFitnessOfGenerations[generationIndex]) {
+				if (firstFitnessInObservedRange + minImprovementOfAvgFitnessToConsiderItAnImprovement <= avgFitnessOfGenerations[generationIndex]) {
 					hasThereBeenImprovement = true;
 					break;
 				}
@@ -136,6 +136,8 @@ namespace model {
 					sumOfAdjustedFitnessForEachSpecies[i] = 0; // dont allocate anything for this species
 				}
 
+				//std::cout << "Pruned all species except top 2!" << std::endl;
+
 				placesAllocatedForSpecies = AllocatePlacesForSpecies(sumOfAdjustedFitnessForEachSpecies);
 			}
 		}
@@ -155,7 +157,7 @@ namespace model {
 				innovationNumberTable, 
 				chanceOfDentritInsertion, 
 				chanceOfNeuronInsertion,
-				chanceOfMutation, 
+				chanceOfDentritMutation, 
 				chanceOfMutationBeingNewValue, 
 				chanceOfDisabling, 
 				weightSetMin, 
@@ -619,6 +621,9 @@ namespace model {
 
 			std::cout << "|\u001b[40;1m";
 
+			if (generationIndex > 0)
+				std::cout << "   avg. fitness: " << std::fixed << std::setprecision(4) << avgFitnessOfGenerations.last();
+		
 			TrainCurrentGeneration();
 		}
 

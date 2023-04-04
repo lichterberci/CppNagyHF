@@ -46,7 +46,7 @@ namespace model {
 
 		double chanceOfDentritInsertion = 0.3;
 		double chanceOfNeuronInsertion = 0.1;
-		double chanceOfMutation = 0.3;
+		double chanceOfDentritMutation = 0.3;
 		double chanceOfMutationBeingNewValue = 0.1;
 		double chanceOfDisabling = 0.1;
 		double chanceOfGeneDisablingIfEitherGeneIsDisabled = 0.1;
@@ -57,7 +57,7 @@ namespace model {
 
 		double portionOfSpeciesToKeepForReproduction = 0.5;
 		unsigned int numGenerationsWithSameFitnessBeforeOnlyLookingAtTopSpecies = 20;
-		double minVarianceInBestFitnessesToConsiderItImprovement = 3.0;
+		double minImprovementOfAvgFitnessToConsiderItAnImprovement = 0.1;
 		unsigned int numberOfTopSpeciesToLookAtIfFitnessIsStableForTooLong = 2;
 
 		double neatC1 = 1;

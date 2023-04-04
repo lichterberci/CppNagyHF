@@ -150,6 +150,7 @@
     <ClCompile Include="GameUtils.cpp" />
     <ClCompile Include="ConnectionGene.cpp" />
     <ClCompile Include="matrix.hpp" />
+    <ClCompile Include="ModelParams.cpp" />
     <ClCompile Include="NeatModel.cpp" />
     <ClCompile Include="NeatTrainer.cpp" />
     <ClCompile Include="RandomModel.cpp" />

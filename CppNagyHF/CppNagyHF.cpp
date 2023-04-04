@@ -26,24 +26,28 @@ int main()
 
     auto trainer = model::NeatTrainer(
         500, 
-        600, 
+        400, 
         &activationFunction, 
         40, 
-        6, 
-        6, 
+        10, 
+        10, 
         &fitnessFunction
     );
 
-    trainer.chanceOfDentritInsertion = 0.12;
-    trainer.chanceOfNeuronInsertion = 0.02;
+    trainer.chanceOfDentritInsertion = 0.08;
+    trainer.chanceOfNeuronInsertion = 0.01;
     trainer.portionOfSpeciesToKeepForReproduction = 0.5;
-    trainer.chanceOfDisabling = 0.1;
-    trainer.chanceOfMutation = 0.05;
-    trainer.weightAdjustMin = -0.10;
-    trainer.weightAdjustMax = 0.10;
-    trainer.minVarianceInBestFitnessesToConsiderItImprovement = 0.03;
+    trainer.chanceOfDisabling = 0.05;
+    trainer.chanceOfDentritMutation = 0.4;
+    trainer.weightAdjustMin = -0.1;
+    trainer.weightAdjustMax = 0.1;
+    trainer.minImprovementOfAvgFitnessToConsiderItAnImprovement = 0.02;
+    trainer.chanceOfGeneDisablingIfEitherGeneIsDisabled = 0.1;
+    trainer.chanceOfMutationBeingNewValue = 0.05;
+    trainer.weightSetMax = 1;
+    trainer.weightSetMin = -1;
 
-    trainer.SetNeatConstants(1, 1, 3, 1.3);
+    trainer.SetNeatConstants(1, 1, 3, 0.8);
 
     //trainer.TrainCurrentGeneration();
 
@@ -84,11 +88,11 @@ int main()
 
         //std::cout << std::endl;
 
-        const auto& best = std::max_element(gen.begin(), gen.end(), [](const model::NeatModel& a, const model::NeatModel& b) {
+      /*  const auto& best = std::max_element(gen.begin(), gen.end(), [](const model::NeatModel& a, const model::NeatModel& b) {
             return a.rawFitness < b.rawFitness;
         });
 
-        std::cout << *best << std::endl;
+        std::cout << *best << std::endl;*/
     }
 
     while (true) {
@@ -97,7 +101,7 @@ int main()
             return a.rawFitness < b.rawFitness;
         });
 
-        auto game = game::Game(true, game::GameControlType::AI, 6, 6, 800, 800, *bestOfLastGen, 100);
+        auto game = game::Game(true, game::GameControlType::AI, 10, 10, 800, 800, *bestOfLastGen, 100);
 
         game.SetSpeed(5);
 

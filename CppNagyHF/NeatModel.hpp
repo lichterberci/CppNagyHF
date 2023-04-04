@@ -132,7 +132,7 @@ namespace model {
 			std::unordered_map<long long, int>& innovationNumberTable, 
 			double chanceOfDentritInsertion, 
 			double chanceOfNeuronInsertion, 
-			double chanceOfMutation, 
+			double chanceOfDentritMutation, 
 			double chanceOfMutationBeingNewValue, 
 			double chanceOfDisabling,
 			double weightSetMin,

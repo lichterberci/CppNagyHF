@@ -35,9 +35,9 @@ namespace model {
 		// connect every output to an input and the bias
 		for (int i = 0; i < NUM_OUTPUTS; i++) {
 			int j = utils::RandomInt(0, NUM_SENSORS - 1);
-			result += ConnectionGene(j, NUM_SENSORS + i, innovationNumberTable); // other random input
+			//result += ConnectionGene(j, NUM_SENSORS + i, innovationNumberTable); // other random input
 			auto biasGene = ConnectionGene(NUM_SENSORS - 1, NUM_SENSORS + i, innovationNumberTable); // bias
-			biasGene.disabled = true;
+			//biasGene.disabled = true;
 			result += biasGene;
 		}
 
@@ -242,7 +242,7 @@ namespace model {
 		std::unordered_map<long long, int>& innovationNumberTable, 
 		double chanceOfNeuronInsertion, 
 		double chanceOfDentritInsertion,
-		double chanceOfMutation, 
+		double chanceOfDentritMutation, 
 		double chanceOfMutationBeingNewValue, 
 		double chanceOfDisabling,
 		double weightSetMin, 
@@ -258,7 +258,7 @@ namespace model {
 			InsertNewDentrit(innovationNumberTable);
 
 		for (auto& gene : genes) {
-			if (utils::RandomDouble(0, 1) < chanceOfMutation)
+			if (utils::RandomDouble(0, 1) < chanceOfDentritMutation)
 				gene.MutateWeight(chanceOfMutationBeingNewValue, weightSetMin, weightSetMax, weightAdjustMin, weightAdjustMax);
 			if (utils::RandomDouble(0, 1) < chanceOfDisabling)
 				gene.disabled ? gene.Enable() : gene.Disable();
