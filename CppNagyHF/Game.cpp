@@ -105,34 +105,41 @@ namespace game {
     }
 
     bool Game::HandleKeyPresses(sf::Event event, cstd::Vector<sf::Keyboard::Key>& out_keyPresses) {
+        
+        bool wasThereValidKeypress = false;
+        
         switch (event.key.code) {
             case sf::Keyboard::Up: 
             case sf::Keyboard::W:
                 out_keyPresses.push(sf::Keyboard::Up);
+                wasThereValidKeypress = true;
                 break;
             case sf::Keyboard::Down: 
             case sf::Keyboard::S:
                 out_keyPresses.push(sf::Keyboard::Down);
+                wasThereValidKeypress = true;
                 break;
             case sf::Keyboard::Right: 
             case sf::Keyboard::D:
                 out_keyPresses.push(sf::Keyboard::Right);
+                wasThereValidKeypress = true;
                 break;
             case sf::Keyboard::Left: 
             case sf::Keyboard::A:
                 out_keyPresses.push(sf::Keyboard::Left);
+                wasThereValidKeypress = true;
                 break;
             default:
-                return false;
+                break;
         }
 
-        return true;
+        return wasThereValidKeypress;
     }
 
 	void Game::Update(cstd::Vector<sf::Keyboard::Key> keyPresses) {
        
         if (keyPresses.size() > 0)
-            snake.UpdateHeadDirection(keyPresses[keyPresses.size() - 1]);
+            snake.UpdateHeadDirection(keyPresses.last());
 
         if (snake.WouldDieIfItMoved(gameWidth, gameHeight)) {
 
@@ -244,9 +251,9 @@ namespace game {
         result.distancesToWall += snakeBody[0].y + 1;
         result.distancesToWall += sqrt2 * std::min(gameWidth - snakeBody[0].x, snakeBody[0].y + 1);
 
-        // normalize
-        for (auto& d : result.distancesToWall)
-            d /= SNAKE_SIGHT_DISTANCE;
+        //// normalize
+        //for (auto& d : result.distancesToWall)
+        //    d /= SNAKE_SIGHT_DISTANCE;
 
         // distance to apple
 
@@ -265,8 +272,8 @@ namespace game {
         result.distancesToApple += appleDeltaY == -appleDeltaX && appleDeltaX > 0 ? appleDeltaX * sqrt2 : APPLE_NOT_SEEN;
 
         // normalize
-        for (auto& d : result.distancesToApple)
-            d /= SNAKE_SIGHT_DISTANCE;
+        //for (auto& d : result.distancesToApple)
+        //    d /= SNAKE_SIGHT_DISTANCE;
 
         // distance to body
 
@@ -306,8 +313,8 @@ namespace game {
         }
 
         // normalize
-        for (auto& d : result.distancesToBody)
-            d /= SNAKE_SIGHT_DISTANCE;
+        //for (auto& d : result.distancesToBody)
+        //    d /= SNAKE_SIGHT_DISTANCE;
 
         return result;
     }

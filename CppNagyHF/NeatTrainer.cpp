@@ -143,7 +143,12 @@ namespace model {
 
 		// reproduction
 
-		auto newGeneration = ProduceNewGenerationByReproduction(currentGeneration, speciesIndicies, placesAllocatedForSpecies, fitnessScores);
+		auto newGeneration = ProduceNewGenerationByReproduction(
+			currentGeneration, 
+			speciesIndicies, 
+			placesAllocatedForSpecies, 
+			fitnessScores
+		);
 
 		for (auto& organism : newGeneration)
 			organism.Mutate(
@@ -376,7 +381,7 @@ namespace model {
 
 			auto& species = organismIndiciesBySpecies[speciesIndex];
 
-			while (species.size() > std::floor(portionOfSpeciesToKeepForReproduction * numPlacesAllocatedForSpecies[speciesIndex]))
+			while (species.size() > std::ceil(portionOfSpeciesToKeepForReproduction * numPlacesAllocatedForSpecies[speciesIndex]))
 				species.pop();
 		}
 
@@ -385,6 +390,8 @@ namespace model {
 		
 		cstd::Vector<NeatModel> newGeneration;
 		newGeneration.reserve_and_copy(populationCount);
+
+		int recievingSpeciesIndex = 0;
 
 		// if a species' organisms were killed off in the decimation part, but places were allocated, 
 		// we want to give them away for another species
@@ -398,13 +405,11 @@ namespace model {
 			if (numPlacesAllocatedForSpecies[speciesIndex] == 0)
 				continue;
 
-			int recievingSpeciesIndex = 0;
-
 			while (recievingSpeciesIndex < numPlacesAllocatedForSpecies.size()) {
 				if (organismIndiciesBySpecies[recievingSpeciesIndex].size() > 0)
 					break;
 
-				recievingSpeciesIndex++;
+				recievingSpeciesIndex = (recievingSpeciesIndex + 1) % numPlacesAllocatedForSpecies.size();
 			}
 
 			if (recievingSpeciesIndex == numPlacesAllocatedForSpecies.size()) {
@@ -415,6 +420,8 @@ namespace model {
 			numPlacesAllocatedForSpecies[recievingSpeciesIndex] += numPlacesAllocatedForSpecies[speciesIndex];
 
 			numPlacesAllocatedForSpecies[speciesIndex] = 0;
+
+			recievingSpeciesIndex = (recievingSpeciesIndex + 1) % numPlacesAllocatedForSpecies.size();
 		}
 
 		for (int speciesIndex = 0; speciesIndex < organismIndiciesBySpecies.size(); speciesIndex++) {
@@ -557,16 +564,29 @@ namespace model {
 
 		for (int i = 0; i < numSpecies; i++) {
 
-			int places = std::floor<int>(populationCount * sumOfAdjustedFitnessForEachSpecies[i] / totalSum);
+			double placesDouble = populationCount * sumOfAdjustedFitnessForEachSpecies[i] / totalSum;
+
+			int places = std::floor<int>(placesDouble);
 
 			placesAllocatedForSpecies += places;
 
 			numTotalPlacesAllocated += places;
 		}
 
-		// if we have rounding errors, we just give all places to the first species by default
-		if (numTotalPlacesAllocated < populationCount)
-			placesAllocatedForSpecies[0] += populationCount - numTotalPlacesAllocated;
+		// if we have rounding errors, we just give them away in increasing order for non-extinct species
+		if (numTotalPlacesAllocated < populationCount) {
+			int recieveingIndex = 0;
+
+			bool isThereNonExtinctSpecies = numTotalPlacesAllocated > 0;
+
+			while (numTotalPlacesAllocated < populationCount) {
+				if (isThereNonExtinctSpecies == false || placesAllocatedForSpecies[recieveingIndex] > 0) {
+					placesAllocatedForSpecies[recieveingIndex]++;
+					numTotalPlacesAllocated++;
+				}
+				recieveingIndex = (recieveingIndex + 1) % numSpecies;
+			}
+		}
 
 		return placesAllocatedForSpecies;
 	}
@@ -577,21 +597,27 @@ namespace model {
 
 		for (size_t generationIndex = 0; generationIndex < numGenerations; generationIndex++) {
 
-			std::cout << "\33[2K\rTraining generation " << generationIndex << "/" << numGenerations << " (" << std::setprecision(3) << (100.0 * generationIndex / numGenerations) << "%)";
+			std::cout << 
+				"\33[2K\rTraining generation " << std::setfill(' ') << std::setw(4) <<
+				generationIndex << "/" << numGenerations
+				<< " (" << std::setw(3) << std::fixed << std::setprecision(1) 
+				<< (100.0 * generationIndex / numGenerations) << "%)";
 
 			// slider 
 
-			const int sliderLength = 30;
+			const int sliderLength = 40;
 
-			std::cout << "   <";
+			std::cout << "   \u001b[42;1m";
 
 			for (int i = 0; i < sliderLength * generationIndex / numGenerations; i++)
-				std::cout << '=';
+				std::cout << ' ';
+
+			std::cout << "\u001b[47;1m";
 
 			for (int i = sliderLength * generationIndex / numGenerations; i < sliderLength; i++)
-				std::cout << '-';
+				std::cout << ' ';
 
-			std::cout << ">";
+			std::cout << "|\u001b[40;1m";
 
 			TrainCurrentGeneration();
 		}

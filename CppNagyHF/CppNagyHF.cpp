@@ -22,28 +22,28 @@ int main()
     //return 0;
 
     const auto activationFunction = model::Sigmoid();
-    const auto fitnessFunction = model::FitnessByApplesAndSteps<1000, 1>();
+    const auto fitnessFunction = model::FitnessByApplesAndSteps();
 
     auto trainer = model::NeatTrainer(
-        400, 
-        300, 
+        500, 
+        600, 
         &activationFunction, 
         40, 
-        3, 
-        3, 
+        6, 
+        6, 
         &fitnessFunction
     );
 
-    trainer.chanceOfDentritInsertion = 0.15;
-    trainer.chanceOfNeuronInsertion = 0.03;
+    trainer.chanceOfDentritInsertion = 0.12;
+    trainer.chanceOfNeuronInsertion = 0.02;
     trainer.portionOfSpeciesToKeepForReproduction = 0.5;
     trainer.chanceOfDisabling = 0.1;
-    trainer.chanceOfMutation = 0.8;
+    trainer.chanceOfMutation = 0.05;
     trainer.weightAdjustMin = -0.10;
     trainer.weightAdjustMax = 0.10;
     trainer.minVarianceInBestFitnessesToConsiderItImprovement = 0.03;
 
-    trainer.SetNeatConstants(1, 1, 3, 0.5);
+    trainer.SetNeatConstants(1, 1, 3, 1.3);
 
     //trainer.TrainCurrentGeneration();
 
@@ -97,7 +97,7 @@ int main()
             return a.rawFitness < b.rawFitness;
         });
 
-        auto game = game::Game(true, game::GameControlType::AI, 3, 3, 800, 800, *bestOfLastGen, 100);
+        auto game = game::Game(true, game::GameControlType::AI, 6, 6, 800, 800, *bestOfLastGen, 100);
 
         game.SetSpeed(5);
 
