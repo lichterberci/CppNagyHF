@@ -35,6 +35,7 @@ namespace game {
 		GameState gameState = GameState::UNINITIALIZED;
 		GameControlType controlType;
 		model::ControllerModel* p_controllerModel;
+		bool placeFirstAppleInFrontOfSnake;
 
 		Snake snake;
 		Apple apple;
@@ -60,7 +61,8 @@ namespace game {
 			int windowWidth = 640, 
 			int windowHeight = 480, 
 			model::ControllerModel& controllerModel = s_defaultModel,
-			int numMaxIdleSteps = 1000
+			int numMaxIdleSteps = 1000,
+			bool placeFirstAppleInFrontOfSnake = true
 		)
 			: useUI(useUI), 
 			controlType(controlType), 
@@ -73,7 +75,8 @@ namespace game {
 			snakeMovesPerSec(5),
 			numSteps(0),
 			numIdleSteps(0),
-			numMaxIdleSteps(numMaxIdleSteps)
+			numMaxIdleSteps(numMaxIdleSteps),
+			placeFirstAppleInFrontOfSnake(placeFirstAppleInFrontOfSnake)
 		{}
 
 		void Start();

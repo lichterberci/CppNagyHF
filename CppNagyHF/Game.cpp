@@ -27,7 +27,7 @@ namespace game {
         sf::View view = window.getDefaultView();
         
         snake = Snake({ gameWidth / 2, gameHeight / 2 });
-        apple.PlaceAtRandom(gameWidth, gameHeight, snake);
+        apple.PlaceAtRandom(gameWidth, gameHeight, snake, placeFirstAppleInFrontOfSnake);
         points = 0;
         
         Render(window);
@@ -201,7 +201,7 @@ namespace game {
         }
 
         snake = Snake({ gameWidth / 2, gameHeight / 2 });
-        apple.PlaceAtRandom(gameWidth, gameHeight, snake);
+        apple.PlaceAtRandom(gameWidth, gameHeight, snake, placeFirstAppleInFrontOfSnake);
         points = 0;
 
         gameState = GameState::RUNNING;

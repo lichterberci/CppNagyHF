@@ -19,7 +19,7 @@ namespace model {
 
 	double NeatTrainer::TrainIndividual(NeatModel& neatModel) {
 
-		auto game = game::Game(false, game::GameControlType::AI, gameWidth, gameHeight, 800, 800, neatModel, numMaxIdleSteps);
+		auto game = game::Game(false, game::GameControlType::AI, gameWidth, gameHeight, 800, 800, neatModel, numMaxIdleSteps, placeFirstAppleInFrontOfSnake);
 
 		game.Start();
 

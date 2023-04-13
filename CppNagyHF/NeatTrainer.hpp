@@ -55,6 +55,8 @@ namespace model {
 		double weightAdjustMin = -0.1;
 		double weightAdjustMax = 0.1;
 
+		bool placeFirstAppleInFrontOfSnake = false;
+
 		double portionOfSpeciesToKeepForReproduction = 0.5;
 		unsigned int numGenerationsWithSameFitnessBeforeOnlyLookingAtTopSpecies = 20;
 		double minImprovementOfAvgFitnessToConsiderItAnImprovement = 0.1;

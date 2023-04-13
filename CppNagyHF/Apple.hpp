@@ -18,7 +18,7 @@ namespace game {
 		{}
 
 		bool CanPlace(int gameWidth, int gameHeight, const Snake& snake);
-		void PlaceAtRandom(int gameWidth, int gameHeight, const Snake& snake);
+		void PlaceAtRandom(int gameWidth, int gameHeight, const Snake& snake, bool placeInFrontOfSnake = true);
 		void Render(sf::RenderWindow& window, int gameWidth, int gameHeight, int windowWidth, int windowHeight);
 	};
 

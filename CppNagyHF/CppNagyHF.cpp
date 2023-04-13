@@ -34,7 +34,7 @@ int main()
         &fitnessFunction
     );
 
-    trainer.chanceOfDentritInsertion = 0.08;
+    trainer.chanceOfDentritInsertion = 0.1;
     trainer.chanceOfNeuronInsertion = 0.01;
     trainer.portionOfSpeciesToKeepForReproduction = 0.5;
     trainer.chanceOfDisabling = 0.05;
@@ -46,6 +46,7 @@ int main()
     trainer.chanceOfMutationBeingNewValue = 0.05;
     trainer.weightSetMax = 1;
     trainer.weightSetMin = -1;
+    trainer.placeFirstAppleInFrontOfSnake = false;
 
     trainer.SetNeatConstants(1, 1, 3, 0.8);
 

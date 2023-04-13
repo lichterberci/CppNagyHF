@@ -3,7 +3,7 @@
 
 namespace game {
 
-	void Apple::PlaceAtRandom(int gameWidth, int gameHeight, const Snake& snake) {
+	void Apple::PlaceAtRandom(int gameWidth, int gameHeight, const Snake& snake, bool placeInFrontOfSnake) {
 	
         bool isApplePlacedOnSnake = false;
 
@@ -16,11 +16,12 @@ namespace game {
             };
 
             for (const auto& bodyPart : snake.Body()) {
-                if (bodyPart == position) {
+                if (bodyPart.x == position.x || bodyPart.y == position.y) {
                     isApplePlacedOnSnake = true;
                     break;
                 }
             }
+
 
         } while (isApplePlacedOnSnake);
 	}
