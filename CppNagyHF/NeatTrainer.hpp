@@ -5,8 +5,6 @@
 #include "NeatModel.hpp"
 #include "FitnessFunction.hpp"
 
-#define MULTI_THREAD_TRAINING 1
-
 namespace model {
 
 	class NeatTrainer {
