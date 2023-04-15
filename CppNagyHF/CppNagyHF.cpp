@@ -27,8 +27,8 @@ int main()
     const auto fitnessFunction = model::FitnessByApplesAndSteps();
 
     auto trainer = model::NeatTrainer(
-        500, 
-        100, 
+        10, 
+        4, 
         &activationFunction, 
         40, 
         10, 
@@ -38,13 +38,13 @@ int main()
 
     trainer.chanceOfDentritInsertion = 0.05;
     trainer.chanceOfNeuronInsertion = 0.03;
-    trainer.portionOfSpeciesToKeepForReproduction = 0.5;
+    trainer.portionOfSpeciesToKeepForReproduction = 0.3;
     trainer.chanceOfDisabling = 0.1;
     trainer.chanceOfDentritMutation = 0.8;
     trainer.weightAdjustMin = -0.1;
     trainer.weightAdjustMax = 0.1;
     trainer.minImprovementOfAvgFitnessToConsiderItAnImprovement = 0.02;
-    trainer.numGenerationsWithSameFitnessBeforeOnlyLookingAtTopSpecies = 2000;
+    trainer.numGenerationsWithSameFitnessBeforeOnlyLookingAtTopSpecies = 20;
     trainer.chanceOfGeneDisablingIfEitherGeneIsDisabled = 0.75;
     trainer.chanceOfMutationBeingNewValue = 0.1;
     trainer.weightSetMax = 1;
