@@ -20,6 +20,47 @@ namespace model {
 
 	double NeatTrainer::TrainIndividual(NeatModel& neatModel) {
 
+#if XOR == 1
+
+		ModelParams params;
+		params.SetToRandom();
+
+		double randVal = utils::RandomDouble(0, 1);
+
+		double solution = 0;
+
+		if (randVal > 0.75) {
+			params.distancesToApple[0] = 0;
+			params.distancesToApple[1] = 0;
+			solution = 0;
+		}
+		else if (randVal > 0.5) {
+			params.distancesToApple[0] = 0;
+			params.distancesToApple[1] = 1;
+			solution = 1;
+		}
+		else if (randVal > 0.25) {
+			params.distancesToApple[0] = 1;
+			params.distancesToApple[1] = 0;
+			solution = 1;
+		}
+		else {
+			params.distancesToApple[0] = 1;
+			params.distancesToApple[1] = 1;
+			solution = 0;
+		}
+
+		auto res = neatModel.Predict(params);
+
+		// MSE
+
+		double loss = powl(res[0] - solution, 2);
+
+		double fitness = -loss;
+
+		return fitness;
+
+#else
 		auto game = game::Game(false, game::GameControlType::AI, gameWidth, gameHeight, 800, 800, neatModel, numMaxIdleSteps, placeFirstAppleInFrontOfSnake);
 
 		game.Start();
@@ -29,6 +70,7 @@ namespace model {
 		double fitness = fitnessFunction->operator()(report);
 
 		return fitness;
+#endif
 	}
 
 	void NeatTrainer::TrainCurrentGeneration() {

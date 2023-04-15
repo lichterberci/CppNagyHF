@@ -1,5 +1,7 @@
 #pragma once
 
+#define XOR 1
+
 #include "vector.hpp"
 #include "ConnectionGene.hpp"
 #include "ActivationFunction.hpp"
@@ -8,8 +10,15 @@
 #include <unordered_map>
 #include <iostream>
 
-#define NUM_SENSORS 25
-#define NUM_OUTPUTS 4
+
+#if XOR == 1
+	#define NUM_SENSORS 2
+	#define NUM_OUTPUTS 1
+#else
+	#define NUM_SENSORS 25
+	#define NUM_OUTPUTS 4
+#endif
+
 #define MAX_ATTEMPTS_AT_INSERTING_DENTRIT 30
 
 namespace model {
