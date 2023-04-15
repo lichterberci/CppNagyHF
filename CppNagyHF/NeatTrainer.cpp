@@ -1,5 +1,6 @@
 ﻿#include "NeatTrainer.hpp"
 #include "Game.hpp"
+#include <execution>
 
 namespace model {
 
@@ -36,8 +37,14 @@ namespace model {
 
 		cstd::Vector<double> fitnessScores(currentGeneration.size());
 
+#if MULTI_THREAD_TRAINING == 0
 		for (auto& organism : currentGeneration)
 			fitnessScores += TrainIndividual(organism);
+#else
+		std::for_each(std::execution::par, currentGeneration.begin(), currentGeneration.end(), [this, &fitnessScores](NeatModel& organism) {
+			fitnessScores += TrainIndividual(organism);
+		});
+#endif
 
 		// speciation
 

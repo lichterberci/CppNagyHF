@@ -5,6 +5,8 @@
 #include "NeatModel.hpp"
 #include "FitnessFunction.hpp"
 
+#define MULTI_THREAD_TRAINING 1
+
 namespace model {
 
 	class NeatTrainer {
@@ -93,7 +95,7 @@ namespace model {
 			NeatModel::ResetGlobalNeuronCount(NUM_SENSORS + NUM_OUTPUTS);
 		}
 
-		void SetNeatConstants(double c1, double c2, double c3, double deltaSubT) {
+		inline void SetNeatConstants(double c1, double c2, double c3, double deltaSubT) {
 			neatC1 = c1;
 			neatC2 = c2;
 			neatC3 = c3;
