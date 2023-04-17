@@ -27,8 +27,8 @@ int main()
     const auto fitnessFunction = model::FitnessByApplesAndSteps();
 
     auto trainer = model::NeatTrainer(
-        10, 
-        4, 
+        20, 
+        5, 
         &activationFunction, 
         40, 
         10, 
@@ -44,14 +44,14 @@ int main()
     trainer.weightAdjustMin = -0.1;
     trainer.weightAdjustMax = 0.1;
     trainer.minImprovementOfAvgFitnessToConsiderItAnImprovement = 0.02;
-    trainer.numGenerationsWithSameFitnessBeforeOnlyLookingAtTopSpecies = 20;
+    trainer.numGenerationsWithSameFitnessBeforeOnlyLookingAtTopSpecies = 50;
     trainer.chanceOfGeneDisablingIfEitherGeneIsDisabled = 0.75;
     trainer.chanceOfMutationBeingNewValue = 0.1;
     trainer.weightSetMax = 1;
     trainer.weightSetMin = -1;
     trainer.placeFirstAppleInFrontOfSnake = false;
 
-    trainer.SetNeatConstants(1, 1, 3, 1);
+    trainer.SetNeatConstants(1, 1, 2, 2);
 
     //trainer.TrainCurrentGeneration();
 

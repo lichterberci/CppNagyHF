@@ -47,7 +47,7 @@ namespace model {
 		else {
 			params.distancesToWall[0] = 1;
 			params.distancesToWall[1] = 1;
-			solution = 0;
+			solution = 1;
 		}
 
 		params.distancesToWall[2] = 1;

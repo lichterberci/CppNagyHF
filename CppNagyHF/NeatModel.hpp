@@ -91,11 +91,12 @@ namespace model {
 			return *this;
 		}
 
-		NeatModel& operator= (NeatModel&& other) {
+		NeatModel& operator= (NeatModel&& other) noexcept {
 			neuronIndicies = std::move(other.neuronIndicies);
 			genes = std::move(other.genes);
 			topologicalOrderOfNeurons = std::move(other.topologicalOrderOfNeurons);
 			geneIndexLookupByOutputNeuronOfAllDentrits = std::move(other.geneIndexLookupByOutputNeuronOfAllDentrits);
+
 			activationFunction = other.activationFunction;
 			rawFitness = other.rawFitness;
 			adjustedFitness = other.adjustedFitness;
@@ -123,7 +124,7 @@ namespace model {
 			GenerateNeuronIndiciesList();
 			OrderNeuronsByLayer();
 		}
-		
+				
 		const cstd::Vector<ConnectionGene>& Genes() const {
 			return genes;
 		}
