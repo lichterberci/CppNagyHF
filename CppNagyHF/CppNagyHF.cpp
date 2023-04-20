@@ -1,8 +1,8 @@
 
-#define XOR 1
-
 #include <iostream>
+#ifndef JPORTA
 #include <SFML/Graphics.hpp>
+#endif
 #include "vector.hpp"
 #include "Game.hpp"
 #include <chrono>
@@ -15,13 +15,13 @@ int main()
 
     srand((uint32_t)std::chrono::system_clock::now().time_since_epoch().count());
 
-    //auto game = game::Game(true, game::GameControlType::KEYBOARD, 10, 10, 800, 800);
+    auto game = game::Game(true, game::GameControlType::KEYBOARD, 10, 10, 800, 800);
 
-    //game.SetSpeed(6);
+    game.SetSpeed(6);
 
-    //game.Start();
+    game.Start();
 
-    //return 0;
+    return 0;
 
     const auto activationFunction = model::Sigmoid();
     const auto fitnessFunction = model::FitnessByApplesAndSteps<1000, 1>();

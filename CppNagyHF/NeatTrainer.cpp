@@ -32,7 +32,7 @@ namespace model {
 		if (randVal > 0.75) {
 			params.distancesToWall[0] = 0;
 			params.distancesToWall[1] = 0;
-			solution = 0;
+			solution = 1;
 		}
 		else if (randVal > 0.5) {
 			params.distancesToWall[0] = 0;
@@ -323,8 +323,11 @@ namespace model {
 		}
 
 		// remove old representatives, and replace them with new ones
-		for (const auto [speciesIndex, representative] : representativeCandidatesFromTheNewGeneration)
-			representativesOfSpeciesInNewGeneration[speciesIndex] = representative;
+		for (const auto representative : representativeCandidatesFromTheNewGeneration) {
+			const int speciesIndex = std::get<0>(representative);
+			const auto candidate = std::get<1>(representative);
+			representativesOfSpeciesInNewGeneration[speciesIndex] = candidate;
+		}
 
 		// replace old representatives with new ones
 		representativesOfThePrevGeneration = representativesOfSpeciesInNewGeneration;

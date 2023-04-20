@@ -35,19 +35,19 @@ namespace game {
         return newHead == applePos;
     }
 
-    void Snake::UpdateHeadDirection(const sf::Keyboard::Key& key) {
+    void Snake::UpdateHeadDirection(const model::Direction direction) {
 
-        switch (key) {
-        case sf::Keyboard::Up:
+        switch (direction) {
+        case model::UP:
             headDirection = cstd::Position(0, -1);
             break;
-        case sf::Keyboard::Down:
+        case model::DOWN:
             headDirection = cstd::Position(0, 1);
             break;
-        case sf::Keyboard::Right:
+        case model::RIGHT:
             headDirection = cstd::Position(1, 0);
             break;
-        case sf::Keyboard::Left:
+        case model::LEFT:
             headDirection = cstd::Position(-1, 0);
             break;
         default:
@@ -55,6 +55,7 @@ namespace game {
         }
     }
 
+#ifndef JPORTA
     void Snake::Render(sf::RenderWindow& window, int gameWidth, int gameHeight, int windowWidth, int windowHeight) {
 
         for (const auto& bodyPart : body) {
@@ -71,5 +72,6 @@ namespace game {
             window.draw(bodyRect);
         }
     }
+#endif
 
 }

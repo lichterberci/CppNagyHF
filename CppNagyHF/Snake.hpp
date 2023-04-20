@@ -1,9 +1,11 @@
 #pragma once
 
+#include "Direction.hpp"
 #include "vector.hpp"
 #include "position.hpp"
+#ifndef JPORTA
 #include <SFML/graphics.hpp>
-
+#endif
 namespace game {
 
 	class Snake
@@ -44,15 +46,14 @@ namespace game {
 			return headDirection;
 		}
 
-		void UpdateHeadDirection(cstd::Position newDirection) {
-			headDirection = newDirection;
-		}
-		void UpdateHeadDirection(const sf::Keyboard::Key& key);
+		void UpdateHeadDirection(const model::Direction key);
 
 		void Move(bool grow = false);
 		bool WouldDieIfItMoved(int gameWidth, int gameHeight);
 		bool WouldPickUpAppleIfItMoved(const cstd::Position& applePos);
+#ifndef JPORTA
 		void Render(sf::RenderWindow& window, int gameWidth, int gameHeight, int windowWidth, int windowHeight);
+#endif
 	};
 
 }

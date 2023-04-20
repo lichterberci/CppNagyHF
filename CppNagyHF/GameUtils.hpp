@@ -2,13 +2,14 @@
 
 #include "vector.hpp"
 #include "position.hpp"
-#include <SFML/Graphics.hpp>
 
 namespace Utils {
 
     class GameUtils {
     public:
+#ifndef JPORTA
         static sf::Vector2f GetPixelOfGamePosition(const cstd::Position& pos, int gameWidth, int gameHeight, int windowWidth, int windowHeight);
+#endif
     };
 
 }

@@ -91,7 +91,7 @@ namespace model {
 		return result;
 	}
 
-	void NeatModel::GetKeyPresses(const ModelParams& modelParams, cstd::Vector<sf::Keyboard::Key>& out_keyPresses) {
+	void NeatModel::GetKeyPresses(const ModelParams& modelParams, cstd::Vector<Direction>& out_keyPresses) {
 
 		cstd::Vector<double> result = Predict(modelParams);
 
@@ -113,11 +113,11 @@ namespace model {
 			}
 		}
 
-		sf::Keyboard::Key keys[] = {
-			sf::Keyboard::Up,
-			sf::Keyboard::Down,
-			sf::Keyboard::Left,
-			sf::Keyboard::Right
+		Direction keys[] = {
+			Direction::RIGHT,
+			Direction::DOWN,
+			Direction::LEFT,
+			Direction::UP
 		};
 
 		out_keyPresses.push(keys[choice]);

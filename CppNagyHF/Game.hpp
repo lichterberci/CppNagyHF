@@ -1,6 +1,9 @@
 #pragma once
 
+#include "Direction.hpp"
+#ifndef JPORTA
 #include <SFML/Graphics.hpp>
+#endif
 #include "vector.hpp"
 #include "position.hpp"
 #include "ControllerModel.hpp"
@@ -41,16 +44,20 @@ namespace game {
 		Apple apple;
 		unsigned int points;
 
+#ifndef JPORTA
 		sf::Clock deltaClock;
-
 		void RunWithUI();
+#endif
 		void RunWithoutUI();
 
+#ifndef JPORTA
 		void HandleResize(sf::Event event, sf::RenderWindow& window, sf::View& view);
-		bool HandleKeyPresses(sf::Event event, cstd::Vector<sf::Keyboard::Key>& out_keyPresses);
-		void Update(cstd::Vector<sf::Keyboard::Key> keyPresses);
+		bool HandleKeyPresses(sf::Event event, cstd::Vector<model::Direction>& out_keyPresses);
+#endif
+		void Update(cstd::Vector<model::Direction> keyPresses);
+#ifndef JPORTA
 		void Render(sf::RenderWindow& window);
-		
+#endif
 		model::ModelParams CalculateModelParams();
 	public:
 		Game(

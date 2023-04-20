@@ -1,6 +1,7 @@
 #include "Game.hpp"
 #include <math.h>
 #include <exception>
+#include "Direction.hpp"
 
 namespace game {
 
@@ -8,14 +9,19 @@ namespace game {
 
     void Game::Start() {
 
+#ifndef JPORTA
         deltaClock.restart();
 
         if (useUI)
             RunWithUI();
         else
             RunWithoutUI();
+#else
+        RunWithoutUI();
+#endif
     }
 
+#ifndef JPORTA
 	void Game::RunWithUI() {
 
         if (controlType == GameControlType::AI && p_controllerModel == nullptr) {
@@ -39,7 +45,7 @@ namespace game {
 
         while (waitingForKeyPressToStart) {
             sf::Event event;
-            cstd::Vector<sf::Keyboard::Key> keyPresses;
+            cstd::Vector<model::Direction> keyPresses;
             while (window.pollEvent(event)) {
                 if (event.KeyPressed && HandleKeyPresses(event, keyPresses)) {
                     snake.UpdateHeadDirection(keyPresses[keyPresses.size() - 1]);
@@ -54,7 +60,7 @@ namespace game {
         {
             sf::Event event;
 
-            cstd::Vector<sf::Keyboard::Key> keyPresses;
+            cstd::Vector<model::Direction> keyPresses;
 
             // wait
             while (deltaClock.getElapsedTime().asSeconds() < 1.0 / snakeMovesPerSec) {}
@@ -104,29 +110,29 @@ namespace game {
         std::cout << "Resized to " << windowWidth << "x" << windowHeight << std::endl;
     }
 
-    bool Game::HandleKeyPresses(sf::Event event, cstd::Vector<sf::Keyboard::Key>& out_keyPresses) {
+    bool Game::HandleKeyPresses(sf::Event event, cstd::Vector<model::Direction>& out_keyPresses) {
         
         bool wasThereValidKeypress = false;
-        
+
         switch (event.key.code) {
             case sf::Keyboard::Up: 
             case sf::Keyboard::W:
-                out_keyPresses.push(sf::Keyboard::Up);
+                out_keyPresses.push(model::KeyToDirection(sf::Keyboard::Up));
                 wasThereValidKeypress = true;
                 break;
             case sf::Keyboard::Down: 
             case sf::Keyboard::S:
-                out_keyPresses.push(sf::Keyboard::Down);
+                out_keyPresses.push(model::KeyToDirection(sf::Keyboard::Down));
                 wasThereValidKeypress = true;
                 break;
             case sf::Keyboard::Right: 
             case sf::Keyboard::D:
-                out_keyPresses.push(sf::Keyboard::Right);
+                out_keyPresses.push(model::KeyToDirection(sf::Keyboard::Right));
                 wasThereValidKeypress = true;
                 break;
             case sf::Keyboard::Left: 
             case sf::Keyboard::A:
-                out_keyPresses.push(sf::Keyboard::Left);
+                out_keyPresses.push(model::KeyToDirection(sf::Keyboard::Left));
                 wasThereValidKeypress = true;
                 break;
             default:
@@ -135,8 +141,9 @@ namespace game {
 
         return wasThereValidKeypress;
     }
+#endif
 
-	void Game::Update(cstd::Vector<sf::Keyboard::Key> keyPresses) {
+	void Game::Update(cstd::Vector<model::Direction> keyPresses) {
        
         if (keyPresses.size() > 0)
             snake.UpdateHeadDirection(keyPresses.last());
@@ -187,11 +194,15 @@ namespace game {
         numSteps++;
 	}   
 
+#ifndef JPORTA
+
 	void Game::Render(sf::RenderWindow& window) {
 
         apple.Render(window, gameWidth, gameHeight, windowWidth, windowHeight);
         snake.Render(window, gameWidth, gameHeight, windowWidth, windowHeight);
     }
+
+#endif
 
     void Game::RunWithoutUI() {
         
@@ -208,7 +219,7 @@ namespace game {
 
         while (gameState == GameState::RUNNING) {
 
-            cstd::Vector<sf::Keyboard::Key> keyPresses;
+            cstd::Vector<model::Direction> keyPresses;
 
             p_controllerModel->GetKeyPresses(CalculateModelParams(), keyPresses);
 

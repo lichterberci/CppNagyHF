@@ -25,7 +25,7 @@ namespace model {
 		return result;
 	}
 
-	void RandomModel::GetKeyPresses(const model::ModelParams& modelParams, cstd::Vector<sf::Keyboard::Key>& out_keyPresses) {
+	void RandomModel::GetKeyPresses(const model::ModelParams& modelParams, cstd::Vector<Direction>& out_keyPresses) {
 		cstd::Vector<double> result = Predict(modelParams);
 
 		// find max value
@@ -38,11 +38,8 @@ namespace model {
 			}
 		}
 
-		sf::Keyboard::Key keys[] = {
-			sf::Keyboard::Up,
-			sf::Keyboard::Down,
-			sf::Keyboard::Left,
-			sf::Keyboard::Right
+		Direction keys[] = {
+			RIGHT, DOWN, LEFT, UP	
 		};
 
 		out_keyPresses.push(keys[choice]);
