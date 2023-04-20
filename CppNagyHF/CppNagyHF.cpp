@@ -22,7 +22,7 @@ int main()
     //return 0;
 
     const auto activationFunction = model::Sigmoid();
-    const auto fitnessFunction = model::FitnessByApplesAndSteps();
+    const auto fitnessFunction = model::FitnessByApplesAndSteps<1000, 1>();
 
     auto trainer = model::NeatTrainer(
         500, 
