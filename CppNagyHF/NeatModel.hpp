@@ -1,5 +1,7 @@
 #pragma once
 
+#define XOR 1
+
 #include "vector.hpp"
 #include "ConnectionGene.hpp"
 #include "ActivationFunction.hpp"
@@ -8,8 +10,15 @@
 #include <unordered_map>
 #include <iostream>
 
-#define NUM_SENSORS 25
-#define NUM_OUTPUTS 4
+
+#if XOR == 1
+	#define NUM_SENSORS 3
+	#define NUM_OUTPUTS 1
+#else
+	#define NUM_SENSORS 25
+	#define NUM_OUTPUTS 4
+#endif
+
 #define MAX_ATTEMPTS_AT_INSERTING_DENTRIT 30
 
 namespace model {
@@ -82,11 +91,12 @@ namespace model {
 			return *this;
 		}
 
-		NeatModel& operator= (NeatModel&& other) {
+		NeatModel& operator= (NeatModel&& other) noexcept {
 			neuronIndicies = std::move(other.neuronIndicies);
 			genes = std::move(other.genes);
 			topologicalOrderOfNeurons = std::move(other.topologicalOrderOfNeurons);
 			geneIndexLookupByOutputNeuronOfAllDentrits = std::move(other.geneIndexLookupByOutputNeuronOfAllDentrits);
+
 			activationFunction = other.activationFunction;
 			rawFitness = other.rawFitness;
 			adjustedFitness = other.adjustedFitness;
@@ -114,7 +124,7 @@ namespace model {
 			GenerateNeuronIndiciesList();
 			OrderNeuronsByLayer();
 		}
-		
+				
 		const cstd::Vector<ConnectionGene>& Genes() const {
 			return genes;
 		}

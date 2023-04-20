@@ -30,7 +30,7 @@ namespace model {
 			SetWeightToRandom(weightSetMin, weightSetMax);
 		}
 		else {
-			OffsetWeightByRandom(weightAdjustMax, weightAdjustMax);
+			OffsetWeightByRandom(weightAdjustMin, weightAdjustMax);
 		}
 	}
 

@@ -1,4 +1,6 @@
 
+#define XOR 1
+
 #include <iostream>
 #include <SFML/Graphics.hpp>
 #include "vector.hpp"
@@ -25,8 +27,8 @@ int main()
     const auto fitnessFunction = model::FitnessByApplesAndSteps<1000, 1>();
 
     auto trainer = model::NeatTrainer(
-        500, 
-        400, 
+        20, 
+        5, 
         &activationFunction, 
         40, 
         10, 
@@ -34,21 +36,22 @@ int main()
         &fitnessFunction
     );
 
-    trainer.chanceOfDentritInsertion = 0.1;
-    trainer.chanceOfNeuronInsertion = 0.01;
-    trainer.portionOfSpeciesToKeepForReproduction = 0.5;
-    trainer.chanceOfDisabling = 0.05;
-    trainer.chanceOfDentritMutation = 0.4;
+    trainer.chanceOfDentritInsertion = 0.05;
+    trainer.chanceOfNeuronInsertion = 0.03;
+    trainer.portionOfSpeciesToKeepForReproduction = 0.3;
+    trainer.chanceOfDisabling = 0.1;
+    trainer.chanceOfDentritMutation = 0.8;
     trainer.weightAdjustMin = -0.1;
     trainer.weightAdjustMax = 0.1;
     trainer.minImprovementOfAvgFitnessToConsiderItAnImprovement = 0.02;
-    trainer.chanceOfGeneDisablingIfEitherGeneIsDisabled = 0.1;
-    trainer.chanceOfMutationBeingNewValue = 0.05;
+    trainer.numGenerationsWithSameFitnessBeforeOnlyLookingAtTopSpecies = 50;
+    trainer.chanceOfGeneDisablingIfEitherGeneIsDisabled = 0.75;
+    trainer.chanceOfMutationBeingNewValue = 0.1;
     trainer.weightSetMax = 1;
     trainer.weightSetMin = -1;
     trainer.placeFirstAppleInFrontOfSnake = false;
 
-    trainer.SetNeatConstants(1, 1, 3, 0.8);
+    trainer.SetNeatConstants(1, 1, 2, 2);
 
     //trainer.TrainCurrentGeneration();
 
@@ -80,6 +83,10 @@ int main()
     //}
 
     trainer.Train();
+
+#if XOR == 1
+    return 0;
+#endif
 
     for (const auto& gen : trainer.organismsByGenerations) {
 
