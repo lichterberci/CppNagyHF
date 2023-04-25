@@ -41,19 +41,19 @@ int main()
     trainer.portionOfSpeciesToKeepForReproduction = 0.3;
     trainer.chanceOfDisabling = 0.0;
     trainer.chanceOfDentritMutation = 0.8;
-    trainer.weightAdjustMin = -0.5;
-    trainer.weightAdjustMax = 0.5;
+    trainer.weightAdjustMin = -0.8;
+    trainer.weightAdjustMax = 0.8;
     trainer.minImprovementOfAvgFitnessToConsiderItAnImprovement = 0.02;
-    trainer.numGenerationsWithSameFitnessBeforeOnlyLookingAtTopSpecies = 500;
+    trainer.numGenerationsWithSameFitnessBeforeOnlyLookingAtTopSpecies = 20;
     trainer.chanceOfGeneDisablingIfEitherGeneIsDisabled = 0.75;
     trainer.chanceOfMutationBeingNewValue = 0.1;
-    trainer.weightSetMax = 1;
-    trainer.weightSetMin = -1;
+    trainer.weightSetMax = 2;
+    trainer.weightSetMin = -2;
     trainer.placeFirstAppleInFrontOfSnake = false;
     
     trainer.targetFitness = 0.95;
 
-    trainer.SetNeatConstants(1, 1, 4, 1);
+    trainer.SetNeatConstants(1, 1, 3, 0.5);
 
     //trainer.TrainCurrentGeneration();
 
