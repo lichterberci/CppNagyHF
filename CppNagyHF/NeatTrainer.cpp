@@ -29,39 +29,52 @@ namespace model {
 
 		double solution = 0;
 
-		/*if (randVal > 0.75) {
-			params.distancesToWall[0] = 0;
-			params.distancesToWall[1] = 0;
-			solution = 0;
-		}
-		else if (randVal > 0.5) {
-			params.distancesToWall[0] = 0;
-			params.distancesToWall[1] = 1;
-			solution = 0;
-		}
-		else if (randVal > 0.25) {
-			params.distancesToWall[0] = 1;
-			params.distancesToWall[1] = 0;
-			solution = 1;
-		}
-		else {
-			params.distancesToWall[0] = 1;
-			params.distancesToWall[1] = 1;
-			solution = 1;
-		}
+		//if (randVal > 0.75) {
+		//	params.distancesToWall[0] = 0;
+		//	params.distancesToWall[1] = 0;
+		//	solution = 0;
+		//}
+		//else if (randVal > 0.5) {
+		//	params.distancesToWall[0] = 0;
+		//	params.distancesToWall[1] = 1;
+		//	solution = 0;
+		//}
+		//else if (randVal > 0.25) {
+		//	params.distancesToWall[0] = 1;
+		//	params.distancesToWall[1] = 0;
+		//	solution = 1;
+		//}
+		//else {
+		//	params.distancesToWall[0] = 1;
+		//	params.distancesToWall[1] = 1;
+		//	solution = 1;
+		//}
 
-		params.distancesToWall[2] = 1;*/
+		//params.distancesToWall[2] = 1;
 
-		params.distancesToWall[0] = randVal > 0.5 ? 1 : 0;
+		params.distancesToWall[0] = 0;
 		params.distancesToWall[1] = 1;
-		solution = randVal > 0.5 ? 1 : 0;
+		solution = 0;
 		//solution = 0;
 
-		auto res = neatModel.Predict(params);
+		auto res1 = neatModel.Predict(params);
+		double loss1 = powl(res1[0] - solution, 2);
+		//double loss1 = std::abs(res1[0] - solution);
+
+		params.distancesToWall[0] = 1;
+		params.distancesToWall[1] = 1;
+		solution = 1;
+
+		auto res2 = neatModel.Predict(params);
+		double loss2 = powl(res2[0] - solution, 2);
+		//double loss2 = std::abs(res2[0] - solution);
 
 		// MSE
+		double loss = (loss1 + loss2) / 2.0;
 
-		double loss = powl(res[0] - solution, 2);
+		//auto res = neatModel.Predict(params);
+
+		//double loss = powl(res[0] - solution, 2);
 
 		double fitness = 1 - loss;
 
@@ -152,7 +165,7 @@ namespace model {
 		auto placesAllocatedForSpecies = AllocatePlacesForSpecies(sumOfAdjustedFitnessForEachSpecies);
 
 		// if sum of raw fitness does not rise for more than X generations, only keep the top Y species
-		if (avgFitnessOfGenerations.size() >= numGenerationsWithSameFitnessBeforeOnlyLookingAtTopSpecies) {
+		if (avgFitnessOfGenerations.size() % numGenerationsWithSameFitnessBeforeOnlyLookingAtTopSpecies == 0) {
 
 			bool hasThereBeenImprovement = false;
 
@@ -678,6 +691,11 @@ namespace model {
 				std::cout << "   avg. fitness: " << std::fixed << std::setprecision(4) << avgFitnessOfGenerations.last();
 		
 			TrainCurrentGeneration();
+
+			if (avgFitnessOfGenerations.last() >= targetFitness) {
+				std::cout << "\33[2K\rTarget fitness reached, evolution stopped! (generation: " << generationIndex << ", fitness: " << avgFitnessOfGenerations.last() << ")" << std::endl;
+				return;
+			}
 		}
 
 		std::cout << "\33[2K\rTraining done! Avg. fitness of the last generation was " << avgFitnessOfGenerations.last() << std::endl;

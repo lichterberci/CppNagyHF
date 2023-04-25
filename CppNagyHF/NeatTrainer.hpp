@@ -67,6 +67,8 @@ namespace model {
 		double neatC3 = 3;
 		double neatDeltaSubT = 0.2;
 
+		double targetFitness = std::numeric_limits<double>::max();
+
 		NeatTrainer(
 			int populationCount, 
 			int numGenerations, 

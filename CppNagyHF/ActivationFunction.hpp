@@ -18,6 +18,15 @@ namespace model {
 		}
 	};
 
+	template<typename TCoeff, TCoeff coeff>
+	struct SteepSigmoid : public ActivationFunction {
+
+		double operator()(double x) const override {
+			x *= coeff;
+			return 1 / (1 + exp(-x));
+		}
+	};
+
 	struct Tanh : public ActivationFunction {
 
 		double operator()(double x) const override {
