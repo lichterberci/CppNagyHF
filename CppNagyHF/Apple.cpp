@@ -7,6 +7,8 @@ namespace game {
 	
         bool isApplePlacedOnSnake = false;
 
+        size_t attempts = 0;
+
         do {
             isApplePlacedOnSnake = false;
 
@@ -16,18 +18,29 @@ namespace game {
             };
 
             for (const auto& bodyPart : snake.Body()) {
-                if (bodyPart.x == position.x || bodyPart.y == position.y) {
+                if (placeInFrontOfSnake == false && (bodyPart.x == position.x || bodyPart.y == position.y)) {
+                    isApplePlacedOnSnake = true;
+                    break;
+                }
+
+                if (placeInFrontOfSnake && bodyPart.x == position.x && bodyPart.y == position.y) {
                     isApplePlacedOnSnake = true;
                     break;
                 }
             }
 
+            attempts++;
 
-        } while (isApplePlacedOnSnake);
+        } while (isApplePlacedOnSnake && attempts < MAX_ATTEMPTS_TO_PLACE_APPLE);
+
+        if (attempts >= MAX_ATTEMPTS_TO_PLACE_APPLE) {
+            std::cerr << "ERROR: could not place apple!" << std::endl;
+            throw std::exception("Could not place apple!");
+        }
+
 	}
 
     bool Apple::CanPlace(int gameWidth, int gameHeight, const Snake& snake) {
-
         return snake.Body().size() < gameWidth * gameHeight;
     }
 

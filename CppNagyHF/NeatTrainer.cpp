@@ -32,12 +32,12 @@ namespace model {
 		if (randVal > 0.75) {
 			params.distancesToWall[0] = 0;
 			params.distancesToWall[1] = 0;
-			solution = 1;
+			solution = 0;
 		}
 		else if (randVal > 0.5) {
 			params.distancesToWall[0] = 0;
 			params.distancesToWall[1] = 1;
-			solution = 1;
+			solution = 0;
 		}
 		else if (randVal > 0.25) {
 			params.distancesToWall[0] = 1;
@@ -675,6 +675,6 @@ namespace model {
 			TrainCurrentGeneration();
 		}
 
-		std::cout << "\33[2K\rTraining done!" << std::endl;
+		std::cout << "\33[2K\rTraining done! Avg. fitness of the last generation was " << avgFitnessOfGenerations.last() << std::endl;
 	}
 }

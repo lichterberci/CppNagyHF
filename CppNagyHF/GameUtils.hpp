@@ -1,5 +1,9 @@
 #pragma once
 
+#ifndef JPORTA
+#include "SFML/Graphics.hpp"
+#endif
+
 #include "vector.hpp"
 #include "position.hpp"
 

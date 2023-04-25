@@ -1,7 +1,13 @@
 #pragma once
 
+#ifndef JPROTA
+#include "SFML/Graphics.hpp"
+#endif 
+
 #include "position.hpp"
 #include "Snake.hpp"
+
+#define MAX_ATTEMPTS_TO_PLACE_APPLE 100
 
 namespace game {
 

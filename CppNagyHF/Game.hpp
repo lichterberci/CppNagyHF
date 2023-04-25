@@ -1,9 +1,9 @@
 #pragma once
 
 #include "Direction.hpp"
-#ifndef JPORTA
-#include <SFML/Graphics.hpp>
-#endif
+#ifndef JPROTA
+#include "SFML/Graphics.hpp"
+#endif 
 #include "vector.hpp"
 #include "position.hpp"
 #include "ControllerModel.hpp"

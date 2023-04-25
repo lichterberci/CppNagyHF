@@ -15,20 +15,20 @@ int main()
 
     srand((uint32_t)std::chrono::system_clock::now().time_since_epoch().count());
 
-    auto game = game::Game(true, game::GameControlType::KEYBOARD, 10, 10, 800, 800);
+    //auto game = game::Game(true, game::GameControlType::KEYBOARD, 10, 10, 800, 800);
 
-    game.SetSpeed(6);
+    //game.SetSpeed(6);
 
-    game.Start();
+    //game.Start();
 
-    return 0;
+    //return 0;
 
     const auto activationFunction = model::Sigmoid();
     const auto fitnessFunction = model::FitnessByApplesAndSteps<1000, 1>();
 
     auto trainer = model::NeatTrainer(
-        20, 
-        5, 
+        500, 
+        100, 
         &activationFunction, 
         40, 
         10, 
@@ -36,11 +36,11 @@ int main()
         &fitnessFunction
     );
 
-    trainer.chanceOfDentritInsertion = 0.05;
-    trainer.chanceOfNeuronInsertion = 0.03;
-    trainer.portionOfSpeciesToKeepForReproduction = 0.3;
+    trainer.chanceOfDentritInsertion = 0.00;
+    trainer.chanceOfNeuronInsertion = 0.00;
+    trainer.portionOfSpeciesToKeepForReproduction = 0.1;
     trainer.chanceOfDisabling = 0.1;
-    trainer.chanceOfDentritMutation = 0.8;
+    trainer.chanceOfDentritMutation = 0.7;
     trainer.weightAdjustMin = -0.1;
     trainer.weightAdjustMax = 0.1;
     trainer.minImprovementOfAvgFitnessToConsiderItAnImprovement = 0.02;
@@ -51,7 +51,7 @@ int main()
     trainer.weightSetMin = -1;
     trainer.placeFirstAppleInFrontOfSnake = false;
 
-    trainer.SetNeatConstants(1, 1, 2, 2);
+    trainer.SetNeatConstants(1, 1, 3, 2);
 
     //trainer.TrainCurrentGeneration();
 
