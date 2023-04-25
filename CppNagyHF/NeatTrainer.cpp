@@ -29,52 +29,52 @@ namespace model {
 
 		double solution = 0;
 
-		//if (randVal > 0.75) {
-		//	params.distancesToWall[0] = 0;
-		//	params.distancesToWall[1] = 0;
-		//	solution = 0;
-		//}
-		//else if (randVal > 0.5) {
-		//	params.distancesToWall[0] = 0;
-		//	params.distancesToWall[1] = 1;
-		//	solution = 0;
-		//}
-		//else if (randVal > 0.25) {
-		//	params.distancesToWall[0] = 1;
-		//	params.distancesToWall[1] = 0;
-		//	solution = 1;
-		//}
-		//else {
-		//	params.distancesToWall[0] = 1;
-		//	params.distancesToWall[1] = 1;
-		//	solution = 1;
-		//}
+		if (randVal > 0.75) {
+			params.distancesToWall[0] = 0;
+			params.distancesToWall[1] = 0;
+			solution = 0;
+		}
+		else if (randVal > 0.5) {
+			params.distancesToWall[0] = 0;
+			params.distancesToWall[1] = 1;
+			solution = 0;
+		}
+		else if (randVal > 0.25) {
+			params.distancesToWall[0] = 1;
+			params.distancesToWall[1] = 0;
+			solution = 1;
+		}
+		else {
+			params.distancesToWall[0] = 1;
+			params.distancesToWall[1] = 1;
+			solution = 1;
+		}
 
-		//params.distancesToWall[2] = 1;
+		params.distancesToWall[2] = 1;
 
-		params.distancesToWall[0] = 0;
-		params.distancesToWall[1] = 1;
-		solution = 1;
+		//params.distancesToWall[0] = 0;
+		//params.distancesToWall[1] = 1;
+		//solution = 1;
+		////solution = 0;
+
+		//auto res1 = neatModel.Predict(params);
+		//double loss1 = powl(res1[0] - solution, 2);
+		////double loss1 = std::abs(res1[0] - solution);
+
+		//params.distancesToWall[0] = 1;
+		//params.distancesToWall[1] = 1;
 		//solution = 0;
 
-		auto res1 = neatModel.Predict(params);
-		double loss1 = powl(res1[0] - solution, 2);
-		//double loss1 = std::abs(res1[0] - solution);
+		//auto res2 = neatModel.Predict(params);
+		//double loss2 = powl(res2[0] - solution, 2);
+		////double loss2 = std::abs(res2[0] - solution);
 
-		params.distancesToWall[0] = 1;
-		params.distancesToWall[1] = 1;
-		solution = 0;
+		//// MSE
+		//double loss = (loss1 + loss2) / 2.0;
 
-		auto res2 = neatModel.Predict(params);
-		double loss2 = powl(res2[0] - solution, 2);
-		//double loss2 = std::abs(res2[0] - solution);
+		auto res = neatModel.Predict(params);
 
-		// MSE
-		double loss = (loss1 + loss2) / 2.0;
-
-		//auto res = neatModel.Predict(params);
-
-		//double loss = powl(res[0] - solution, 2);
+		double loss = powl(res[0] - solution, 2);
 
 		double fitness = 1 - loss;
 

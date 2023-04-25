@@ -23,7 +23,7 @@ int main()
 
     //return 0;
 
-    const auto activationFunction = model::SteepSigmoid<int, 10>();
+    const auto activationFunction = model::SteepSigmoid<int, 4>();
     const auto fitnessFunction = model::FitnessByApplesAndSteps<1000, 1>();
 
     auto trainer = model::NeatTrainer(
@@ -41,8 +41,8 @@ int main()
     trainer.portionOfSpeciesToKeepForReproduction = 0.3;
     trainer.chanceOfDisabling = 0.0;
     trainer.chanceOfDentritMutation = 0.8;
-    trainer.weightAdjustMin = -0.1;
-    trainer.weightAdjustMax = 0.1;
+    trainer.weightAdjustMin = -0.5;
+    trainer.weightAdjustMax = 0.5;
     trainer.minImprovementOfAvgFitnessToConsiderItAnImprovement = 0.02;
     trainer.numGenerationsWithSameFitnessBeforeOnlyLookingAtTopSpecies = 500;
     trainer.chanceOfGeneDisablingIfEitherGeneIsDisabled = 0.75;
@@ -51,9 +51,9 @@ int main()
     trainer.weightSetMin = -1;
     trainer.placeFirstAppleInFrontOfSnake = false;
     
-    trainer.targetFitness = 0.98;
+    trainer.targetFitness = 0.95;
 
-    trainer.SetNeatConstants(1, 1, 2, 5);
+    trainer.SetNeatConstants(1, 1, 4, 1);
 
     //trainer.TrainCurrentGeneration();
 
