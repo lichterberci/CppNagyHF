@@ -54,7 +54,7 @@ namespace model {
 
 		params.distancesToWall[0] = 0;
 		params.distancesToWall[1] = 1;
-		solution = 0;
+		solution = 1;
 		//solution = 0;
 
 		auto res1 = neatModel.Predict(params);
@@ -63,7 +63,7 @@ namespace model {
 
 		params.distancesToWall[0] = 1;
 		params.distancesToWall[1] = 1;
-		solution = 1;
+		solution = 0;
 
 		auto res2 = neatModel.Predict(params);
 		double loss2 = powl(res2[0] - solution, 2);

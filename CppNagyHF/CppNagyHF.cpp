@@ -51,9 +51,9 @@ int main()
     trainer.weightSetMin = -1;
     trainer.placeFirstAppleInFrontOfSnake = false;
     
-    trainer.targetFitness = 0.95;
+    trainer.targetFitness = 0.98;
 
-    trainer.SetNeatConstants(1, 1, 2, 2);
+    trainer.SetNeatConstants(1, 1, 2, 5);
 
     //trainer.TrainCurrentGeneration();
 
