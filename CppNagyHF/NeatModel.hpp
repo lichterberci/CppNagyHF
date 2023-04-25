@@ -13,7 +13,7 @@
 
 
 #if XOR == 1
-	#define NUM_SENSORS 3
+	#define NUM_SENSORS 2
 	#define NUM_OUTPUTS 1
 #else
 	#define NUM_SENSORS 25

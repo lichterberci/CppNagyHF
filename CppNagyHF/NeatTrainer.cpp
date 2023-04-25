@@ -29,7 +29,7 @@ namespace model {
 
 		double solution = 0;
 
-		if (randVal > 0.75) {
+		/*if (randVal > 0.75) {
 			params.distancesToWall[0] = 0;
 			params.distancesToWall[1] = 0;
 			solution = 0;
@@ -50,7 +50,12 @@ namespace model {
 			solution = 1;
 		}
 
-		params.distancesToWall[2] = 1;
+		params.distancesToWall[2] = 1;*/
+
+		params.distancesToWall[0] = randVal > 0.5 ? 1 : 0;
+		params.distancesToWall[1] = 1;
+		solution = randVal > 0.5 ? 1 : 0;
+		//solution = 0;
 
 		auto res = neatModel.Predict(params);
 
