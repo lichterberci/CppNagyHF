@@ -37,7 +37,7 @@ namespace model {
 		else if (randVal > 0.5) {
 			params.distancesToWall[0] = 0;
 			params.distancesToWall[1] = 1;
-			solution = 0;
+			solution = 1;
 		}
 		else if (randVal > 0.25) {
 			params.distancesToWall[0] = 1;
@@ -47,7 +47,7 @@ namespace model {
 		else {
 			params.distancesToWall[0] = 1;
 			params.distancesToWall[1] = 1;
-			solution = 1;
+			solution = 0;
 		}
 
 		params.distancesToWall[2] = 1;

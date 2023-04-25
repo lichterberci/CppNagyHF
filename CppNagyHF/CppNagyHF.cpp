@@ -23,7 +23,7 @@ int main()
 
     //return 0;
 
-    const auto activationFunction = model::SteepSigmoid<int, 4>();
+    const auto activationFunction = model::SteepSigmoid<int, 10>();
     const auto fitnessFunction = model::FitnessByApplesAndSteps<1000, 1>();
 
     auto trainer = model::NeatTrainer(
@@ -36,13 +36,13 @@ int main()
         &fitnessFunction
     );
 
-    trainer.chanceOfDentritInsertion = 0.00;
-    trainer.chanceOfNeuronInsertion = 0.00;
+    trainer.chanceOfDentritInsertion = 0.1;
+    trainer.chanceOfNeuronInsertion = 0.05;
     trainer.portionOfSpeciesToKeepForReproduction = 0.3;
     trainer.chanceOfDisabling = 0.0;
     trainer.chanceOfDentritMutation = 0.8;
-    trainer.weightAdjustMin = -0.8;
-    trainer.weightAdjustMax = 0.8;
+    trainer.weightAdjustMin = -0.9;
+    trainer.weightAdjustMax = 0.9;
     trainer.minImprovementOfAvgFitnessToConsiderItAnImprovement = 0.02;
     trainer.numGenerationsWithSameFitnessBeforeOnlyLookingAtTopSpecies = 20;
     trainer.chanceOfGeneDisablingIfEitherGeneIsDisabled = 0.75;
@@ -53,7 +53,7 @@ int main()
     
     trainer.targetFitness = 0.95;
 
-    trainer.SetNeatConstants(1, 1, 3, 0.5);
+    trainer.SetNeatConstants(1, 1, 1, 2);
 
     //trainer.TrainCurrentGeneration();
 
