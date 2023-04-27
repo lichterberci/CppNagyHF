@@ -117,4 +117,7 @@
   <ItemGroup>
     <Natvis Include="CustomDebuggerVisualization.natvis" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="ClassDiagram.cd" />
+  </ItemGroup>
 </Project>
