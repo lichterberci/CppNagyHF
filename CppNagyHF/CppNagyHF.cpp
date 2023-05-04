@@ -27,7 +27,7 @@ int main()
     const auto fitnessFunction = model::FitnessByApplesAndSteps<1000, 1>();
 
     auto trainer = model::NeatTrainer(
-        50, 
+        500, 
         1000,
         &activationFunction, 
         40, 
@@ -51,6 +51,9 @@ int main()
     trainer.weightSetMin = -2;
     trainer.placeFirstAppleInFrontOfSnake = false;
     
+    trainer.speciesDropOffAge = 15;
+    trainer.speciesDropOffFitnessThreshold = 0.05;
+
     trainer.targetFitness = 0.95;
 
     trainer.SetNeatConstants(1, 1, 1, 2);

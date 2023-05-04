@@ -9,11 +9,17 @@ namespace model {
 
 	class NeatTrainer {
 
-	public:
+		struct SpeciesAge {
+			int age;
+			double startFitness;
+		};
+
+	public: // temp
 
 		cstd::Vector<cstd::Vector<NeatModel>> organismsByGenerations;
 		cstd::Vector<const NeatModel*> representativesOfThePrevGeneration;
 		cstd::Vector<double> avgFitnessOfGenerations;
+		cstd::Vector<SpeciesAge> speciesAgeData;
 
 		std::unordered_map<long long, int> innovationNumberTable;
 
@@ -21,7 +27,7 @@ namespace model {
 		double TrainIndividual(NeatModel& neatModel);
 		void TrainCurrentGeneration();
 
-		cstd::Vector<int> Speciate(const cstd::Vector<NeatModel>& organisms);
+		cstd::Vector<int> Speciate(const cstd::Vector<NeatModel>& organisms, cstd::Vector<SpeciesAge>& speciesAgeData);
 		double GetSpeciesDifferenceDelta(const NeatModel& a, const NeatModel& b);
 		cstd::Vector<int> AllocatePlacesForSpecies(const cstd::Vector<double>& sumOfAdjustedFitnessForEachSpecies);
 
@@ -68,6 +74,9 @@ namespace model {
 		double neatDeltaSubT = 0.2;
 
 		double targetFitness = std::numeric_limits<double>::max();
+
+		int speciesDropOffAge = 15;
+		double speciesDropOffFitnessThreshold = 0.05;
 
 		NeatTrainer(
 			int populationCount, 

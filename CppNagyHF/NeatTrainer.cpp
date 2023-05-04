@@ -15,6 +15,8 @@ namespace model {
 
 		organismsByGenerations += initialGeneration;
 
+		speciesAgeData += { 0, 0 };
+
 		representativesOfThePrevGeneration += &organismsByGenerations[0][0];
 	}
 
@@ -160,6 +162,28 @@ namespace model {
 
 		avgFitnessOfGenerations += avgFitness;
 
+		// for new species, set the start fitness
+		for (int speciesIndex = 0; speciesIndex < numSpecies; speciesIndex++) {
+
+			if (speciesAgeData[speciesIndex].age > 0)
+				continue;
+
+			speciesAgeData[speciesIndex].startFitness = sumOfAdjustedFitnessForEachSpecies[speciesIndex];
+		}
+
+		// cut off old species that are not progressing
+		for (int speciesIndex = 0; speciesIndex < numSpecies; speciesIndex++) {
+			
+			if (speciesAgeData[speciesIndex].age < speciesDropOffAge)
+				continue;
+
+			const double fitnessDelta = speciesAgeData[speciesIndex].startFitness - sumOfAdjustedFitnessForEachSpecies[speciesIndex];
+
+			// if the fitness did not increase sufficiently, kill the species
+			if (fitnessDelta < speciesDropOffFitnessThreshold)
+				sumOfAdjustedFitnessForEachSpecies[speciesIndex] = 0;
+		}
+
 		// allocate places accordingly 
 
 		auto placesAllocatedForSpecies = AllocatePlacesForSpecies(sumOfAdjustedFitnessForEachSpecies);
@@ -212,7 +236,8 @@ namespace model {
 			currentGeneration, 
 			speciesIndicies, 
 			placesAllocatedForSpecies, 
-			fitnessScores
+			fitnessScores,
+			speciesAgeData
 		);
 
 		for (auto& organism : newGeneration)
@@ -251,7 +276,7 @@ namespace model {
 		}
 	}
 
-	cstd::Vector<int> NeatTrainer::Speciate(const cstd::Vector<NeatModel>& organisms) {
+	cstd::Vector<int> NeatTrainer::Speciate(const cstd::Vector<NeatModel>& organisms, cstd::Vector<SpeciesAge>& speciesAgeData) {
 
 		/*
 		The distance measure δ allows us to speciate using a compatibility threshold δt.
@@ -270,6 +295,8 @@ namespace model {
 		cstd::Vector<const NeatModel*> representativesOfSpeciesInNewGeneration;
 
 		cstd::Vector<std::tuple<int, const NeatModel*>> representativeCandidatesFromTheNewGeneration;
+
+		std::unordered_map<int, int> newToOldSpeciesMap;
 
 		// these are only for debug purposes
 		int inNewSpecies = 0, inOldSpecies = 0, generateSpecies = 0;
@@ -320,6 +347,9 @@ namespace model {
 						// we have succesfully moved this from the old to the new generation, now we can remove it
 						representativesOfThePrevGeneration.removeAt(speciesIndex); 
 
+						// record the species it came from
+						newToOldSpeciesMap.insert((int)representativeCandidatesFromTheNewGeneration.size() - 1, speciesIndex);
+
 						inOldSpecies++;
 
 						break;
@@ -349,6 +379,21 @@ namespace model {
 
 		// replace old representatives with new ones
 		representativesOfThePrevGeneration = representativesOfSpeciesInNewGeneration;
+
+		// handle speciesAge
+		cstd::Vector<SpeciesAge> newSpeciesAgeData;
+
+		for (int newSpeciesIndex = 0; newSpeciesIndex < representativesOfSpeciesInNewGeneration.size(); newSpeciesIndex++) {
+
+			if (newToOldSpeciesMap.find(newSpeciesIndex) == newToOldSpeciesMap.end()) {
+				newSpeciesAgeData += { 0, 0 }; // it is new
+				continue;
+			}
+
+			auto dataFromLastGenerationsSpecies = speciesAgeData[newToOldSpeciesMap.at(newSpeciesIndex)];
+			dataFromLastGenerationsSpecies.age++;
+			newSpeciesAgeData += dataFromLastGenerationsSpecies;
+		}
 
 		return result;
 	}
