@@ -28,9 +28,23 @@ namespace model {
 
 		cstd::Vector<ConnectionGene> result(NUM_SENSORS * NUM_OUTPUTS);
 
-		for (int i = 0; i < NUM_SENSORS; i++)
+		//for (int i = 0; i < NUM_SENSORS; i++)
+		//	for (int j = 0; j < NUM_OUTPUTS; j++)
+		//		result.push(ConnectionGene(i, NUM_SENSORS + j, innovationNumberTable));
+
+		const int numNeuronsInHiddenLayer = 2;
+
+		// XOR special
+		for (int i = 0; i < NUM_SENSORS; i++) {
+			// hidden layer
+			for (int j = 0; j < numNeuronsInHiddenLayer; j++)
+				result.push(ConnectionGene(i, NUM_SENSORS + NUM_OUTPUTS + j, innovationNumberTable));
+		}
+
+		for (int i = 0; i < numNeuronsInHiddenLayer; i++) {
 			for (int j = 0; j < NUM_OUTPUTS; j++)
-				result.push(ConnectionGene(i, NUM_SENSORS + j, innovationNumberTable));
+				result.push(ConnectionGene(NUM_SENSORS + NUM_OUTPUTS + i, NUM_SENSORS + j, innovationNumberTable));
+		}
 
 		// connect every output to an input and the bias
 		//for (int i = 0; i < NUM_OUTPUTS; i++) {

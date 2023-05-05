@@ -15,7 +15,7 @@ namespace model {
 
 		organismsByGenerations += initialGeneration;
 
-		speciesAgeData += { 0, 0 };
+		speciesData += { 0, 0, 0 };
 
 		representativesOfThePrevGeneration += &organismsByGenerations[0][0];
 	}
@@ -27,60 +27,46 @@ namespace model {
 		ModelParams params;
 		params.SetToRandom();
 
-		double randVal = utils::RandomDouble(0, 1);
+		const int numQuestions = 10;
+		double avgLoss = 0;
 
-		double solution = 0;
+		for (int i = 0; i < numQuestions; i++) {
 
-		if (randVal > 0.75) {
-			params.distancesToWall[0] = 0;
-			params.distancesToWall[1] = 0;
-			solution = 0;
+			double randVal = utils::RandomDouble(0, 1);
+
+			double solution = 0;
+
+			if (randVal > 0.75) {
+				params.distancesToWall[0] = 0;
+				params.distancesToWall[1] = 0;
+				solution = 0;
+			}
+			else if (randVal > 0.5) {
+				params.distancesToWall[0] = 0;
+				params.distancesToWall[1] = 1;
+				solution = 1;
+			}
+			else if (randVal > 0.25) {
+				params.distancesToWall[0] = 1;
+				params.distancesToWall[1] = 0;
+				solution = 1;
+			}
+			else {
+				params.distancesToWall[0] = 1;
+				params.distancesToWall[1] = 1;
+				solution = 0;
+			}
+
+			params.distancesToWall[2] = 1;
+
+			auto res = neatModel.Predict(params);
+
+			double loss = powl(res[0] - solution, 2);
+
+			avgLoss += loss / numQuestions;
 		}
-		else if (randVal > 0.5) {
-			params.distancesToWall[0] = 0;
-			params.distancesToWall[1] = 1;
-			solution = 1;
-		}
-		else if (randVal > 0.25) {
-			params.distancesToWall[0] = 1;
-			params.distancesToWall[1] = 0;
-			solution = 1;
-		}
-		else {
-			params.distancesToWall[0] = 1;
-			params.distancesToWall[1] = 1;
-			solution = 0;
-		}
 
-		params.distancesToWall[2] = 1;
-
-		//params.distancesToWall[0] = 0;
-		//params.distancesToWall[1] = 1;
-		//solution = 1;
-		////solution = 0;
-
-		//auto res1 = neatModel.Predict(params);
-		//double loss1 = powl(res1[0] - solution, 2);
-		////double loss1 = std::abs(res1[0] - solution);
-
-		//params.distancesToWall[0] = 1;
-		//params.distancesToWall[1] = 1;
-		//solution = 0;
-
-		//auto res2 = neatModel.Predict(params);
-		//double loss2 = powl(res2[0] - solution, 2);
-		////double loss2 = std::abs(res2[0] - solution);
-
-		//// MSE
-		//double loss = (loss1 + loss2) / 2.0;
-
-		auto res = neatModel.Predict(params);
-
-		double loss = powl(res[0] - solution, 2);
-
-		double fitness = 1 - loss;
-
-		return fitness;
+		return 1 - avgLoss;
 
 #else
 		auto game = game::Game(false, game::GameControlType::AI, gameWidth, gameHeight, 800, 800, neatModel, numMaxIdleSteps, placeFirstAppleInFrontOfSnake);
@@ -106,7 +92,7 @@ namespace model {
 
 		// speciation
 
-		const cstd::Vector<int> speciesIndicies = Speciate(currentGeneration);
+		const cstd::Vector<int> speciesIndicies = Speciate(currentGeneration, speciesData);
 
 		// sum up species sizes
 
@@ -165,19 +151,21 @@ namespace model {
 		// for new species, set the start fitness
 		for (int speciesIndex = 0; speciesIndex < numSpecies; speciesIndex++) {
 
-			if (speciesAgeData[speciesIndex].age > 0)
+			speciesData[speciesIndex].lastFitness = sumOfAdjustedFitnessForEachSpecies[speciesIndex];
+
+			if (speciesData[speciesIndex].age > 0)
 				continue;
 
-			speciesAgeData[speciesIndex].startFitness = sumOfAdjustedFitnessForEachSpecies[speciesIndex];
+			speciesData[speciesIndex].startFitness = sumOfAdjustedFitnessForEachSpecies[speciesIndex];
 		}
 
 		// cut off old species that are not progressing
 		for (int speciesIndex = 0; speciesIndex < numSpecies; speciesIndex++) {
 			
-			if (speciesAgeData[speciesIndex].age < speciesDropOffAge)
+			if (speciesData[speciesIndex].age < speciesDropOffAge)
 				continue;
 
-			const double fitnessDelta = speciesAgeData[speciesIndex].startFitness - sumOfAdjustedFitnessForEachSpecies[speciesIndex];
+			const double fitnessDelta = speciesData[speciesIndex].lastFitness - speciesData[speciesIndex].startFitness;
 
 			// if the fitness did not increase sufficiently, kill the species
 			if (fitnessDelta < speciesDropOffFitnessThreshold)
@@ -236,8 +224,7 @@ namespace model {
 			currentGeneration, 
 			speciesIndicies, 
 			placesAllocatedForSpecies, 
-			fitnessScores,
-			speciesAgeData
+			fitnessScores
 		);
 
 		for (auto& organism : newGeneration)
@@ -276,7 +263,7 @@ namespace model {
 		}
 	}
 
-	cstd::Vector<int> NeatTrainer::Speciate(const cstd::Vector<NeatModel>& organisms, cstd::Vector<SpeciesAge>& speciesAgeData) {
+	cstd::Vector<int> NeatTrainer::Speciate(const cstd::Vector<NeatModel>& organisms, cstd::Vector<SpeciesData>& speciesAgeData) {
 
 		/*
 		The distance measure δ allows us to speciate using a compatibility threshold δt.
@@ -348,7 +335,7 @@ namespace model {
 						representativesOfThePrevGeneration.removeAt(speciesIndex); 
 
 						// record the species it came from
-						newToOldSpeciesMap.insert((int)representativeCandidatesFromTheNewGeneration.size() - 1, speciesIndex);
+						newToOldSpeciesMap[(int)representativeCandidatesFromTheNewGeneration.size() - 1] = speciesIndex;
 
 						inOldSpecies++;
 
@@ -381,12 +368,12 @@ namespace model {
 		representativesOfThePrevGeneration = representativesOfSpeciesInNewGeneration;
 
 		// handle speciesAge
-		cstd::Vector<SpeciesAge> newSpeciesAgeData;
+		cstd::Vector<SpeciesData> newSpeciesAgeData;
 
 		for (int newSpeciesIndex = 0; newSpeciesIndex < representativesOfSpeciesInNewGeneration.size(); newSpeciesIndex++) {
 
 			if (newToOldSpeciesMap.find(newSpeciesIndex) == newToOldSpeciesMap.end()) {
-				newSpeciesAgeData += { 0, 0 }; // it is new
+				newSpeciesAgeData += { 0, 0, 0 }; // it is new
 				continue;
 			}
 
@@ -394,6 +381,8 @@ namespace model {
 			dataFromLastGenerationsSpecies.age++;
 			newSpeciesAgeData += dataFromLastGenerationsSpecies;
 		}
+
+		speciesAgeData = newSpeciesAgeData;
 
 		return result;
 	}
@@ -732,14 +721,32 @@ namespace model {
 
 			std::cout << "|\u001b[40;1m";
 
-			if (generationIndex > 0)
+			if (generationIndex > 0) {
 				std::cout << "   avg. fitness: " << std::fixed << std::setprecision(4) << avgFitnessOfGenerations.last();
+				std::cout << ", # species: " << speciesData.size();
+
+				double avgSpeciesAge = 0;
+
+				for (const auto& speciesAge : speciesData)
+					avgSpeciesAge += speciesAge.age;
+
+				avgSpeciesAge /= speciesData.size();
+
+				std::cout << ", avg. species age: " << avgSpeciesAge;
+			}
 		
 			TrainCurrentGeneration();
 
-			if (avgFitnessOfGenerations.last() >= targetFitness) {
-				std::cout << "\33[2K\rTarget fitness reached, evolution stopped! (generation: " << generationIndex << ", fitness: " << avgFitnessOfGenerations.last() << ")" << std::endl;
-				return;
+			//if (avgFitnessOfGenerations.last() >= targetFitness) {
+			//	std::cout << "\33[2K\rTarget fitness reached, evolution stopped! (generation: " << generationIndex << ", fitness: " << avgFitnessOfGenerations.last() << ")" << std::endl;
+			//	return;
+			//}
+
+			for (const auto& specData : speciesData) {
+				if (specData.lastFitness >= targetFitness && specData.age > speciesDropOffAge) {
+					std::cout << "\33[2K\rTarget fitness reached, evolution stopped! (generation: " << generationIndex << ", current fitness of a good species: " << specData.lastFitness << ")" << std::endl;
+					return;
+				}					
 			}
 		}
 
