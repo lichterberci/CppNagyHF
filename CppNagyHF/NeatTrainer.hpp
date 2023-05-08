@@ -4,18 +4,13 @@
 #include "vector.hpp"
 #include "NeatModel.hpp"
 #include "FitnessFunction.hpp"
+#include "SpeciesData.hpp"
 
 namespace model {
 
 	class NeatTrainer {
 
-		struct SpeciesData {
-			int age;
-			double startFitness;
-			double lastFitness;
-		};
-
-	public: // temp
+	/*public:*/ // temp
 
 		cstd::Vector<cstd::Vector<NeatModel>> organismsByGenerations;
 		cstd::Vector<const NeatModel*> representativesOfThePrevGeneration;
@@ -113,5 +108,8 @@ namespace model {
 		}
 
 		void Train();
+
+		void SaveProgress(const std::string& filename);
+		void LoadProgress(const std::string& filename);
 	};
 }

@@ -60,6 +60,10 @@ namespace model {
 		NeatModel()
 		{ }
 
+		// load from serialized file
+		NeatModel(cstd::Vector<uint8_t> serializedData)
+		{}
+
 		NeatModel(const NeatModel& other) 
 			: neuronIndicies(other.neuronIndicies), 
 			genes(other.genes), 
@@ -157,6 +161,8 @@ namespace model {
 		}
 
 		friend std::ostream& operator<< (std::ostream& os, const NeatModel& model);
+
+		cstd::Vector<uint8_t> Serialize() const;
 	};
 
 	
