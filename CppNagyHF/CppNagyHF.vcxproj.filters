@@ -113,6 +113,9 @@
     <ClInclude Include="Direction.hpp">
       <Filter>Source Files\Model</Filter>
     </ClInclude>
+    <ClInclude Include="SpeciesData.hpp">
+      <Filter>Source Files\Model</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Natvis Include="CustomDebuggerVisualization.natvis" />

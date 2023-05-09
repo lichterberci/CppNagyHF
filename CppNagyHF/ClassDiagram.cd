@@ -1,35 +1,35 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ClassDiagram MajorVersion="1" MinorVersion="1" GroupingSetting="Access" MembersFormat="NameAndType">
   <Class Name="cstd::Vector&lt;T&gt;">
-    <Position X="4.75" Y="4.25" Width="2.75" />
+    <Position X="6.25" Y="11" Width="2.75" />
     <TypeIdentifier>
       <HashCode>AgAAAAQCAIDAAAAACIIIAYAQAAEAAAAAAEAoAAIAAgA=</HashCode>
       <FileName>vector.hpp</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="game::Game">
-    <Position X="15" Y="5.75" Width="3" />
+    <Position X="16.75" Y="11.75" Width="3" />
     <TypeIdentifier>
-      <HashCode>AAQCQBiAACAAAAYIAgggAREAgAgAIAALCBAgBEkAAIA=</HashCode>
+      <HashCode>AAQAYBiAACAAAAYIAgggASEAgAwQIAALCBAgAEgAAIA=</HashCode>
       <FileName>Game.hpp</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
       <Field Name="gameState" />
       <Field Name="controlType" />
-      <Field Name="p_controllerModel" />
       <Field Name="snake" />
+      <Field Name="p_controllerModel" />
       <Field Name="apple" />
     </ShowAsAssociation>
   </Class>
-  <Class Name="Utils::GameUtils" Collapsed="true">
-    <Position X="24.25" Y="0.5" Width="1.5" />
+  <Class Name="Utils::GameUtils">
+    <Position X="24.5" Y="2.5" Width="2.75" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAA=</HashCode>
       <FileName>GameUtils.hpp</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="game::Snake">
-    <Position X="4.25" Y="0.5" Width="3" />
+    <Position X="0.5" Y="12.25" Width="3" />
     <TypeIdentifier>
       <HashCode>QAACAAAAAIAAAgAAAAIBAAAAAQAIIAAAABAAAAAAAAA=</HashCode>
       <FileName>Snake.hpp</FileName>
@@ -38,24 +38,24 @@
       <Field Name="body" />
     </ShowAsAssociation>
   </Class>
-  <Class Name="model::ConnectionGene" Collapsed="true">
-    <Position X="22.5" Y="0.5" Width="1.5" />
+  <Class Name="model::ConnectionGene">
+    <Position X="28" Y="3" Width="2.75" />
     <TypeIdentifier>
       <HashCode>AAAAQAIAAAABAIAAAAAADQgAAARCAAEgQAAgAAAACAA=</HashCode>
       <FileName>ConnectionGene.hpp</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="model::ControllerModel" Collapsed="true">
-    <Position X="16.5" Y="15.75" Width="1.5" />
+    <Position X="25.75" Y="9.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAg=</HashCode>
       <FileName>ControllerModel.hpp</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="model::NeatModel">
-    <Position X="0.5" Y="17" Width="5.5" />
+    <Position X="9.75" Y="11" Width="5.5" />
     <TypeIdentifier>
-      <HashCode>QgQCIACgAABAAAAAAKBQAIAIAAAIAAAACAAgAEICAgg=</HashCode>
+      <HashCode>QgQCIACgAABAAAAAAKBQAIAIACAIAAAACAAgAEICAgg=</HashCode>
       <FileName>NeatModel.hpp</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
@@ -65,9 +65,19 @@
     </ShowAsAssociation>
   </Class>
   <Class Name="model::NeatTrainer">
-    <Position X="9.5" Y="1.75" Width="5.25" />
+    <Position X="4" Y="0.5" Width="5.25" />
+    <AssociationLine Name="organismsByGenerations" Type="cstd::Vector&lt;T&gt;">
+      <MemberNameLabel ManuallyPlaced="true">
+        <Position X="0.06" Y="0.33" />
+      </MemberNameLabel>
+    </AssociationLine>
+    <AssociationLine Name="representativesOfThePrevGeneration" Type="cstd::Vector&lt;T&gt;">
+      <MemberNameLabel ManuallyPlaced="true">
+        <Position X="0.005" Y="0.633" />
+      </MemberNameLabel>
+    </AssociationLine>
     <TypeIdentifier>
-      <HashCode>IQAgFQiACkAGIAYUEQMACQAAAAASIASAPAIghEIABAI=</HashCode>
+      <HashCode>IQAgBQiICkAGIA4UEQMAAQAAAASSIASAPAIohEIABAI=</HashCode>
       <FileName>NeatTrainer.hpp</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
@@ -75,18 +85,17 @@
       <Field Name="representativesOfThePrevGeneration" />
       <Field Name="avgFitnessOfGenerations" />
       <Field Name="fitnessFunction" />
-      <Field Name="activationFunction" />
     </ShowAsAssociation>
   </Class>
   <Class Name="model::RandomModel" Collapsed="true">
-    <Position X="16.5" Y="17" Width="1.5" />
+    <Position X="25.75" Y="11" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAg=</HashCode>
       <FileName>RandomModel.hpp</FileName>
     </TypeIdentifier>
   </Class>
   <Struct Name="game::Apple">
-    <Position X="19.5" Y="9.75" Width="2" />
+    <Position X="21.25" Y="13.5" Width="2" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAABAAAAIAAAAAAIAAAAABQAAAAAAAA=</HashCode>
       <FileName>Apple.hpp</FileName>
@@ -96,119 +105,126 @@
     </ShowAsAssociation>
   </Struct>
   <Struct Name="cstd::Position" Collapsed="true">
-    <Position X="19.25" Y="12.25" Width="1.5" />
+    <Position X="21" Y="12" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAgAAAAAQAAAAAAAAAAAABgAAAAAAA=</HashCode>
       <FileName>position.hpp</FileName>
     </TypeIdentifier>
   </Struct>
-  <Struct Name="game::GameReport" Collapsed="true">
-    <Position X="22.5" Y="1.75" Width="1.5" />
+  <Struct Name="game::GameReport">
+    <Position X="25" Y="0.5" Width="2.25" />
     <TypeIdentifier>
       <HashCode>AAAAAACAAAABAAAAAAAAABAAAAAAAAAAACAAAAAAAAA=</HashCode>
       <FileName>GameReport.hpp</FileName>
     </TypeIdentifier>
   </Struct>
   <Struct Name="model::ActivationFunction" Collapsed="true">
-    <Position X="6" Y="11" Width="1.5" />
+    <Position X="15.25" Y="5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>ActivationFunction.hpp</FileName>
     </TypeIdentifier>
   </Struct>
   <Struct Name="model::Sigmoid" Collapsed="true">
-    <Position X="3.5" Y="12.25" Width="1.5" />
+    <Position X="12.75" Y="6.25" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>ActivationFunction.hpp</FileName>
     </TypeIdentifier>
   </Struct>
   <Struct Name="model::SteepSigmoid&lt;TCoeff, coeff&gt;" Collapsed="true">
-    <Position X="8" Y="12.25" Width="2.25" />
+    <Position X="17.25" Y="6.25" Width="2.25" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>ActivationFunction.hpp</FileName>
     </TypeIdentifier>
   </Struct>
   <Struct Name="model::Tanh" Collapsed="true">
-    <Position X="1.25" Y="12.25" Width="1.5" />
+    <Position X="10.5" Y="6.25" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>ActivationFunction.hpp</FileName>
     </TypeIdentifier>
   </Struct>
   <Struct Name="model::ReLU" Collapsed="true">
-    <Position X="5.75" Y="12.25" Width="1.5" />
+    <Position X="15" Y="6.25" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>ActivationFunction.hpp</FileName>
     </TypeIdentifier>
   </Struct>
   <Struct Name="model::LReLU" Collapsed="true">
-    <Position X="11" Y="12.25" Width="1.5" />
+    <Position X="20.25" Y="6.25" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>ActivationFunction.hpp</FileName>
     </TypeIdentifier>
   </Struct>
   <Struct Name="model::FitnessFunction" Collapsed="true">
-    <Position X="7.5" Y="14" Width="1.5" />
+    <Position X="16.75" Y="8" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>FitnessFunction.hpp</FileName>
     </TypeIdentifier>
   </Struct>
   <Struct Name="model::FitnessByApplesOnly" Collapsed="true">
-    <Position X="1.25" Y="15.25" Width="1.75" />
+    <Position X="10.5" Y="9.25" Width="1.75" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>FitnessFunction.hpp</FileName>
     </TypeIdentifier>
   </Struct>
   <Struct Name="model::FitnessByStepsOnly" Collapsed="true">
-    <Position X="3.75" Y="15.25" Width="1.75" />
+    <Position X="13" Y="9.25" Width="1.75" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>FitnessFunction.hpp</FileName>
     </TypeIdentifier>
   </Struct>
   <Struct Name="model::FitnessByApplesAndSteps&lt;appleCoeff, stepCoeff&gt;" Collapsed="true">
-    <Position X="11.75" Y="15.25" Width="3.5" />
+    <Position X="21" Y="9.25" Width="3.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>FitnessFunction.hpp</FileName>
     </TypeIdentifier>
   </Struct>
   <Struct Name="model::FitnessByApplesAndStepsAndWin&lt;appleCoeff, stepCoeff, winCoeff&gt;" Collapsed="true">
-    <Position X="6.25" Y="15.25" Width="4.75" />
+    <Position X="15.5" Y="9.25" Width="4.75" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>FitnessFunction.hpp</FileName>
     </TypeIdentifier>
   </Struct>
-  <Struct Name="model::ModelParams" Collapsed="true">
-    <Position X="24.25" Y="1.75" Width="1.5" />
+  <Struct Name="model::ModelParams">
+    <Position X="28" Y="0.5" Width="2.75" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAEAAAEAAAAAAAAAAAAAAABAEAAAIAQ=</HashCode>
       <FileName>ModelParams.hpp</FileName>
     </TypeIdentifier>
   </Struct>
+  <Struct Name="model::SpeciesData">
+    <Position X="22.5" Y="2.25" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAQAAAAAAAAAAABAAAAAAAAAAAAAAIAAA=</HashCode>
+      <FileName>SpeciesData.hpp</FileName>
+    </TypeIdentifier>
+  </Struct>
   <Enum Name="game::GameState" Collapsed="true">
-    <Position X="18.75" Y="8.25" Width="1.5" />
+    <Position X="13.5" Y="17" Width="1.5" />
     <TypeIdentifier>
       <HashCode>IAAAAAAAAAAAAAAAAAAAAIAAAAAABAAAAACAAAAAAAA=</HashCode>
       <FileName>Game.hpp</FileName>
     </TypeIdentifier>
   </Enum>
   <Enum Name="game::GameControlType" Collapsed="true">
-    <Position X="19.75" Y="6.25" Width="1.5" />
+    <Position X="21.5" Y="16" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AQAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAA=</HashCode>
       <FileName>Game.hpp</FileName>
     </TypeIdentifier>
   </Enum>
-  <Enum Name="model::Direction" Collapsed="true">
-    <Position X="22.5" Y="3" Width="1.5" />
+  <Enum Name="model::Direction">
+    <Position X="22.5" Y="0.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAgAAAQAAAAAAAAICAAAgAAAAAAAAAAA=</HashCode>
       <FileName>Direction.hpp</FileName>
