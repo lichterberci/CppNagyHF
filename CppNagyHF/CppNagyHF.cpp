@@ -36,29 +36,29 @@ int main()
         &fitnessFunction
     );
 
-    trainer.chanceOfDentritInsertion = 0.0;
-    trainer.chanceOfNeuronInsertion = 0.0;
-    trainer.portionOfSpeciesToKeepForReproduction = 0.2;
-    trainer.chanceOfDisabling = 0.0;
+    trainer.chanceOfDentritInsertion = 0.05;
+    trainer.chanceOfNeuronInsertion = 0.1;
+    trainer.portionOfSpeciesToKeepForReproduction = 0.3;
+    trainer.chanceOfDisabling = 0.02;
     trainer.chanceOfDentritMutation = 0.5;
     trainer.weightAdjustMin = -0.5;
     trainer.weightAdjustMax = 0.5;
     trainer.minImprovementOfAvgFitnessToConsiderItAnImprovement = 0.02;
-    trainer.numGenerationsWithSameFitnessBeforeOnlyLookingAtTopSpecies = 100000;
+    trainer.numGenerationsWithSameFitnessBeforeOnlyLookingAtTopSpecies = 20;
     trainer.chanceOfGeneDisablingIfEitherGeneIsDisabled = 0.75;
     trainer.chanceOfMutationBeingNewValue = 0.1;
     trainer.weightSetMax = 2;
     trainer.weightSetMin = -2;
     trainer.placeFirstAppleInFrontOfSnake = false;
     
-    trainer.speciesDropOffAge = 20;
-    trainer.speciesDropOffFitnessThreshold = 0.15;
+    trainer.speciesDropOffAge = 15;
+    trainer.speciesDropOffFitnessThreshold = 0.05;
 
     trainer.numberOfEvaluationSteps = 30;
 
     trainer.targetFitness = 0.95;
 
-    trainer.SetNeatConstants(1, 1, 1, 0.8);
+    trainer.SetNeatConstants(1, 1, 2, 2);
 
     //trainer.TrainCurrentGeneration();
 

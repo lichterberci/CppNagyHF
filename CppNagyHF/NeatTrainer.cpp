@@ -167,7 +167,7 @@ namespace model {
 			const double fitnessDelta = speciesData[speciesIndex].lastFitness - speciesData[speciesIndex].startFitness;
 
 			// if the fitness did not increase sufficiently, kill the species
-			if (fitnessDelta < speciesDropOffFitnessThreshold)
+			if (fitnessDelta < speciesDropOffFitnessThreshold * speciesData[speciesIndex].age / speciesDropOffAge)
 				sumOfAdjustedFitnessForEachSpecies[speciesIndex] = 0;
 		}
 
@@ -758,21 +758,31 @@ namespace model {
 			//	return;
 			//}
 
-			int specIndex = 0;
-			for (const auto& specData : speciesData) {
-				if (specData.lastFitness >= targetFitness && specData.age > speciesDropOffAge) {
-					std::cout << "\33[2K\rTarget fitness reached, evolution stopped! (generation: " << generationIndex << ", current fitness of a good species: " << specData.lastFitness << ")" << std::endl;
+			SpeciesData* dataOfBestSpecies = std::max_element(
+				speciesData.begin(), 
+				speciesData.end(), 
+				[&](const SpeciesData a, const SpeciesData b) {
+					return a.lastFitness < b.lastFitness;
+				});
 
-					NeatModel* bestModel = const_cast<NeatModel*>(representativesOfThePrevGeneration[specIndex]);
+			if (dataOfBestSpecies->lastFitness >= targetFitness) {
 
-					std::cout << "Fitness: " << bestModel->rawFitness << std::endl;
+				std::cout << "\33[2K\rTarget fitness reached, evolution stopped! (generation: " << generationIndex << ", current fitness of a good species: " << dataOfBestSpecies->lastFitness << ")" << std::endl;
 
-					for (int i = 0; i < 5; i++)
-						std::cout << "Score: " << EvaluateIndividual(*bestModel) << std::endl;
+				int specIndex = 0; 
 
-					return;
-				}					
-				specIndex++;
+				for (int i = 0; i < speciesData.size(); i++)
+					if (&speciesData[i] == dataOfBestSpecies)
+						specIndex = i;
+
+				NeatModel* bestModel = const_cast<NeatModel*>(representativesOfThePrevGeneration[specIndex]);
+
+				std::cout << "Fitness: " << bestModel->rawFitness << std::endl;
+
+				for (int i = 0; i < 5; i++)
+					std::cout << "Score: " << EvaluateIndividual(*bestModel) << std::endl;
+
+				return;
 			}
 		}
 
