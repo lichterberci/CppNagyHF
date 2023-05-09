@@ -51,14 +51,14 @@ int main()
     trainer.weightSetMin = -2;
     trainer.placeFirstAppleInFrontOfSnake = false;
     
-    trainer.speciesDropOffAge = 15;
-    trainer.speciesDropOffFitnessThreshold = 0.05;
+    trainer.speciesDropOffAge = 20;
+    trainer.speciesDropOffFitnessThreshold = 0.15;
 
     trainer.numberOfEvaluationSteps = 30;
 
     trainer.targetFitness = 0.95;
 
-    trainer.SetNeatConstants(1, 1, 1, 1);
+    trainer.SetNeatConstants(1, 1, 1, 0.8);
 
     //trainer.TrainCurrentGeneration();
 

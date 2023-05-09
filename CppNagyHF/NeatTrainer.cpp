@@ -674,18 +674,35 @@ namespace model {
 			numTotalPlacesAllocated += places;
 		}
 
-		// if we have rounding errors, we just give them away in increasing order for non-extinct species
+		// if we have rounding errors, we give them away in the order of fitnesses
 		if (numTotalPlacesAllocated < populationCount) {
-			int recieveingIndex = 0;
+
+			cstd::Vector<int> speciesIndiciesOderedByFitness;
+
+			for (size_t i = 0; i < sumOfAdjustedFitnessForEachSpecies.size(); i++)
+				speciesIndiciesOderedByFitness += i;
+
+			std::sort(
+				speciesIndiciesOderedByFitness.begin(), 
+				speciesIndiciesOderedByFitness.end(), 
+				[&sumOfAdjustedFitnessForEachSpecies] (const int a, const int b) { 
+					return sumOfAdjustedFitnessForEachSpecies[a] < sumOfAdjustedFitnessForEachSpecies[b]; 
+				}
+			);
+
+			int recieveingIndexInSortedArray = 0;
 
 			bool isThereNonExtinctSpecies = numTotalPlacesAllocated > 0;
 
 			while (numTotalPlacesAllocated < populationCount) {
-				if (isThereNonExtinctSpecies == false || placesAllocatedForSpecies[recieveingIndex] > 0) {
-					placesAllocatedForSpecies[recieveingIndex]++;
+
+				const int speciesIndex = speciesIndiciesOderedByFitness[recieveingIndexInSortedArray];
+
+				if (isThereNonExtinctSpecies == false || placesAllocatedForSpecies[speciesIndex] > 0) {
+					placesAllocatedForSpecies[speciesIndex]++;
 					numTotalPlacesAllocated++;
 				}
-				recieveingIndex = (recieveingIndex + 1) % numSpecies;
+				recieveingIndexInSortedArray = (recieveingIndexInSortedArray + 1) % numSpecies;
 			}
 		}
 
