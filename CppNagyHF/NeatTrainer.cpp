@@ -20,17 +20,16 @@ namespace model {
 		representativesOfThePrevGeneration += &organismsByGenerations[0][0];
 	}
 
-	double NeatTrainer::TrainIndividual(NeatModel& neatModel) {
+	double NeatTrainer::EvaluateIndividual(const NeatModel& neatModel) {
 
 #if XOR == 1
 
 		ModelParams params;
 		params.SetToRandom();
 
-		const int numQuestions = 10;
 		double avgLoss = 0;
 
-		for (int i = 0; i < numQuestions; i++) {
+		for (int i = 0; i < numberOfEvaluationSteps; i++) {
 
 			double randVal = utils::RandomDouble(0, 1);
 
@@ -63,7 +62,7 @@ namespace model {
 
 			double loss = powl(res[0] - solution, 2);
 
-			avgLoss += loss / numQuestions;
+			avgLoss += loss / numberOfEvaluationSteps;
 		}
 
 		return 1 - avgLoss;
@@ -88,7 +87,7 @@ namespace model {
 		cstd::Vector<double> fitnessScores(currentGeneration.size());
 
 		for (auto& organism : currentGeneration)
-			fitnessScores += TrainIndividual(organism);
+			fitnessScores += EvaluateIndividual(organism);
 
 		// speciation
 
@@ -742,11 +741,21 @@ namespace model {
 			//	return;
 			//}
 
+			int specIndex = 0;
 			for (const auto& specData : speciesData) {
 				if (specData.lastFitness >= targetFitness && specData.age > speciesDropOffAge) {
 					std::cout << "\33[2K\rTarget fitness reached, evolution stopped! (generation: " << generationIndex << ", current fitness of a good species: " << specData.lastFitness << ")" << std::endl;
+
+					NeatModel* bestModel = const_cast<NeatModel*>(representativesOfThePrevGeneration[specIndex]);
+
+					std::cout << "Fitness: " << bestModel->rawFitness << std::endl;
+
+					for (int i = 0; i < 5; i++)
+						std::cout << "Score: " << EvaluateIndividual(*bestModel) << std::endl;
+
 					return;
 				}					
+				specIndex++;
 			}
 		}
 

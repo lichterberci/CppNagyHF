@@ -60,7 +60,7 @@ namespace model {
 		genes = result;
 	}
 
-	cstd::Vector<double> NeatModel::Predict(const ModelParams& modelParams) {
+	cstd::Vector<double> NeatModel::Predict(const ModelParams& modelParams) const {
 
 		const auto inputs = modelParams.GetInputVector();
 
@@ -105,7 +105,7 @@ namespace model {
 		return result;
 	}
 
-	void NeatModel::GetKeyPresses(const ModelParams& modelParams, cstd::Vector<Direction>& out_keyPresses) {
+	void NeatModel::GetKeyPresses(const ModelParams& modelParams, cstd::Vector<Direction>& out_keyPresses) const {
 
 		cstd::Vector<double> result = Predict(modelParams);
 

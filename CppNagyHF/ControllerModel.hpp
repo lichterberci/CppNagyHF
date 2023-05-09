@@ -8,7 +8,7 @@ namespace model {
 
 	class ControllerModel {
 	public:
-		virtual cstd::Vector<double> Predict(const ModelParams& modelParams) = 0;
-		virtual void GetKeyPresses(const ModelParams& modelParams, cstd::Vector<Direction>& out_keyPresses) = 0;
+		virtual cstd::Vector<double> Predict(const ModelParams& modelParams) const = 0;
+		virtual void GetKeyPresses(const ModelParams& modelParams, cstd::Vector<Direction>& out_keyPresses) const = 0;
 	};
 }

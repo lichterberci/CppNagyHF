@@ -10,7 +10,7 @@ namespace model {
 
 	class NeatTrainer {
 
-	/*public:*/ // temp
+	public: // temp
 
 		cstd::Vector<cstd::Vector<NeatModel>> organismsByGenerations;
 		cstd::Vector<const NeatModel*> representativesOfThePrevGeneration;
@@ -20,7 +20,7 @@ namespace model {
 		std::unordered_map<long long, int> innovationNumberTable;
 
 		void ConstructInitialGeneration();
-		double TrainIndividual(NeatModel& neatModel);
+		double EvaluateIndividual(const NeatModel& neatModel);
 		void TrainCurrentGeneration();
 
 		cstd::Vector<int> Speciate(const cstd::Vector<NeatModel>& organisms, cstd::Vector<SpeciesData>& speciesAgeData);
@@ -42,6 +42,7 @@ namespace model {
 		const FitnessFunction* fitnessFunction;
 		int numMaxIdleSteps;
 		int numBestOrganismsToKeepFromPrevGenerations = 1;
+		unsigned int numberOfEvaluationSteps = 5;
 
 		int gameWidth;
 		int gameHeight;

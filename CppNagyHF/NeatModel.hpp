@@ -140,8 +140,8 @@ namespace model {
 
 		double ComputeValueOfNeuron(const cstd::Vector<double>& inputs, int neuronId, std::unordered_map<int, double>& valueMap) const;
 		
-		cstd::Vector<double> Predict(const ModelParams& modelParams);
-		void GetKeyPresses(const ModelParams& modelParams, cstd::Vector<Direction>& out_keyPresses);
+		cstd::Vector<double> Predict(const ModelParams& modelParams) const;
+		void GetKeyPresses(const ModelParams& modelParams, cstd::Vector<Direction>& out_keyPresses) const;
 
 		void Mutate(
 			std::unordered_map<long long, int>& innovationNumberTable, 

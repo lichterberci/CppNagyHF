@@ -2,7 +2,7 @@
 
 namespace model {
 
-	cstd::Vector<double> RandomModel::Predict(const model::ModelParams& modelParams) {
+	cstd::Vector<double> RandomModel::Predict(const model::ModelParams& modelParams) const {
 
 		/*std::cout << "Model params:" << std::endl;
 		std::cout << "Distance to walls" << std::endl;
@@ -25,7 +25,7 @@ namespace model {
 		return result;
 	}
 
-	void RandomModel::GetKeyPresses(const model::ModelParams& modelParams, cstd::Vector<Direction>& out_keyPresses) {
+	void RandomModel::GetKeyPresses(const model::ModelParams& modelParams, cstd::Vector<Direction>& out_keyPresses) const {
 		cstd::Vector<double> result = Predict(modelParams);
 
 		// find max value

@@ -32,6 +32,8 @@ namespace model {
 		case sf::Keyboard::W:
 		case sf::Keyboard::Up:
 			return Direction::UP;
+		default:
+			return Direction::NONE;
 		}
 	}
 
