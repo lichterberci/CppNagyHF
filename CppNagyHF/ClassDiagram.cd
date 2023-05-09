@@ -14,11 +14,11 @@
       <FileName>Game.hpp</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
-      <Field Name="controlType" />
-      <Field Name="apple" />
-      <Field Name="snake" />
-      <Field Name="p_controllerModel" />
       <Field Name="gameState" />
+      <Field Name="controlType" />
+      <Field Name="p_controllerModel" />
+      <Field Name="snake" />
+      <Field Name="apple" />
     </ShowAsAssociation>
   </Class>
   <Class Name="Utils::GameUtils" Collapsed="true">
@@ -59,23 +59,23 @@
       <FileName>NeatModel.hpp</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
-      <Field Name="activationFunction" />
-      <Field Name="genes" />
       <Field Name="neuronIndicies" />
+      <Field Name="genes" />
+      <Field Name="activationFunction" />
     </ShowAsAssociation>
   </Class>
   <Class Name="model::NeatTrainer">
-    <Position X="9" Y="2.75" Width="5.25" />
+    <Position X="9.5" Y="1.75" Width="5.25" />
     <TypeIdentifier>
-      <HashCode>IQAgFQiAAEAEIAYUEQMACQAAAAASIASAPAIghEIABAI=</HashCode>
+      <HashCode>IQAgFQiACkAGIAYUEQMACQAAAAASIASAPAIghEIABAI=</HashCode>
       <FileName>NeatTrainer.hpp</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
+      <Field Name="organismsByGenerations" />
+      <Field Name="representativesOfThePrevGeneration" />
+      <Field Name="avgFitnessOfGenerations" />
       <Field Name="fitnessFunction" />
       <Field Name="activationFunction" />
-      <Field Name="representativesOfThePrevGeneration" />
-      <Field Name="organismsByGenerations" />
-      <Field Name="avgFitnessOfGenerations" />
     </ShowAsAssociation>
   </Class>
   <Class Name="model::RandomModel" Collapsed="true">

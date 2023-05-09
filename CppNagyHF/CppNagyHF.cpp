@@ -54,7 +54,7 @@ int main()
     trainer.speciesDropOffAge = 15;
     trainer.speciesDropOffFitnessThreshold = 0.05;
 
-    trainer.targetFitness = 0.95;
+    trainer.targetFitness = 0.99;
 
     trainer.SetNeatConstants(1, 1, 1, 1);
 
