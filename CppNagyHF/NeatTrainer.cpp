@@ -171,27 +171,27 @@ namespace model {
 				sumOfAdjustedFitnessForEachSpecies[speciesIndex] = 0;
 		}
 
-		// allocate places accordingly 
-
-		auto placesAllocatedForSpecies = AllocatePlacesForSpecies(sumOfAdjustedFitnessForEachSpecies);
-
 		// if sum of raw fitness does not rise for more than X generations, only keep the top Y species
 		if (avgFitnessOfGenerations.size() % numGenerationsWithSameFitnessBeforeOnlyLookingAtTopSpecies == 0) {
 
 			bool hasThereBeenImprovement = false;
 
 			double firstFitnessInObservedRange = avgFitnessOfGenerations[avgFitnessOfGenerations.size() - numGenerationsWithSameFitnessBeforeOnlyLookingAtTopSpecies];
+			
+			// THIS CODE CHECKS IF THERE HAS BEEN ANY IMPROVEMENT (TOO GENEROUS)
+			// 
+			//for (
+			//	unsigned int generationIndex = avgFitnessOfGenerations.size() - numGenerationsWithSameFitnessBeforeOnlyLookingAtTopSpecies + 1; 
+			//	generationIndex < avgFitnessOfGenerations.size(); 
+			//	generationIndex++
+			//) {
+			//	if (firstFitnessInObservedRange + minImprovementOfAvgFitnessToConsiderItAnImprovement <= avgFitnessOfGenerations[generationIndex]) {
+			//		hasThereBeenImprovement = true;
+			//		break;
+			//	}
+			//}
 
-			for (
-				unsigned int generationIndex = avgFitnessOfGenerations.size() - numGenerationsWithSameFitnessBeforeOnlyLookingAtTopSpecies + 1; 
-				generationIndex < avgFitnessOfGenerations.size(); 
-				generationIndex++
-			) {
-				if (firstFitnessInObservedRange + minImprovementOfAvgFitnessToConsiderItAnImprovement <= avgFitnessOfGenerations[generationIndex]) {
-					hasThereBeenImprovement = true;
-					break;
-				}
-			}
+			hasThereBeenImprovement = avgFitnessOfGenerations.last() - firstFitnessInObservedRange >= minImprovementOfAvgFitnessToConsiderItAnImprovement;
 
 			if (hasThereBeenImprovement == false) {
 
@@ -206,16 +206,15 @@ namespace model {
 					return sumOfAdjustedFitnessForEachSpecies[a] < sumOfAdjustedFitnessForEachSpecies[b];
 				});
 
-				for (int i = numSpecies - 1; i >= numberOfTopSpeciesToLookAtIfFitnessIsStableForTooLong; i--) {
+				for (int i = 0; i < numberOfTopSpeciesToLookAtIfFitnessIsStableForTooLong; i++) {
 					sumOfAdjustedFitnessForEachSpecies[i] = 0; // dont allocate anything for this species
 				}
-
-				//std::cout << "Pruned all species except top 2!" << std::endl;
-
-				placesAllocatedForSpecies = AllocatePlacesForSpecies(sumOfAdjustedFitnessForEachSpecies);
 			}
 		}
 
+		// allocate places accordingly 
+
+		auto placesAllocatedForSpecies = AllocatePlacesForSpecies(sumOfAdjustedFitnessForEachSpecies);
 
 		// reproduction
 
@@ -715,9 +714,11 @@ namespace model {
 
 		for (size_t generationIndex = 0; generationIndex < numGenerations; generationIndex++) {
 
-			std::cout << 
-				"\33[2K\rTraining generation " << std::setfill(' ') << std::setw(4) <<
-				generationIndex << "/" << numGenerations
+			//std::cout << "\33[2K\r";
+
+			std::cout <<
+				"\33[2K\rTraining generation " << std::setfill(' ') << std::setw(4) 
+				<< generationIndex << "/" << numGenerations
 				<< " (" << std::setw(3) << std::fixed << std::setprecision(1) 
 				<< (100.0 * generationIndex / numGenerations) << "%)";
 
