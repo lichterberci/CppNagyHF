@@ -59,7 +59,7 @@ int main()
 
     trainer.targetFitness = 0.95;
 
-    trainer.SetNeatConstants(1, 1, 1.5, 1);
+    trainer.SetNeatConstants(1, 1, 2, 2);
 
     //trainer.TrainCurrentGeneration();
 
