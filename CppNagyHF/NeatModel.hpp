@@ -1,6 +1,6 @@
 #pragma once
 
-#define XOR 1
+//#define XOR 1
 
 #include "vector.hpp"
 #include "ConnectionGene.hpp"

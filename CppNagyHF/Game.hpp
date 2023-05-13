@@ -37,7 +37,7 @@ namespace game {
 		int numMaxIdleSteps;
 		GameState gameState = GameState::UNINITIALIZED;
 		GameControlType controlType;
-		model::ControllerModel* p_controllerModel;
+		const model::ControllerModel* p_controllerModel;
 		bool placeFirstAppleInFrontOfSnake;
 
 		Snake snake;
@@ -67,7 +67,7 @@ namespace game {
 			int gameHeight = 20, 
 			int windowWidth = 640, 
 			int windowHeight = 480, 
-			model::ControllerModel& controllerModel = s_defaultModel,
+			const model::ControllerModel& controllerModel = s_defaultModel,
 			int numMaxIdleSteps = 1000,
 			bool placeFirstAppleInFrontOfSnake = true
 		)

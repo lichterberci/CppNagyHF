@@ -68,15 +68,22 @@ namespace model {
 		return 1 - avgLoss;
 
 #else
-		auto game = game::Game(false, game::GameControlType::AI, gameWidth, gameHeight, 800, 800, neatModel, numMaxIdleSteps, placeFirstAppleInFrontOfSnake);
+		double avgFitness = 0;
 
-		game.Start();
+		for (int i = 0; i < numberOfEvaluationSteps; i++) {
 
-		auto report = game.GenerateReport();
+			auto game = game::Game(false, game::GameControlType::AI, gameWidth, gameHeight, 800, 800, neatModel, numMaxIdleSteps, placeFirstAppleInFrontOfSnake);
 
-		double fitness = fitnessFunction->operator()(report);
+			game.Start();
 
-		return fitness;
+			auto report = game.GenerateReport();
+
+			double fitness = fitnessFunction->operator()(report);
+
+			avgFitness += fitness / numberOfEvaluationSteps;
+		}
+
+		return avgFitness;
 #endif
 	}
 
@@ -206,7 +213,7 @@ namespace model {
 					return sumOfAdjustedFitnessForEachSpecies[a] < sumOfAdjustedFitnessForEachSpecies[b];
 				});
 
-				for (int i = 0; i < numberOfTopSpeciesToLookAtIfFitnessIsStableForTooLong; i++) {
+				for (int i = 0; i < std::min<int>(numberOfTopSpeciesToLookAtIfFitnessIsStableForTooLong, numSpecies); i++) {
 					sumOfAdjustedFitnessForEachSpecies[i] = 0; // dont allocate anything for this species
 				}
 			}
@@ -785,6 +792,9 @@ namespace model {
 
 				return;
 			}
+
+			chanceOfNeuronInsertion *= 0.99;
+			chanceOfDentritInsertion *= 0.99;
 		}
 
 		std::cout << "\33[2K\rTraining done! Avg. fitness of the last generation was " << avgFitnessOfGenerations.last() << std::endl;
