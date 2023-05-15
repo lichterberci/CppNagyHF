@@ -9,6 +9,7 @@
 #include "RandomModel.hpp"
 #include "NeatModel.hpp"
 #include "NeatTrainer.hpp"
+#include "SpeciesData.hpp"
 
 int main()
 {
@@ -23,43 +24,44 @@ int main()
 
     //return 0;
 
-    const auto activationFunction = model::SteepSigmoid<int, 10>();
-    const auto fitnessFunction = model::FitnessByApplesAndSteps<1000, 1>();
+    const auto activationFunction = model::SteepSigmoid<int, 1>();
+    const auto fitnessFunction = model::FitnessByApplesOnly();
+    //const auto fitnessFunction = model::FitnessByApplesAndSteps<1000, 1>();
 
     auto trainer = model::NeatTrainer(
-        200, 
-        1000,
+        100, 
+        300,
         &activationFunction, 
-        40, 
-        10, 
-        10, 
+        50, 
+        3, 
+        3, 
         &fitnessFunction
     );
 
-    trainer.chanceOfDentritInsertion = 0.08;
-    trainer.chanceOfNeuronInsertion = 0.1;
+    trainer.chanceOfDentritInsertion = 0.3;
+    trainer.chanceOfNeuronInsertion = 0.02;
     trainer.portionOfSpeciesToKeepForReproduction = 0.3;
-    trainer.chanceOfDisabling = 0.02;
-    trainer.chanceOfDentritMutation = 0.5;
+    trainer.chanceOfDisabling = 0.07;
+    trainer.chanceOfDentritMutation = 0.2;
     trainer.weightAdjustMin = -0.5;
     trainer.weightAdjustMax = 0.5;
-    trainer.minImprovementOfAvgFitnessToConsiderItAnImprovement = 0.05;
+    trainer.minImprovementOfAvgFitnessToConsiderItAnImprovement = 0.01;
     trainer.numGenerationsWithSameFitnessBeforeOnlyLookingAtTopSpecies = 20;
     trainer.numberOfTopSpeciesToLookAtIfFitnessIsStableForTooLong = 5;
     trainer.chanceOfGeneDisablingIfEitherGeneIsDisabled = 0.75;
     trainer.chanceOfMutationBeingNewValue = 0.1;
     trainer.weightSetMax = 2;
     trainer.weightSetMin = -2;
-    trainer.placeFirstAppleInFrontOfSnake = false;
+    trainer.placeFirstAppleInFrontOfSnake = true;
     
     trainer.speciesDropOffAge = 15;
-    trainer.speciesDropOffFitnessThreshold = 0.05;
+    trainer.speciesDropOffFitnessThreshold = 0.005;
 
-    trainer.numberOfEvaluationSteps = 50;
+    trainer.numberOfEvaluationSteps = 10;
 
-    trainer.targetFitness = 0.95;
+    trainer.targetFitness = 3;
 
-    trainer.SetNeatConstants(1, 1, 1.5, 1);
+    trainer.SetNeatConstants(1, 1, 1, 0.75);
 
     //trainer.TrainCurrentGeneration();
 
@@ -92,8 +94,6 @@ int main()
 
     trainer.Train();
 
-    std::cin.get();
-
 #if XOR == 1
     return 0;
 #endif
@@ -115,11 +115,30 @@ int main()
 
     while (true) {
 
-        model::NeatModel* bestOfLastGen = std::max_element(trainer.organismsByGenerations.last().begin(), trainer.organismsByGenerations.last().end(), [](const model::NeatModel& a, const model::NeatModel& b) {
-            return a.rawFitness < b.rawFitness;
-        });
+        using model::SpeciesData;
+        using model::NeatModel;
 
-        auto game = game::Game(true, game::GameControlType::AI, 10, 10, 800, 800, *bestOfLastGen, 100);
+        SpeciesData* dataOfBestSpecies = std::max_element(
+            trainer.speciesData.begin(),
+            trainer.speciesData.end(),
+            [&](const SpeciesData a, const SpeciesData b) {
+                return a.lastFitness < b.lastFitness;
+            });
+
+        int specIndex = 0;
+
+        for (int i = 0; i < trainer.speciesData.size(); i++)
+            if (&trainer.speciesData[i] == dataOfBestSpecies)
+                specIndex = i;
+
+        NeatModel* bestModel = const_cast<NeatModel*>(trainer.representativesOfThePrevGeneration[specIndex]);
+
+        std::cout << "Fitness: " << bestModel->rawFitness << std::endl;
+
+        for (int i = 0; i < 5; i++)
+            std::cout << "Score: " << trainer.EvaluateIndividual(*bestModel) << std::endl;
+
+        auto game = game::Game(true, game::GameControlType::AI, 3, 3, 800, 800, *bestModel, 100, false);
 
         game.SetSpeed(5);
 
