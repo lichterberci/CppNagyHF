@@ -44,7 +44,7 @@ namespace game {
         return snake.Body().size() < gameWidth * gameHeight;
     }
 
-#ifndef JPORTA
+#ifndef CPORTA
     void Apple::Render(sf::RenderWindow& window, int gameWidth, int gameHeight, int windowWidth, int windowHeight) {
 
         sf::RectangleShape appleRect(Utils::GameUtils::GetPixelOfGamePosition(cstd::Position(1, 1), gameWidth, gameHeight, windowWidth, windowHeight)); // 1x1 square

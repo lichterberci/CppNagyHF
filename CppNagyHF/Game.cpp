@@ -9,7 +9,7 @@ namespace game {
 
     void Game::Start() {
 
-#ifndef JPORTA
+#ifndef CPORTA
         deltaClock.restart();
 
         if (useUI)
@@ -21,7 +21,7 @@ namespace game {
 #endif
     }
 
-#ifndef JPORTA
+#ifndef CPORTA
 	void Game::RunWithUI() {
 
         if (controlType == GameControlType::AI && p_controllerModel == nullptr) {
@@ -194,7 +194,7 @@ namespace game {
         numSteps++;
 	}   
 
-#ifndef JPORTA
+#ifndef CPORTA
 
 	void Game::Render(sf::RenderWindow& window) {
 

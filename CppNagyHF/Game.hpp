@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Direction.hpp"
-#ifndef JPROTA
+#ifndef CPORTA
 #include "SFML/Graphics.hpp"
 #endif 
 #include "vector.hpp"
@@ -44,18 +44,18 @@ namespace game {
 		Apple apple;
 		unsigned int points;
 
-#ifndef JPORTA
+#ifndef CPORTA
 		sf::Clock deltaClock;
 		void RunWithUI();
 #endif
 		void RunWithoutUI();
 
-#ifndef JPORTA
+#ifndef CPORTA
 		void HandleResize(sf::Event event, sf::RenderWindow& window, sf::View& view);
 		bool HandleKeyPresses(sf::Event event, cstd::Vector<model::Direction>& out_keyPresses);
 #endif
 		void Update(cstd::Vector<model::Direction> keyPresses);
-#ifndef JPORTA
+#ifndef CPORTA
 		void Render(sf::RenderWindow& window);
 #endif
 		model::ModelParams CalculateModelParams();

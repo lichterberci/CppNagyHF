@@ -1,7 +1,7 @@
 #pragma once
 
 #include <cstdint>
-#ifndef JPORTA
+#ifndef CPORTA
 #include <SFML/Graphics.hpp>
 #endif
 namespace model {
@@ -16,7 +16,7 @@ namespace model {
 
 	};
 
-#ifndef JPORTA
+#ifndef CPORTA
 
 	inline Direction KeyToDirection(const sf::Keyboard::Key key) {
 		switch (key) {

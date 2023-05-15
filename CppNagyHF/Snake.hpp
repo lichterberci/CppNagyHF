@@ -3,7 +3,7 @@
 #include "Direction.hpp"
 #include "vector.hpp"
 #include "position.hpp"
-#ifndef JPORTA
+#ifndef CPORTA
 #include <SFML/graphics.hpp>
 #endif
 namespace game {
@@ -51,7 +51,7 @@ namespace game {
 		void Move(bool grow = false);
 		bool WouldDieIfItMoved(int gameWidth, int gameHeight);
 		bool WouldPickUpAppleIfItMoved(const cstd::Position& applePos);
-#ifndef JPORTA
+#ifndef CPORTA
 		void Render(sf::RenderWindow& window, int gameWidth, int gameHeight, int windowWidth, int windowHeight);
 #endif
 	};

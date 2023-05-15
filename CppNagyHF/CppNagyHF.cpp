@@ -1,6 +1,6 @@
 
 #include <iostream>
-#ifndef JPORTA
+#ifndef CPORTA
 #include <SFML/Graphics.hpp>
 #endif
 #include "vector.hpp"

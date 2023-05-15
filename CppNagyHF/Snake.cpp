@@ -55,7 +55,7 @@ namespace game {
         }
     }
 
-#ifndef JPORTA
+#ifndef CPORTA
     void Snake::Render(sf::RenderWindow& window, int gameWidth, int gameHeight, int windowWidth, int windowHeight) {
 
         for (const auto& bodyPart : body) {

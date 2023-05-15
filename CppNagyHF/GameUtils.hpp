@@ -1,6 +1,6 @@
 #pragma once
 
-#ifndef JPORTA
+#ifndef CPORTA
 #include "SFML/Graphics.hpp"
 #endif
 
@@ -11,7 +11,7 @@ namespace Utils {
 
     class GameUtils {
     public:
-#ifndef JPORTA
+#ifndef CPORTA
         static sf::Vector2f GetPixelOfGamePosition(const cstd::Position& pos, int gameWidth, int gameHeight, int windowWidth, int windowHeight);
 #endif
     };
