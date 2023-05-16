@@ -3,6 +3,8 @@
 #include <exception>
 #include "Direction.hpp"
 
+# define M_PI           3.14159265358979323846  /* pi */
+
 namespace game {
 
     model::RandomModel Game::s_defaultModel = model::RandomModel();
@@ -231,6 +233,7 @@ namespace game {
 
         model::ModelParams result;
 
+#if USE_RELATIVE_DIRECTION != true
         /*
 
         Directions:
@@ -331,6 +334,76 @@ namespace game {
         //for (auto& d : result.distancesToBody)
         //    d /= SNAKE_SIGHT_DISTANCE;
 
+#else
+
+        const cstd::Position& headPos = snake.Body()[0];
+        const cstd::Position& headDir = snake.HeadDirection();
+        const cstd::Position& applePos = apple.position;
+
+        double normalizedAngleToApple;
+
+        if (applePos.x >= headPos.x) {
+            // it is to the right of us
+            normalizedAngleToApple = -atan2(applePos.y - headPos.y, applePos.x - headPos.x) / M_PI;
+        } 
+        else {
+            // flip the plane around the head of the snake
+            normalizedAngleToApple = -atan2(headPos.y - applePos.y, headPos.x - applePos.x) / M_PI;
+            normalizedAngleToApple -= 1;
+
+            if (normalizedAngleToApple <= -1)
+                normalizedAngleToApple += 2;
+        }
+
+        if (headDir.x == 1 && headDir.y == 0) {
+            normalizedAngleToApple += 0;
+            result.currentDirection = 0;
+        }
+        else if (headDir.x == 0 && headDir.y == 1) {
+            normalizedAngleToApple += 0.5;
+            result.currentDirection = 1;
+        }
+        else if (headDir.x == 0 && headDir.y == -1) {
+            normalizedAngleToApple -= 0.5;
+            result.currentDirection = 3;
+        }
+        else {
+            normalizedAngleToApple += 1;
+
+            if (normalizedAngleToApple >= 1)
+                normalizedAngleToApple -= 2;
+
+            result.currentDirection = 2;
+        }
+
+        result.angleToApple = normalizedAngleToApple;
+
+        cstd::Position posInFront = headPos + headDir;
+        cstd::Position posToRight = headPos + cstd::Position(headDir.y, -headDir.x);
+        cstd::Position posToLeft = headPos + cstd::Position(headDir.y, headDir.x);
+
+        result.blockInFront = 0;
+        result.blockToLeft = 0;
+        result.blockToRight = 0;
+
+        for (const auto& bodyPart : snake.Body()) {
+            if (bodyPart == posInFront)
+                result.blockInFront = 1;
+            else if (bodyPart == posToLeft)
+                result.blockToLeft = 1;
+            else if (bodyPart == posToRight)
+                result.blockToRight = 1;
+        }
+
+        if (posInFront.y >= gameHeight || posInFront.x >= gameWidth || posInFront.x < 0 || posInFront.y < 0)
+            result.blockInFront = 1;
+
+        if (posToLeft.y >= gameHeight || posToLeft.x >= gameWidth || posToLeft.x < 0 || posToLeft.y < 0)
+            result.blockToLeft = 1;
+        
+        if (posToRight.y >= gameHeight || posToRight.x >= gameWidth || posToRight.x < 0 || posToRight.y < 0)
+            result.blockToRight = 1;
+#endif
         return result;
     }
 

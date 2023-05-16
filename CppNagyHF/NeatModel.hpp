@@ -16,8 +16,13 @@
 	#define NUM_SENSORS 3
 	#define NUM_OUTPUTS 1
 #else
-	#define NUM_SENSORS 25
-	#define NUM_OUTPUTS 4
+	#if USE_RELATIVE_DIRECTION == true
+		#define NUM_SENSORS 5
+		#define NUM_OUTPUTS 3
+	#else
+		#define NUM_SENSORS 25
+		#define NUM_OUTPUTS 4
+	#endif
 #endif
 
 #define MAX_ATTEMPTS_AT_INSERTING_DENTRIT 30

@@ -58,11 +58,11 @@ namespace cstd {
 			return out << "Position(" << pos.x << ", " << pos.y << ")";
 		}
 
-		Position operator+ (const Position& rhs) {
+		Position operator+ (const Position& rhs) const {
 			return Position(x + rhs.x, y + rhs.y);
 		}
 
-		Position operator- (const Position& rhs) {
+		Position operator- (const Position& rhs) const {
 			return Position(x - rhs.x, y - rhs.y);
 		}
 				

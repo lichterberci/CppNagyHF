@@ -25,26 +25,26 @@ int main()
     //return 0;
 
     const auto activationFunction = model::SteepSigmoid<int, 1>();
-    const auto fitnessFunction = model::FitnessByApplesOnly();
+    const auto fitnessFunction = model::FitnessByApplesAndSteps<100, 1>();
     //const auto fitnessFunction = model::FitnessByApplesAndSteps<1000, 1>();
 
     auto trainer = model::NeatTrainer(
-        100, 
+        200, 
         300,
         &activationFunction, 
-        50, 
-        3, 
-        3, 
+        70, 
+        5, 
+        5, 
         &fitnessFunction
     );
 
-    trainer.chanceOfDentritInsertion = 0.3;
-    trainer.chanceOfNeuronInsertion = 0.02;
+    trainer.chanceOfDentritInsertion = 0.08;
+    trainer.chanceOfNeuronInsertion = 0.009;
     trainer.portionOfSpeciesToKeepForReproduction = 0.3;
-    trainer.chanceOfDisabling = 0.07;
-    trainer.chanceOfDentritMutation = 0.2;
-    trainer.weightAdjustMin = -0.5;
-    trainer.weightAdjustMax = 0.5;
+    trainer.chanceOfDisabling = 0.02;
+    trainer.chanceOfDentritMutation = 0.15;
+    trainer.weightAdjustMin = -0.05;
+    trainer.weightAdjustMax = 0.05;
     trainer.minImprovementOfAvgFitnessToConsiderItAnImprovement = 0.01;
     trainer.numGenerationsWithSameFitnessBeforeOnlyLookingAtTopSpecies = 20;
     trainer.numberOfTopSpeciesToLookAtIfFitnessIsStableForTooLong = 5;
@@ -55,13 +55,13 @@ int main()
     trainer.placeFirstAppleInFrontOfSnake = true;
     
     trainer.speciesDropOffAge = 15;
-    trainer.speciesDropOffFitnessThreshold = 0.005;
+    trainer.speciesDropOffFitnessThreshold = 0.1;
 
     trainer.numberOfEvaluationSteps = 10;
 
-    trainer.targetFitness = 3;
+    trainer.targetFitness = 17;
 
-    trainer.SetNeatConstants(1, 1, 1, 0.75);
+    trainer.SetNeatConstants(1, 1, 2, 1.4);
 
     //trainer.TrainCurrentGeneration();
 
@@ -138,7 +138,7 @@ int main()
         for (int i = 0; i < 5; i++)
             std::cout << "Score: " << trainer.EvaluateIndividual(*bestModel) << std::endl;
 
-        auto game = game::Game(true, game::GameControlType::AI, 3, 3, 800, 800, *bestModel, 100, false);
+        auto game = game::Game(true, game::GameControlType::AI, 5, 5, 800, 800, *bestModel, 100, false);
 
         game.SetSpeed(5);
 

@@ -4,8 +4,11 @@
 namespace model {
 
 	cstd::Vector<double> ModelParams::GetInputVector() const {
+
 		cstd::Vector<double> result;
 		result.reserve_and_copy(INPUT_SIZE);
+
+#if USE_RELATIVE_DIRECTION == false
 
 		for (const double distanceToWall : distancesToWall)
 			result += distanceToWall;
@@ -15,7 +18,13 @@ namespace model {
 
 		for (const double distanceToBody : distancesToBody)
 			result += distanceToBody;
+#else
 
+		result += blockInFront;
+		result += blockToRight;
+		result += blockToLeft;
+		result += angleToApple;
+#endif
 		result += bias;
 
 		return result;
@@ -23,6 +32,7 @@ namespace model {
 
 	ModelParams& ModelParams::SetToRandom() {
 
+#if USE_RELATIVE_DIRECTION == false
 		for (int i = 0; i < 8; i++)
 			distancesToWall += utils::RandomDouble(0, 10);
 
@@ -31,7 +41,13 @@ namespace model {
 
 		for (int i = 0; i < 8; i++)
 			distancesToBody += utils::RandomDouble(0, 10);
-
+#else
+		blockInFront = utils::RandomInt(-1, 2);
+		blockToRight = utils::RandomInt(-1, 2);
+		blockToLeft = utils::RandomInt(-1, 2);
+		angleToApple = utils::RandomDouble(-1, 1);
+		currentDirection = utils::RandomInt(0, 4);
+#endif
 		return *this;
 	}
 

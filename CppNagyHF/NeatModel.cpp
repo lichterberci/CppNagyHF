@@ -134,7 +134,22 @@ namespace model {
 			Direction::UP
 		};
 
+#if USE_RELATIVE_DIRECTION == true
+		// use relative direction
+		const int currentDirection = modelParams.currentDirection; // 0 = right, 1 = down, 2 = left, 3 = up
+
+		// choice:
+		// 0 = left
+		// 1 = forward
+		// 2 = right
+
+		// eg.: going to the left (2) and wanna turn the the left (0) --> (2 + 0 - 1) % 4 = 1 % 4 = 1 = down
+		const int resultDirection = (currentDirection + choice - 1) % 4; // superposition works
+
+		out_keyPresses.push(keys[resultDirection]);
+#else
 		out_keyPresses.push(keys[choice]);
+#endif
 	}
 
 	void NeatModel::InsertNewDentrit(std::unordered_map<long long, int>& innovationNumberTable) {
