@@ -28,9 +28,9 @@ namespace model {
 
 		cstd::Vector<ConnectionGene> result(NUM_SENSORS * NUM_OUTPUTS);
 
-		//for (int i = 0; i < NUM_SENSORS; i++)
-		//	for (int j = 0; j < NUM_OUTPUTS; j++)
-		//		result.push(ConnectionGene(i, NUM_SENSORS + j, innovationNumberTable));
+		for (int i = 0; i < NUM_SENSORS; i++)
+			for (int j = 0; j < NUM_OUTPUTS; j++)
+				result.push(ConnectionGene(i, NUM_SENSORS + j, innovationNumberTable));
 
 		//const int numNeuronsInHiddenLayer = 2;
 
@@ -47,13 +47,13 @@ namespace model {
 		//}
 
 		// connect every output to an input and the bias
-		for (int i = 0; i < NUM_OUTPUTS; i++) {
-			int j = utils::RandomInt(0, NUM_SENSORS - 1);
-			result += ConnectionGene(j, NUM_SENSORS + i, innovationNumberTable); // other random input
-			auto biasGene = ConnectionGene(NUM_SENSORS - 1, NUM_SENSORS + i, innovationNumberTable); // bias
-			//biasGene.disabled = true;
-			result += biasGene;
-		}
+		//for (int i = 0; i < NUM_OUTPUTS; i++) {
+		//	int j = utils::RandomInt(0, NUM_SENSORS - 1);
+		//	result += ConnectionGene(j, NUM_SENSORS + i, innovationNumberTable); // other random input
+		//	auto biasGene = ConnectionGene(NUM_SENSORS - 1, NUM_SENSORS + i, innovationNumberTable); // bias
+		//	//biasGene.disabled = true;
+		//	result += biasGene;
+		//}
 
 		s_globalNeuronCount += NUM_SENSORS * NUM_OUTPUTS;
 

@@ -213,10 +213,10 @@ namespace game {
             throw std::exception("You are trying playing with keyboards without UI!");
         }
 
-        snake = Snake({ gameWidth / 2, gameHeight / 2 });
+        snake = Snake({ gameWidth / 2, gameHeight / 2 }, { 1, 0 });
         apple.PlaceAtRandom(gameWidth, gameHeight, snake, placeFirstAppleInFrontOfSnake);
         points = 0;
-
+        
         gameState = GameState::RUNNING;
 
         while (gameState == GameState::RUNNING) {
@@ -379,8 +379,8 @@ namespace game {
         result.angleToApple = normalizedAngleToApple;
 
         cstd::Position posInFront = headPos + headDir;
-        cstd::Position posToRight = headPos + cstd::Position(headDir.y, -headDir.x);
-        cstd::Position posToLeft = headPos + cstd::Position(headDir.y, headDir.x);
+        cstd::Position posToRight = headPos + (headDir.y == 1 ? cstd::Position(-headDir.y, -headDir.x) : cstd::Position(headDir.y, headDir.x));
+        cstd::Position posToLeft = headPos + (headDir.y == 1 ? cstd::Position(headDir.y, headDir.x) : cstd::Position(-headDir.y, -headDir.x));
 
         result.blockInFront = 0;
         result.blockToLeft = 0;
@@ -389,10 +389,10 @@ namespace game {
         for (const auto& bodyPart : snake.Body()) {
             if (bodyPart == posInFront)
                 result.blockInFront = 1;
-            else if (bodyPart == posToLeft)
-                result.blockToLeft = 1;
             else if (bodyPart == posToRight)
                 result.blockToRight = 1;
+            else if (bodyPart == posToLeft)
+                result.blockToLeft = 1;
         }
 
         if (posInFront.y >= gameHeight || posInFront.x >= gameWidth || posInFront.x < 0 || posInFront.y < 0)

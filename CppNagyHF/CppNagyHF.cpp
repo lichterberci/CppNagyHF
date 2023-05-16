@@ -24,22 +24,22 @@ int main()
 
     //return 0;
 
-    const auto activationFunction = model::SteepSigmoid<int, 1>();
+    const auto activationFunction = model::Tanh();
     const auto fitnessFunction = model::FitnessByApplesAndSteps<100, 1>();
     //const auto fitnessFunction = model::FitnessByApplesAndSteps<1000, 1>();
 
     auto trainer = model::NeatTrainer(
-        200, 
+        150, 
         300,
         &activationFunction, 
-        70, 
-        5, 
-        5, 
+        40, 
+        10, 
+        10, 
         &fitnessFunction
     );
 
-    trainer.chanceOfDentritInsertion = 0.08;
-    trainer.chanceOfNeuronInsertion = 0.009;
+    trainer.chanceOfDentritInsertion = 0.07;
+    trainer.chanceOfNeuronInsertion = 0.003;
     trainer.portionOfSpeciesToKeepForReproduction = 0.3;
     trainer.chanceOfDisabling = 0.02;
     trainer.chanceOfDentritMutation = 0.15;
@@ -50,18 +50,18 @@ int main()
     trainer.numberOfTopSpeciesToLookAtIfFitnessIsStableForTooLong = 5;
     trainer.chanceOfGeneDisablingIfEitherGeneIsDisabled = 0.75;
     trainer.chanceOfMutationBeingNewValue = 0.1;
-    trainer.weightSetMax = 2;
-    trainer.weightSetMin = -2;
+    trainer.weightSetMax = 1;
+    trainer.weightSetMin = -1;
     trainer.placeFirstAppleInFrontOfSnake = true;
     
     trainer.speciesDropOffAge = 15;
-    trainer.speciesDropOffFitnessThreshold = 0.1;
+    trainer.speciesDropOffFitnessThreshold = 0.3;
 
     trainer.numberOfEvaluationSteps = 10;
 
-    trainer.targetFitness = 17;
+    trainer.targetFitness = 30;
 
-    trainer.SetNeatConstants(1, 1, 2, 1.4);
+    trainer.SetNeatConstants(1, 1, 1.8, 0.4);
 
     //trainer.TrainCurrentGeneration();
 
@@ -138,7 +138,7 @@ int main()
         for (int i = 0; i < 5; i++)
             std::cout << "Score: " << trainer.EvaluateIndividual(*bestModel) << std::endl;
 
-        auto game = game::Game(true, game::GameControlType::AI, 5, 5, 800, 800, *bestModel, 100, false);
+        auto game = game::Game(true, game::GameControlType::AI, 10, 10, 800, 800, *bestModel, 100, false);
 
         game.SetSpeed(5);
 
