@@ -144,7 +144,7 @@ namespace model {
 		// 2 = right
 
 		// eg.: going to the left (2) and wanna turn the the left (0) --> (2 + 0 - 1) % 4 = 1 % 4 = 1 = down
-		const int resultDirection = (currentDirection + choice - 1) % 4; // superposition works
+		const int resultDirection = (currentDirection + choice + 3 /*  +3 === -1  */ ) % 4; // superposition works
 
 		out_keyPresses.push(keys[resultDirection]);
 #else
