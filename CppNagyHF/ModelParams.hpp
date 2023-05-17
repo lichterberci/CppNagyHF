@@ -34,7 +34,8 @@ namespace model {
 	struct ModelParams {
 
 #if USE_RELATIVE_DIRECTION
-		double angleToApple;
+		double angleToAppleOnRight;
+		double angleToAppleOnLeft;
 		double blockInFront;
 		double blockToRight;
 		double blockToLeft;

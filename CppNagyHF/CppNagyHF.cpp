@@ -16,20 +16,20 @@ int main()
 
     srand((uint32_t)std::chrono::system_clock::now().time_since_epoch().count());
 
-    //auto game = game::Game(true, game::GameControlType::KEYBOARD, 10, 10, 800, 800);
+    //auto game = game::Game(true, game::GameControlType::KEYBOARD, 8, 8, 800, 800);
 
-    //game.SetSpeed(6);
+    //game.SetSpeed(2);
 
     //game.Start();
 
     //return 0;
 
-    const auto activationFunction = model::Tanh();
-    const auto fitnessFunction = model::FitnessByApplesOnly();
+    const auto activationFunction = model::Sigmoid();
+    const auto fitnessFunction = model::FitnessByApplesAndSteps<100, -1>();
     //const auto fitnessFunction = model::FitnessByApplesAndSteps<1000, 1>();
 
     auto trainer = model::NeatTrainer(
-        150, 
+        200, 
         300,
         &activationFunction, 
         40, 
@@ -38,13 +38,13 @@ int main()
         &fitnessFunction
     );
 
-    trainer.chanceOfDentritInsertion = 0.07;
-    trainer.chanceOfNeuronInsertion = 0.003;
+    trainer.chanceOfDentritInsertion = 0.09;
+    trainer.chanceOfNeuronInsertion = 0.009;
     trainer.portionOfSpeciesToKeepForReproduction = 0.3;
     trainer.chanceOfDisabling = 0.02;
-    trainer.chanceOfDentritMutation = 0.15;
-    trainer.weightAdjustMin = -0.05;
-    trainer.weightAdjustMax = 0.05;
+    trainer.chanceOfDentritMutation = 0.2;
+    trainer.weightAdjustMin = -0.08;
+    trainer.weightAdjustMax = 0.08;
     trainer.minImprovementOfAvgFitnessToConsiderItAnImprovement = 0.01;
     trainer.numGenerationsWithSameFitnessBeforeOnlyLookingAtTopSpecies = 20;
     trainer.numberOfTopSpeciesToLookAtIfFitnessIsStableForTooLong = 5;
@@ -59,9 +59,9 @@ int main()
 
     trainer.numberOfEvaluationSteps = 10;
 
-    trainer.targetFitness = 10;
+    trainer.targetFitness = 12;
 
-    trainer.SetNeatConstants(1, 1, 1.8, 0.4);
+    trainer.SetNeatConstants(1, 1, 1.8, 0.3);
 
     //trainer.TrainCurrentGeneration();
 
@@ -138,9 +138,9 @@ int main()
         for (int i = 0; i < 5; i++)
             std::cout << "Score: " << trainer.EvaluateIndividual(*bestModel) << std::endl;
 
-        auto game = game::Game(true, game::GameControlType::AI, 5, 5, 800, 800, *bestModel, 100, false);
+        auto game = game::Game(true, game::GameControlType::AI, 8, 8, 1000, 1000, *bestModel, 100, false);
 
-        game.SetSpeed(5);
+        game.SetSpeed(8);
 
         game.Start();
 

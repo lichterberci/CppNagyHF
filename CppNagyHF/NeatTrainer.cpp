@@ -1,6 +1,8 @@
 ﻿#include "NeatTrainer.hpp"
 #include "Game.hpp"
 #include <execution>
+#include <vector>
+#include <algorithm>
 
 namespace model {
 
@@ -93,8 +95,27 @@ namespace model {
 
 		cstd::Vector<double> fitnessScores(currentGeneration.size());
 
-		for (auto& organism : currentGeneration)
-			fitnessScores += EvaluateIndividual(organism);
+		std::vector<double> fitnessScoresAsyncResults;
+		
+		for (int i = 0; i < populationCount; i++)
+			fitnessScoresAsyncResults.push_back(0);
+
+		std::for_each(
+			std::execution::par_unseq, 
+			currentGeneration.begin(), 
+			currentGeneration.end(),
+			[&](const NeatModel& organism) {
+				size_t index = (&organism - currentGeneration.begin());
+				fitnessScoresAsyncResults[index] = EvaluateIndividual(organism);
+				//std::cout << "index: " << index << " fitness: " << fitnessScoresAsyncResults[index] << std::endl;
+			}
+		);
+
+		for (const double fitness : fitnessScoresAsyncResults)
+			fitnessScores += fitness;
+
+		//for (auto& organism : currentGeneration)
+		//	fitnessScores += EvaluateIndividual(organism);
 
 		// speciation
 

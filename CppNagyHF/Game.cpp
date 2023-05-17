@@ -5,6 +5,8 @@
 
 # define M_PI           3.14159265358979323846  /* pi */
 
+#define CALC_AND_PRINT_MODEL_PARAMS false
+
 namespace game {
 
     model::RandomModel Game::s_defaultModel = model::RandomModel();
@@ -66,7 +68,16 @@ namespace game {
 
             // wait
             while (deltaClock.getElapsedTime().asSeconds() < 1.0 / snakeMovesPerSec) {}
-                        
+             
+#if CALC_AND_PRINT_MODEL_PARAMS == true
+            const auto params = CalculateModelParams();
+            std::clog << (params.blockToLeft == 1 ? "(<-)" : "(  )") << " " 
+                << (params.blockInFront == 1 ? "(A)" : "( )") << " " 
+                << (params.blockToRight == 1 ? "(->)" : "(  )") << " "
+                << "(" << params.angleToAppleOnLeft << " " << params.angleToAppleOnRight << ")"
+                << std::endl;
+#endif
+
             while (window.pollEvent(event))
             {
                 if (controlType == GameControlType::KEYBOARD) {
@@ -370,17 +381,22 @@ namespace game {
         else {
             normalizedAngleToApple += 1;
 
-            if (normalizedAngleToApple >= 1)
-                normalizedAngleToApple -= 2;
-
             result.currentDirection = 2;
         }
 
-        result.angleToApple = normalizedAngleToApple;
+        while (normalizedAngleToApple >= 1)
+            normalizedAngleToApple -= 2;
+
+        while (normalizedAngleToApple < -1)
+            normalizedAngleToApple += 2;
+
+        // negative = on right, positive = on left
+        result.angleToAppleOnRight = normalizedAngleToApple < 0 ? -normalizedAngleToApple : 0;
+        result.angleToAppleOnLeft = normalizedAngleToApple >= 0 ? normalizedAngleToApple : 0;
 
         cstd::Position posInFront = headPos + headDir;
-        cstd::Position posToRight = headPos + (headDir.y == 1 ? cstd::Position(-headDir.y, -headDir.x) : cstd::Position(headDir.y, headDir.x));
-        cstd::Position posToLeft = headPos + (headDir.y == 1 ? cstd::Position(headDir.y, headDir.x) : cstd::Position(-headDir.y, -headDir.x));
+        cstd::Position posToRight = headPos + cstd::Position(-headDir.y, headDir.x);
+        cstd::Position posToLeft = headPos + cstd::Position(headDir.y, -headDir.x);
 
         result.blockInFront = 0;
         result.blockToLeft = 0;

@@ -17,7 +17,7 @@
 	#define NUM_OUTPUTS 1
 #else
 	#if USE_RELATIVE_DIRECTION == true
-		#define NUM_SENSORS 5
+		#define NUM_SENSORS 6
 		#define NUM_OUTPUTS 3
 	#else
 		#define NUM_SENSORS 25

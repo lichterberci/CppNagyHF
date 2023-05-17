@@ -7,7 +7,7 @@
 #include "position.hpp"
 #include "Snake.hpp"
 
-#define MAX_ATTEMPTS_TO_PLACE_APPLE 100
+#define MAX_ATTEMPTS_TO_PLACE_APPLE 200
 
 namespace game {
 

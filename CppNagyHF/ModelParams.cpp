@@ -23,7 +23,8 @@ namespace model {
 		result += blockInFront;
 		result += blockToRight;
 		result += blockToLeft;
-		result += angleToApple;
+		result += angleToAppleOnRight;
+		result += angleToAppleOnLeft;
 #endif
 		result += bias;
 
@@ -45,7 +46,8 @@ namespace model {
 		blockInFront = utils::RandomInt(-1, 2);
 		blockToRight = utils::RandomInt(-1, 2);
 		blockToLeft = utils::RandomInt(-1, 2);
-		angleToApple = utils::RandomDouble(-1, 1);
+		angleToAppleOnRight = utils::RandomDouble(0, 1);
+		angleToAppleOnLeft = utils::RandomDouble(0, 1);
 		currentDirection = utils::RandomInt(0, 4);
 #endif
 		return *this;

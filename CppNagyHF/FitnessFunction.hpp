@@ -2,6 +2,7 @@
 
 #include "GameReport.hpp"
 #include "ModelUtils.hpp"
+#include <math.h>
 
 namespace model {
 
@@ -24,21 +25,21 @@ namespace model {
 	template<int appleCoeff = 1000, int stepCoeff = 1>
 	struct FitnessByApplesAndSteps : public FitnessFunction {
 		double operator()(const game::GameReport& report) const override {
-			return (
+			return std::max((
 				(double)appleCoeff * report.points 
 				+ stepCoeff * report.numStepsTaken
-			) / (appleCoeff + stepCoeff);
+			) / (abs(appleCoeff) + abs(stepCoeff)), 0.0);
 		}
 	};
 
 	template<int appleCoeff = 1000, int stepCoeff = 1, int winCoeff = 1000000>
 	struct FitnessByApplesAndStepsAndWin : public FitnessFunction {
 		double operator()(const game::GameReport& report) const override {
-			return (
+			return std::max((
 				(double)appleCoeff * report.points 
 				+ stepCoeff * report.numStepsTaken 
 				+ winCoeff * (report.won == true)
-			) / (appleCoeff + stepCoeff + winCoeff);
+			) / (abs(appleCoeff) + abs(stepCoeff) + abs(winCoeff)), 0.0);
 		}
 	};
 }

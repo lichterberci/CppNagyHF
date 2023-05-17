@@ -1,6 +1,8 @@
 #include "Snake.hpp"
 #include "GameUtils.hpp"
 
+#define RENDER_INPUT_SQUARES false
+
 namespace game {
 
     void Snake::Move(bool grow) {
@@ -57,6 +59,33 @@ namespace game {
 
 #ifndef CPORTA
     void Snake::Render(sf::RenderWindow& window, int gameWidth, int gameHeight, int windowWidth, int windowHeight) {
+
+#if RENDER_INPUT_SQUARES == true
+        const cstd::Position& headPos = Body()[0];
+        const cstd::Position& headDir = HeadDirection();
+
+        auto size = Utils::GameUtils::GetPixelOfGamePosition(cstd::Position(1, 1), gameWidth, gameHeight, windowWidth, windowHeight);
+
+        cstd::Position posInFront = headPos + headDir;
+        cstd::Position posToRight = headPos + cstd::Position(-headDir.y, headDir.x);
+        cstd::Position posToLeft = headPos + cstd::Position(headDir.y, -headDir.x);
+
+        sf::RectangleShape testRect(size); // 1x1 square
+        testRect.setOrigin(0, 0);
+        testRect.setOutlineThickness(0);
+
+        testRect.setPosition(Utils::GameUtils::GetPixelOfGamePosition(posInFront, gameWidth, gameHeight, windowWidth, windowHeight));
+        testRect.setFillColor(sf::Color(100, 0, 0, 150));
+        window.draw(testRect);
+
+        testRect.setPosition(Utils::GameUtils::GetPixelOfGamePosition(posToRight, gameWidth, gameHeight, windowWidth, windowHeight));
+        testRect.setFillColor(sf::Color(0, 100, 0, 150));
+        window.draw(testRect);
+
+        testRect.setPosition(Utils::GameUtils::GetPixelOfGamePosition(posToLeft, gameWidth, gameHeight, windowWidth, windowHeight));
+        testRect.setFillColor(sf::Color(0, 0, 100, 150));
+        window.draw(testRect);
+#endif
 
         for (const auto& bodyPart : body) {
 
