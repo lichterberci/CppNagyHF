@@ -24,7 +24,7 @@ namespace cstd {
 			: m_size_x(size_x), m_size_y(size_y)
 		{
 			m_data = new T[m_size_x * m_size_y];
-			set_all(value);
+			setAll(value);
 		}
 
 		Matrix(const Matrix& other)
@@ -64,7 +64,15 @@ namespace cstd {
 			return m_data[index];
 		}
 
-		T& get(const size_t x, const size_t y) const {
+		T get(const size_t x, const size_t y) const {
+
+			if (x > m_size_x || y > m_size_y)
+				throw std::out_of_range("Index out of range!");
+
+			return m_data[x * m_size_y + y];
+		}
+
+		T& get(const size_t x, const size_t y) {
 
 			if (x > m_size_x || y > m_size_y)
 				throw std::out_of_range("Index out of range!");
@@ -91,7 +99,7 @@ namespace cstd {
 		}
 
 		void setAll(T&& value) {
-			set_all(value);
+			setAll(value);
 		}
 
 		void resize(const size_t new_x, const size_t new_y) {

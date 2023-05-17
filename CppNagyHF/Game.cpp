@@ -5,7 +5,7 @@
 
 # define M_PI           3.14159265358979323846  /* pi */
 
-#define CALC_AND_PRINT_MODEL_PARAMS false
+#define CALC_AND_PRINT_MODEL_PARAMS true
 
 namespace game {
 
@@ -74,7 +74,8 @@ namespace game {
             std::clog << (params.blockToLeft == 1 ? "(<-)" : "(  )") << " " 
                 << (params.blockInFront == 1 ? "(A)" : "( )") << " " 
                 << (params.blockToRight == 1 ? "(->)" : "(  )") << " "
-                << "(" << params.angleToAppleOnLeft << " " << params.angleToAppleOnRight << ")"
+                << "(" << params.angleToAppleOnLeft << " " << params.angleToAppleOnRight << ") "
+                << "(" << params.squaresAvailableLeft << "|" << params.squaresAvailableFront << "|" << params.squaresAvailableRight << ")"
                 << std::endl;
 #endif
 
@@ -240,7 +241,7 @@ namespace game {
         }
     }
 
-    model::ModelParams Game::CalculateModelParams() {
+    model::ModelParams Game::CalculateModelParams() const {
 
         model::ModelParams result;
 
@@ -351,6 +352,8 @@ namespace game {
         const cstd::Position& headDir = snake.HeadDirection();
         const cstd::Position& applePos = apple.position;
 
+        // calc angle to apple
+
         double normalizedAngleToApple;
 
         if (applePos.x >= headPos.x) {
@@ -394,6 +397,8 @@ namespace game {
         result.angleToAppleOnRight = normalizedAngleToApple < 0 ? -normalizedAngleToApple : 0;
         result.angleToAppleOnLeft = normalizedAngleToApple >= 0 ? normalizedAngleToApple : 0;
 
+        // calc neighbour squares
+
         cstd::Position posInFront = headPos + headDir;
         cstd::Position posToRight = headPos + cstd::Position(-headDir.y, headDir.x);
         cstd::Position posToLeft = headPos + cstd::Position(headDir.y, -headDir.x);
@@ -419,12 +424,66 @@ namespace game {
         
         if (posToRight.y >= gameHeight || posToRight.x >= gameWidth || posToRight.x < 0 || posToRight.y < 0)
             result.blockToRight = 1;
+
+        // calc available squares in each direction
+        cstd::Matrix<bool> checkedSquares(gameWidth, gameHeight, false);
+        cstd::Matrix<bool> walkableSquares(gameWidth, gameHeight, true);
+
+        for (const auto& bodyPart : snake.Body())
+            walkableSquares.set(bodyPart.x, bodyPart.y, false);
+
+        result.squaresAvailableFront = (double)CalculateAvailableSquares(posInFront, checkedSquares, walkableSquares) / (gameWidth * gameHeight);
+        checkedSquares.setAll(false);
+
+        result.squaresAvailableRight = (double)CalculateAvailableSquares(posToRight, checkedSquares, walkableSquares) / (gameWidth * gameHeight);
+        checkedSquares.setAll(false);
+
+        result.squaresAvailableLeft  = (double)CalculateAvailableSquares(posToLeft,  checkedSquares, walkableSquares) / (gameWidth * gameHeight);
+
 #endif
         return result;
     }
 
     GameReport Game::GenerateReport() const {
-        return GameReport(points == snake.Body().size(), points, numSteps);
+        return GameReport(points + 1 == snake.Body().size(), points, numSteps);
+    }
+
+    int Game::CalculateAvailableSquares(const cstd::Position& pos, cstd::Matrix<bool>& checkedSquares, const cstd::Matrix<bool>& walkableSquares) const {
+
+        const auto isValidPosition = [&](const cstd::Position& position) {
+            return !(position.x < 0 || position.y < 0 || position.x >= gameWidth || position.y >= gameHeight);
+        };
+
+        if (isValidPosition(pos) == false)
+            return 0;
+
+        if (walkableSquares.get(pos.x, pos.y) == false)
+            return 0;
+
+        if (checkedSquares.get(pos.x, pos.y) == true)
+            return 0;
+
+        // flood fill to all available directions
+        
+        const cstd::Position offsetVectors[] = {
+            cstd::Position(1, 0),
+            cstd::Position(0, 1),
+            cstd::Position(-1, 0),
+            cstd::Position(0, -1)
+        };
+
+        int sumOfNewAvailableSqaures = 1; // 1 = this one
+
+        checkedSquares.set(pos.x, pos.y, true);
+
+        for (const auto& offsetVector : offsetVectors) {
+
+            const auto resultVector = pos + offsetVector;
+
+            sumOfNewAvailableSqaures += CalculateAvailableSquares(resultVector, checkedSquares, walkableSquares);
+        }
+
+        return sumOfNewAvailableSqaures;
     }
 
 }

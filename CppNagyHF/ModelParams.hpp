@@ -8,7 +8,7 @@
 #define BIAS_VALUE 1.0
 
 #if USE_RELATIVE_DIRECTION == true
-#define INPUT_SIZE 5
+#define INPUT_SIZE 6
 #else
 #define INPUT_SIZE 25
 #endif
@@ -39,6 +39,9 @@ namespace model {
 		double blockInFront;
 		double blockToRight;
 		double blockToLeft;
+		double squaresAvailableFront;
+		double squaresAvailableRight;
+		double squaresAvailableLeft;
 		// NOT MODEL PARAM
 		// only needed for calculating relative to absolute direction
 		// 0 = right, 1 = down, 2 = left, 3 = up

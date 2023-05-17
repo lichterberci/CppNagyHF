@@ -25,6 +25,9 @@ namespace model {
 		result += blockToLeft;
 		result += angleToAppleOnRight;
 		result += angleToAppleOnLeft;
+		result += squaresAvailableFront;
+		result += squaresAvailableRight;
+		result += squaresAvailableLeft;
 #endif
 		result += bias;
 
@@ -48,6 +51,9 @@ namespace model {
 		blockToLeft = utils::RandomInt(-1, 2);
 		angleToAppleOnRight = utils::RandomDouble(0, 1);
 		angleToAppleOnLeft = utils::RandomDouble(0, 1);
+		squaresAvailableFront = utils::RandomInt(0, 2);
+		squaresAvailableRight = utils::RandomInt(0, 2);
+		squaresAvailableLeft = utils::RandomInt(0, 2);
 		currentDirection = utils::RandomInt(0, 4);
 #endif
 		return *this;

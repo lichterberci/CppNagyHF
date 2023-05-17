@@ -11,6 +11,7 @@
 #include "Snake.hpp"
 #include "Apple.hpp"
 #include "GameReport.hpp"
+#include "matrix.hpp"
 
 #define SNAKE_SIGHT_DISTANCE 100
 
@@ -58,7 +59,8 @@ namespace game {
 #ifndef CPORTA
 		void Render(sf::RenderWindow& window);
 #endif
-		model::ModelParams CalculateModelParams();
+		model::ModelParams CalculateModelParams() const;
+		int CalculateAvailableSquares(const cstd::Position& pos, cstd::Matrix<bool>& checkedSquares, const cstd::Matrix<bool>& walkableSquares) const;
 	public:
 		Game(
 			bool useUI = true, 

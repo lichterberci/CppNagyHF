@@ -16,7 +16,7 @@ int main()
 
     srand((uint32_t)std::chrono::system_clock::now().time_since_epoch().count());
 
-    //auto game = game::Game(true, game::GameControlType::KEYBOARD, 8, 8, 800, 800);
+    //auto game = game::Game(true, game::GameControlType::KEYBOARD, 3, 3, 800, 800);
 
     //game.SetSpeed(2);
 
@@ -25,7 +25,7 @@ int main()
     //return 0;
 
     const auto activationFunction = model::Sigmoid();
-    const auto fitnessFunction = model::FitnessByApplesAndSteps<100, -1>();
+    const auto fitnessFunction = model::FitnessByApplesAndSteps<1000, 1>();
     //const auto fitnessFunction = model::FitnessByApplesAndSteps<1000, 1>();
 
     auto trainer = model::NeatTrainer(
@@ -33,18 +33,18 @@ int main()
         300,
         &activationFunction, 
         40, 
-        5, 
-        5, 
+        4, 
+        4, 
         &fitnessFunction
     );
 
-    trainer.chanceOfDentritInsertion = 0.09;
-    trainer.chanceOfNeuronInsertion = 0.009;
+    trainer.chanceOfDentritInsertion = 0.1;
+    trainer.chanceOfNeuronInsertion = 0.01;
     trainer.portionOfSpeciesToKeepForReproduction = 0.3;
     trainer.chanceOfDisabling = 0.02;
     trainer.chanceOfDentritMutation = 0.2;
-    trainer.weightAdjustMin = -0.08;
-    trainer.weightAdjustMax = 0.08;
+    trainer.weightAdjustMin = -0.3;
+    trainer.weightAdjustMax = 0.3;
     trainer.minImprovementOfAvgFitnessToConsiderItAnImprovement = 0.01;
     trainer.numGenerationsWithSameFitnessBeforeOnlyLookingAtTopSpecies = 20;
     trainer.numberOfTopSpeciesToLookAtIfFitnessIsStableForTooLong = 5;
@@ -55,63 +55,19 @@ int main()
     trainer.placeFirstAppleInFrontOfSnake = true;
     
     trainer.speciesDropOffAge = 15;
-    trainer.speciesDropOffFitnessThreshold = 0.3;
+    trainer.speciesDropOffFitnessThreshold = 0.4;
 
     trainer.numberOfEvaluationSteps = 10;
 
-    trainer.targetFitness = 12;
+    trainer.targetFitness = 7;
 
-    trainer.SetNeatConstants(1, 1, 1.8, 0.3);
-
-    //trainer.TrainCurrentGeneration();
-
-    //for (const auto& organism : trainer.organismsByGenerations[0]) {
-    //    std::cout << organism << std::endl;
-    //    for (const auto& gene : organism.Genes())
-    //        if (gene.innovationNumber > 90)
-    //            std::cout << gene << std::endl;
-    //}
-    // 
-    //std::cout << "---------------------------------------------------" << std::endl;
-
-    //for (const auto& organism : trainer.organismsByGenerations[1]) {
-    //    std::cout << organism << std::endl;
-    //    for (const auto& gene : organism.Genes())
-    //        if (gene.innovationNumber > 90)
-    //            std::cout << gene << std::endl;
-    //}
-
-    //trainer.TrainCurrentGeneration();
-
-    //std::cout << "---------------------------------------------------" << std::endl;
-
-    //for (const auto& organism : trainer.organismsByGenerations[2]) {
-    //    std::cout << organism << std::endl;
-    //    for (const auto& gene : organism.Genes())
-    //        if (gene.innovationNumber > 90)
-    //            std::cout << gene << std::endl;
-    //}
+    trainer.SetNeatConstants(1, 1, 1.4, 0.4);
 
     trainer.Train();
 
 #if XOR == 1
     return 0;
 #endif
-
-    for (const auto& gen : trainer.organismsByGenerations) {
-
-        /*for (const auto& organism : gen) {
-            std::cout << std::setprecision(3) << organism.rawFitness << " ";
-        }*/
-
-        //std::cout << std::endl;
-
-      /*  const auto& best = std::max_element(gen.begin(), gen.end(), [](const model::NeatModel& a, const model::NeatModel& b) {
-            return a.rawFitness < b.rawFitness;
-        });
-
-        std::cout << *best << std::endl;*/
-    }
 
     while (true) {
 
@@ -138,7 +94,7 @@ int main()
         for (int i = 0; i < 5; i++)
             std::cout << "Score: " << trainer.EvaluateIndividual(*bestModel) << std::endl;
 
-        auto game = game::Game(true, game::GameControlType::AI, 8, 8, 1000, 1000, *bestModel, 100, false);
+        auto game = game::Game(true, game::GameControlType::AI, 4, 4, 1000, 1000, *bestModel, 100, false);
 
         game.SetSpeed(8);
 
