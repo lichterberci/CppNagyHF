@@ -294,6 +294,50 @@ namespace model {
 		}
 	}
 
+	std::ostream& NeatModel::Serialize(std::ostream& os) const
+	{
+		// genes
+
+		os << genes.size();
+
+		for (const auto& gene : genes)
+			for (size_t i = 0; i < sizeof(ConnectionGene); i++)
+				os << reinterpret_cast<const uint8_t*>(&gene)[i]; // treat it as a byte array
+
+		// activation function type
+
+		os << activationFunction->GetTypeIndex();
+
+		return os;
+	}
+
+	void NeatModel::DesrializeAndSetUp(std::istream& is)
+	{
+
+		// genes
+
+		size_t numGenes; 
+		is >> numGenes;
+
+		for (size_t geneIndex = 0; geneIndex < numGenes; geneIndex++) {
+			
+			ConnectionGene gene;
+
+			for (size_t i = 0; i < sizeof(ConnectionGene); i++)
+				reinterpret_cast<uint8_t*>(&gene)[i] = is.get(); // no endianness issues, only 1 byte
+
+			genes += gene;
+		}
+
+		// activation function type
+
+		activationFunction = utils::GenerateActivationFunctionFromTypeIndex(is.get());
+
+		GenerateLookUp();
+		GenerateNeuronIndiciesList();
+		OrderNeuronsByLayer();
+	}
+
 	void NeatModel::OrderNeuronsByLayer() {
 
 		topologicalOrderOfNeurons.clear();

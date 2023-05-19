@@ -12,7 +12,7 @@ namespace model {
 		initialGeneration.reserve_and_copy(populationCount);
 
 		for (size_t i = 0; i < populationCount; i++) {
-			initialGeneration += NeatModel(NUM_SENSORS, NUM_OUTPUTS, activationFunction, innovationNumberTable);
+			initialGeneration += NeatModel(activationFunction, innovationNumberTable);
 		}
 
 		organismsByGenerations += initialGeneration;
@@ -674,7 +674,7 @@ namespace model {
 				newGenes += genesOfB[j++];
 		}
 
-		return NeatModel(newGenes, NUM_SENSORS, NUM_OUTPUTS, activationFunction);
+		return NeatModel(newGenes, activationFunction);
 	}
 
 	cstd::Vector<int> NeatTrainer::AllocatePlacesForSpecies(const cstd::Vector<double>& sumOfAdjustedFitnessForEachSpecies) {

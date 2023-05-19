@@ -47,7 +47,7 @@ namespace model {
 
 		std::unordered_map<int, cstd::Vector<int>> geneIndexLookupByOutputNeuronOfAllDentrits; // this helps reduce the time-complexity of the forwarding
 
-		const ActivationFunction* activationFunction;
+		std::shared_ptr<const ActivationFunction> activationFunction;
 
 		void GenerateNeuronIndiciesList();
 		void GenerateLookUp();
@@ -66,8 +66,10 @@ namespace model {
 		{ }
 
 		// load from serialized file
-		NeatModel(cstd::Vector<uint8_t> serializedData)
-		{}
+		NeatModel(std::istream& is)
+		{
+			DesrializeAndSetUp(is);
+		}
 
 		NeatModel(const NeatModel& other) 
 			: neuronIndicies(other.neuronIndicies), 
@@ -118,7 +120,7 @@ namespace model {
 			return *this;
 		}
 	
-		NeatModel(cstd::Vector<ConnectionGene> genes, int numSensors, int numOutputs, const ActivationFunction* activationFunction)
+		NeatModel(cstd::Vector<ConnectionGene> genes, const std::shared_ptr<const ActivationFunction>& activationFunction)
 			: genes(genes), activationFunction(activationFunction)
 		{ 
 			GenerateLookUp();
@@ -126,7 +128,7 @@ namespace model {
 			OrderNeuronsByLayer();
 		}
 
-		NeatModel(int sensorNeurons, int outputNeurons, const ActivationFunction* activationFunction, std::unordered_map<long long, int>& innovationNumberTable)
+		NeatModel(const std::shared_ptr<const ActivationFunction>& activationFunction, std::unordered_map<long long, int>& innovationNumberTable)
 			: activationFunction(activationFunction)
 		{
 			ConstructSimplestModelForInputOutputNeurons(innovationNumberTable);
@@ -167,7 +169,8 @@ namespace model {
 
 		friend std::ostream& operator<< (std::ostream& os, const NeatModel& model);
 
-		cstd::Vector<uint8_t> Serialize() const;
+		std::ostream& Serialize(std::ostream& os) const;
+		void DesrializeAndSetUp(std::istream& is);
 	};
 
 	

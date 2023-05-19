@@ -10,6 +10,7 @@
 #include "NeatModel.hpp"
 #include "NeatTrainer.hpp"
 #include "SpeciesData.hpp"
+#include <fstream>
 
 int main()
 {
@@ -24,17 +25,59 @@ int main()
 
     //return 0;
 
-    const auto activationFunction = model::Sigmoid();
+    const auto activationFunction = std::make_shared<model::Sigmoid>();
     const auto fitnessFunction = model::FitnessByApplesAndSteps<1000, 1>();
+
+    std::unordered_map<long long, int> table;
+    model::NeatModel model(activationFunction, table);
+
+    std::ofstream outFile("test.model");
+
+    model.Serialize(outFile);
+
+    outFile.close();
+
+    std::ifstream inFile("test.model");
+
+    model::NeatModel loadedModel(inFile);
+
+    inFile.close();
+
+    std::cout << model << std::endl;
+    std::cout << loadedModel << std::endl;
+
+    model::ModelParams params;
+    params.SetToRandom();
+
+    for (const double res : model.Predict(params))
+        std::cout << res << std::endl;
+    
+    std::cout << "-------" << std::endl;
+
+    for (const double res : loadedModel.Predict(params))
+        std::cout << res << std::endl;
+    
+    std::cout << "-------" << std::endl;
+    
+    for (const auto& gene : model.Genes())
+        std::cout << gene << std::endl;
+
+    std::cout << "-------" << std::endl;
+
+    for (const auto& gene : loadedModel.Genes())
+        std::cout << gene << std::endl;
+
+    return 0;
+
     //const auto fitnessFunction = model::FitnessByApplesAndSteps<1000, 1>();
 
     auto trainer = model::NeatTrainer(
         200, 
         300,
-        &activationFunction, 
+        activationFunction, 
         40, 
-        4, 
-        4, 
+        5, 
+        5, 
         &fitnessFunction
     );
 

@@ -38,7 +38,7 @@ namespace model {
 	public:
 		int populationCount;
 		int numGenerations;
-		const ActivationFunction* activationFunction;
+		const std::shared_ptr<const ActivationFunction>& activationFunction;
 		const FitnessFunction* fitnessFunction;
 		int numMaxIdleSteps;
 		int numBestOrganismsToKeepFromPrevGenerations = 1;
@@ -78,7 +78,7 @@ namespace model {
 		NeatTrainer(
 			int populationCount, 
 			int numGenerations, 
-			const ActivationFunction* activationFunction, 
+			const std::shared_ptr<const ActivationFunction>& activationFunction,
 			int maxIdleSteps,
 			int gameWidth,
 			int gameHeight,
@@ -109,8 +109,5 @@ namespace model {
 		}
 
 		void Train();
-
-		void SaveProgress(const std::string& filename);
-		void LoadProgress(const std::string& filename);
 	};
 }
