@@ -24,10 +24,11 @@ int main()
     //game.Start();
 
     //return 0;
-
+    
     const auto activationFunction = std::make_shared<model::Sigmoid>();
     const auto fitnessFunction = model::FitnessByApplesAndSteps<1000, 1>();
 
+  /*  
     std::unordered_map<long long, int> table;
     model::NeatModel model(activationFunction, table);
 
@@ -67,7 +68,7 @@ int main()
     for (const auto& gene : loadedModel.Genes())
         std::cout << gene << std::endl;
 
-    return 0;
+    return 0;*/
 
     //const auto fitnessFunction = model::FitnessByApplesAndSteps<1000, 1>();
 
@@ -76,18 +77,18 @@ int main()
         300,
         activationFunction, 
         40, 
-        5, 
-        5, 
+        6, 
+        6, 
         &fitnessFunction
     );
 
-    trainer.chanceOfDentritInsertion = 0.1;
-    trainer.chanceOfNeuronInsertion = 0.01;
+    trainer.chanceOfDentritInsertion = 0.09;
+    trainer.chanceOfNeuronInsertion = 0.008;
     trainer.portionOfSpeciesToKeepForReproduction = 0.3;
     trainer.chanceOfDisabling = 0.02;
     trainer.chanceOfDentritMutation = 0.2;
-    trainer.weightAdjustMin = -0.3;
-    trainer.weightAdjustMax = 0.3;
+    trainer.weightAdjustMin = -0.2;
+    trainer.weightAdjustMax = 0.2;
     trainer.minImprovementOfAvgFitnessToConsiderItAnImprovement = 0.01;
     trainer.numGenerationsWithSameFitnessBeforeOnlyLookingAtTopSpecies = 20;
     trainer.numberOfTopSpeciesToLookAtIfFitnessIsStableForTooLong = 5;
@@ -95,14 +96,14 @@ int main()
     trainer.chanceOfMutationBeingNewValue = 0.1;
     trainer.weightSetMax = 1;
     trainer.weightSetMin = -1;
-    trainer.placeFirstAppleInFrontOfSnake = true;
+    trainer.placeFirstAppleInFrontOfSnake = false;
     
     trainer.speciesDropOffAge = 15;
     trainer.speciesDropOffFitnessThreshold = 0.4;
 
     trainer.numberOfEvaluationSteps = 10;
 
-    trainer.targetFitness = 7;
+    trainer.targetFitness = 18;
 
     trainer.SetNeatConstants(1, 1, 1.4, 0.4);
 
@@ -137,7 +138,7 @@ int main()
         for (int i = 0; i < 5; i++)
             std::cout << "Score: " << trainer.EvaluateIndividual(*bestModel) << std::endl;
 
-        auto game = game::Game(true, game::GameControlType::AI, 4, 4, 1000, 1000, *bestModel, 100, false);
+        auto game = game::Game(true, game::GameControlType::AI, 6, 6, 1000, 1000, *bestModel, 100, false);
 
         game.SetSpeed(8);
 
