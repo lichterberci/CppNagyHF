@@ -28,7 +28,7 @@ int main()
     const auto activationFunction = std::make_shared<model::Sigmoid>();
     const auto fitnessFunction = model::FitnessByApplesAndSteps<1000, 1>();
 
-  /*  
+  
     std::unordered_map<long long, int> table;
     model::NeatModel model(activationFunction, table);
 
@@ -68,7 +68,7 @@ int main()
     for (const auto& gene : loadedModel.Genes())
         std::cout << gene << std::endl;
 
-    return 0;*/
+    return 0;
 
     //const auto fitnessFunction = model::FitnessByApplesAndSteps<1000, 1>();
 
