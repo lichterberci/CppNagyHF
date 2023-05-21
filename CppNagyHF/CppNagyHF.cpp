@@ -32,13 +32,13 @@ int main()
     std::unordered_map<long long, int> table;
     model::NeatModel model(activationFunction, table);
 
-    std::ofstream outFile("test.model");
+    std::ofstream outFile("test.model", std::ios::binary);
 
     model.Serialize(outFile);
 
     outFile.close();
 
-    std::ifstream inFile("test.model");
+    std::ifstream inFile("test.model", std::ios::binary);
 
     model::NeatModel loadedModel(inFile);
 
