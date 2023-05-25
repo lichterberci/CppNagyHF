@@ -372,8 +372,10 @@ namespace model {
 				return a.rawFitness > b.rawFitness;
 			});
 
-			for (int i = populationCount - 1; i >= numBestOrganismsToKeepFromPrevGenerations; i--)
-				gen.pop();
+			/*for (int i = populationCount - 1; i >= numBestOrganismsToKeepFromPrevGenerations; i--)
+				gen.pop();*/
+
+			gen = cstd::Vector<NeatModel>();
 		}
 	}
 

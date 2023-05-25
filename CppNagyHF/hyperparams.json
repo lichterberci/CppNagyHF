@@ -1,0 +1,41 @@
+ {
+    "PopulationCount": 200,
+    "NumGenerations": 150,
+    "GameWidth": 4,
+    "GameHeight": 4,
+    "MaxIdleSteps": 40,
+    "PlaceFirstAppleInFronOfSnake": false,
+
+    "TargetFitness": 7,
+    "NumEvaluations": 10,
+    "FitnessFunction": {
+        "Name": "ApplesAndSteps",
+        "AppleCoeff": 1000,
+        "StepCoeff": 1
+    },
+
+    "ActivationFunction" : "relu",
+    "ChanceOfNeuronInsertion": 0.008,
+    "ChanceOfDentritInsertion": 0.09,
+    "ChanceOfDentritMutation": 0.2,
+    "ChanceOfMutationBeingNewValue": 0.1,
+    "ChanceOfDisabling": 0.02,
+    "ChanceOfGeneDisablingIfEitherGeneIsDisabled": 0.1,
+    "WeightSetMin": -1,
+    "WeightSetMax": 1,
+    "WeightAdjustMin": -0.2,
+    "WeightAdjustMax": 0.2,
+
+    "Neat": {
+        "C1": 1,
+        "C2": 1,
+        "C3": 1.4,
+        "DeltaSubT": 0.45
+    },
+    "PortionOfSpeciesToKeepForReproduction": 0.3,
+    "NumGenerationsWithSameFitnessBeforeOnlyLookingAtTopSpecies": 20,
+    "MinImprovementOfAvgFitnessToConsiderItAnImprovement": 0.01,
+    "NumberOfTopSpeciesToLookAtIfFitnessIsStableForTooLong": 2,
+    "SpeciesDropOffAge": 15,
+    "SpeciesDropOffFitnessThreshold": 0.3
+} 

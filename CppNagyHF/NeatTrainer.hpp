@@ -7,6 +7,8 @@
 #include "SpeciesData.hpp"
 #include <fstream>
 #include <string>
+#include "HyperparameterLoader.hpp"
+#include "ModelUtils.hpp"
 
 namespace model {
 
@@ -50,7 +52,6 @@ namespace model {
 		std::shared_ptr<const ActivationFunction> activationFunction;
 		std::shared_ptr<FitnessFunction> fitnessFunction;
 		int numMaxIdleSteps;
-		int numBestOrganismsToKeepFromPrevGenerations = 1;
 		unsigned int numberOfEvaluationSteps = 5;
 
 		int gameWidth;
@@ -84,7 +85,97 @@ namespace model {
 		int speciesDropOffAge = 15;
 		double speciesDropOffFitnessThreshold = 0.05;
 
-		NeatTrainer() {}
+		NeatTrainer(const std::string& fileName) {
+		
+			auto JSONMap = HyperparameterLoader()(fileName);
+
+			using utils::Get;
+			using utils::ToLower;
+
+			populationCount = Get<int>(JSONMap, "PopulationCount").value_or(100);
+			numGenerations = Get<int>(JSONMap, "NumGenerations").value_or(50);
+
+			auto activationFunctionName = ToLower(Get<std::string>(JSONMap, "ActivationFunction.Name").value_or("sigmoid"));
+
+			const std::string activationFunctionNames[] = {"sigmoid", "tanh", "relu", "lrelu"};
+
+			bool didFindActivationFunction = false;
+
+			for (size_t i = 0; i < sizeof(activationFunctionNames) / sizeof(std::string); i++)
+				if (activationFunctionName == activationFunctionNames[i]) {
+					activationFunction = utils::GenerateActivationFunctionFromTypeIndex((uint8_t)i + 1);
+					didFindActivationFunction = true;
+				}
+
+			if (didFindActivationFunction == false)
+				throw std::exception("Unknown activation function!");
+
+			auto fitnessFunctionName = ToLower(Get<std::string>(JSONMap, "FitnessFunction.Name").value_or("onlyapples"));
+
+			const std::string fitnessFunctionNames[] = { "onlyapples", "onlysteps", "applesandsteps", "applesandstepsandwin" };
+
+			bool didFindFitnessFunciton = false;
+
+			for (size_t i = 1; i < sizeof(fitnessFunctionNames) / sizeof(std::string); i++)
+				if (fitnessFunctionName == fitnessFunctionNames[i]) {
+					fitnessFunction = utils::GenerateFitnessFunctionFromTypeIndex((uint8_t)i + 1);
+
+					if (i == 2) {
+						static_cast<FitnessByApplesAndSteps*>(fitnessFunction.get())->appleCoeff = Get<double>(JSONMap, "FitnessFunction.AppleCoeff").value_or(1000);
+						static_cast<FitnessByApplesAndSteps*>(fitnessFunction.get())->stepCoeff= Get<double>(JSONMap, "FitnessFunction.StepCoeff").value_or(1);
+					}
+					if (i == 3) {
+						static_cast<FitnessByApplesAndStepsAndWin*>(fitnessFunction.get())->appleCoeff = Get<double>(JSONMap, "FitnessFunction.AppleCoeff").value_or(100);
+						static_cast<FitnessByApplesAndStepsAndWin*>(fitnessFunction.get())->stepCoeff = Get<double>(JSONMap, "FitnessFunction.StepCoeff").value_or(1);
+						static_cast<FitnessByApplesAndStepsAndWin*>(fitnessFunction.get())->winCoeff = Get<double>(JSONMap, "FitnessFunction.WinCoeff").value_or(1000);
+					}
+
+					didFindFitnessFunciton = true;
+				}
+
+			numMaxIdleSteps = Get<int>(JSONMap, "MaxIdleSteps").value_or(40);
+			numberOfEvaluationSteps = Get<int>(JSONMap, "NumEvaluations").value_or(5);
+
+			gameWidth = Get<int>(JSONMap, "GameWidth").value_or(3);
+			gameHeight = Get<int>(JSONMap, "GameHeight").value_or(3);
+
+			chanceOfDentritInsertion = Get<double>(JSONMap, "ChanceOfDentritInsertion").value_or(0.3);
+			chanceOfNeuronInsertion = Get<double>(JSONMap, "ChanceOfNeuronInsertion").value_or(0.1);
+			chanceOfDentritMutation = Get<double>(JSONMap, "ChanceOfDentritMutation").value_or(0.3);
+			chanceOfMutationBeingNewValue = Get<double>(JSONMap, "ChanceOfMutationBeingNewValue").value_or(0.1);
+			chanceOfDisabling = Get<double>(JSONMap, "ChanceOfDisabling").value_or(0.1);
+			chanceOfGeneDisablingIfEitherGeneIsDisabled = Get<double>(JSONMap, "ChanceOfGeneDisablingIfEitherGeneIsDisabled").value_or(0.1);
+			weightSetMin = Get<double>(JSONMap, "WeightSetMin").value_or(-2);
+			weightSetMax = Get<double>(JSONMap, "WeightSetMax").value_or(2);
+			weightAdjustMin = Get<double>(JSONMap, "WeightAdjustMin").value_or(-0.1);
+			weightAdjustMax = Get<double>(JSONMap, "WeightAdjustMax").value_or(0.1);
+
+			placeFirstAppleInFrontOfSnake = Get<bool>(JSONMap, "PlaceFirstAppleInFronOfSnake").value_or(false);
+
+			portionOfSpeciesToKeepForReproduction = Get<double>(JSONMap, "PortionOfSpeciesToKeepForReproduction").value_or(0.5);
+			numGenerationsWithSameFitnessBeforeOnlyLookingAtTopSpecies = Get<int>(JSONMap, "NumGenerationsWithSameFitnessBeforeOnlyLookingAtTopSpecies").value_or(20);
+			minImprovementOfAvgFitnessToConsiderItAnImprovement = Get<double>(JSONMap, "MinImprovementOfAvgFitnessToConsiderItAnImprovement").value_or(0.1);
+			numberOfTopSpeciesToLookAtIfFitnessIsStableForTooLong = Get<int>(JSONMap, "NumberOfTopSpeciesToLookAtIfFitnessIsStableForTooLong").value_or(2);
+
+			neatC1 = Get<double>(JSONMap, "Neat.C1").value_or(1);
+			neatC2 = Get<double>(JSONMap, "Neat.C2").value_or(1);
+			neatC3 = Get<double>(JSONMap, "Neat.C3").value_or(3);
+			neatDeltaSubT = Get<double>(JSONMap, "Neat.DeltaSubT").value_or(0.2);
+
+			targetFitness = Get<double>(JSONMap, "TargetFitness").value_or(std::numeric_limits<double>::max());
+
+			speciesDropOffAge = Get<double>(JSONMap, "SpeciesDropOffAge").value_or(15);
+			speciesDropOffFitnessThreshold = Get<double>(JSONMap, "SpeciesDropOffFitnessThreshold").value_or(0.05);
+
+			NeatModel::ResetGlobalNeuronCount();
+			ConnectionGene::SetGlobalInnovationNumber(0);
+
+			organismsByGenerations.reserve_and_copy(numGenerations); // this is essential, so the pointers can safely point to these places
+
+			ConstructInitialGeneration();
+
+			NeatModel::ResetGlobalNeuronCount(NUM_SENSORS + NUM_OUTPUTS);
+		}
 
 		NeatTrainer(
 			int populationCount, 
