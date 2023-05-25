@@ -6,11 +6,13 @@
 #include "FitnessFunction.hpp"
 #include "SpeciesData.hpp"
 
+#include <string>
+
 namespace model {
 
 	class NeatTrainer {
 
-	public: // temp
+	//public: // temp
 
 		cstd::Vector<cstd::Vector<NeatModel>> organismsByGenerations;
 		cstd::Vector<const NeatModel*> representativesOfThePrevGeneration;
@@ -19,6 +21,7 @@ namespace model {
 
 		std::unordered_map<long long, int> innovationNumberTable;
 
+		void ConstructInitialGenerationFromFile(const std::string& fileName);
 		void ConstructInitialGeneration();
 		double EvaluateIndividual(const NeatModel& neatModel);
 		void TrainCurrentGeneration();
@@ -82,7 +85,8 @@ namespace model {
 			int maxIdleSteps,
 			int gameWidth,
 			int gameHeight,
-			const FitnessFunction* fitnessFunction
+			const FitnessFunction* fitnessFunction,
+			const std::string& fileName = ""
 		) 
 			: populationCount(populationCount), 
 			numGenerations(numGenerations), 
@@ -96,7 +100,11 @@ namespace model {
 			ConnectionGene::SetGlobalInnovationNumber(0);
 
 			organismsByGenerations.reserve_and_copy(numGenerations); // this is essential, so the pointers can safely point to these places
-			ConstructInitialGeneration();
+			
+			if (fileName != "")
+				ConstructInitialGenerationFromFile(fileName);
+			else
+				ConstructInitialGeneration();
 
 			NeatModel::ResetGlobalNeuronCount(NUM_SENSORS + NUM_OUTPUTS);
 		}
@@ -109,5 +117,10 @@ namespace model {
 		}
 
 		void Train();
+
+		void SaveModels(const std::string& fileName);
+		void SaveBestSpecies(const std::string& fileName);
+	public:
+		inline cstd::Vector<SpeciesData>& GetSpecies() { return speciesData; }
 	};
 }

@@ -3,8 +3,24 @@
 #include <execution>
 #include <vector>
 #include <algorithm>
+#include "Persistence.hpp"
 
 namespace model {
+
+	void NeatTrainer::ConstructInitialGenerationFromFile(const std::string& fileName) {
+		auto models = Persistence::LoadModelsFromFile(fileName);
+
+		if (models.size() != populationCount) {
+			std::cout << "WARNING: population count != # models in file";
+			populationCount = models.size();
+		}
+
+		organismsByGenerations += models;
+
+		speciesData += { 0, 0, 0 };
+
+		representativesOfThePrevGeneration += &organismsByGenerations[0][0];
+	}
 
 	void NeatTrainer::ConstructInitialGeneration() {
 
@@ -820,4 +836,13 @@ namespace model {
 
 		std::cout << "\33[2K\rTraining done! Avg. fitness of the last generation was " << avgFitnessOfGenerations.last() << std::endl;
 	}
+
+	void NeatTrainer::SaveModels(const std::string& fileName) {
+		Persistence::SaveModelsToFile(fileName, organismsByGenerations.last());
+	}
+
+	void SaveBestSpecies(const std::string& fileName) {
+
+	}
+
 }

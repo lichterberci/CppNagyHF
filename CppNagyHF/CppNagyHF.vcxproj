@@ -153,6 +153,7 @@
     <ClCompile Include="ModelParams.cpp" />
     <ClCompile Include="NeatModel.cpp" />
     <ClCompile Include="NeatTrainer.cpp" />
+    <ClCompile Include="Persistence.cpp" />
     <ClCompile Include="RandomModel.cpp" />
     <ClCompile Include="Snake.cpp" />
     <ClCompile Include="vector.hpp" />
@@ -171,6 +172,7 @@
     <ClInclude Include="ModelUtils.hpp" />
     <ClInclude Include="NeatModel.hpp" />
     <ClInclude Include="NeatTrainer.hpp" />
+    <ClInclude Include="Persistence.hpp" />
     <ClInclude Include="position.hpp" />
     <ClInclude Include="RandomModel.hpp" />
     <ClInclude Include="Snake.hpp" />
