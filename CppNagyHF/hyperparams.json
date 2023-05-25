@@ -1,16 +1,17 @@
  {
-    "PopulationCount": 200,
-    "NumGenerations": 150,
-    "GameWidth": 4,
-    "GameHeight": 4,
-    "MaxIdleSteps": 40,
+    "PopulationCount": 300,
+    "NumGenerations": 200,
+    "GameWidth": 3,
+    "GameHeight": 3,
+    "MaxIdleSteps": 10,
     "PlaceFirstAppleInFronOfSnake": false,
 
-    "TargetFitness": 7,
+    "TargetFitness": 1.8,
     "NumEvaluations": 10,
     "FitnessFunction": {
-        "Name": "ApplesAndSteps",
-        "AppleCoeff": 1000,
+        "Name": "ApplesAndStepsAndWin",
+        "WinCoeff": 300,
+        "AppleCoeff": 100,
         "StepCoeff": 1
     },
 
@@ -37,5 +38,5 @@
     "MinImprovementOfAvgFitnessToConsiderItAnImprovement": 0.01,
     "NumberOfTopSpeciesToLookAtIfFitnessIsStableForTooLong": 2,
     "SpeciesDropOffAge": 15,
-    "SpeciesDropOffFitnessThreshold": 0.3
+    "SpeciesDropOffFitnessThreshold": 0.1
 } 

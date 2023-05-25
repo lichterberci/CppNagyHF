@@ -407,7 +407,13 @@ namespace game {
         result.blockToLeft = 0;
         result.blockToRight = 0;
 
-        for (const auto& bodyPart : snake.Body()) {
+        for (size_t i = 0; i < snake.Body().size(); i++) {
+            const auto& bodyPart = snake.Body()[i];
+
+            // the tail will move out of the way
+            if (i + 1 == snake.Body().size()) 
+                continue;
+
             if (bodyPart == posInFront)
                 result.blockInFront = 1;
             else if (bodyPart == posToRight)
@@ -445,7 +451,7 @@ namespace game {
     }
 
     GameReport Game::GenerateReport() const {
-        return GameReport(points + 1 == snake.Body().size(), points, numSteps);
+        return GameReport(points + 1 == gameWidth * gameHeight, points, numSteps);
     }
 
     int Game::CalculateAvailableSquares(const cstd::Position& pos, cstd::Matrix<bool>& checkedSquares, const cstd::Matrix<bool>& walkableSquares) const {

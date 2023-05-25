@@ -32,7 +32,7 @@ int main()
 
         auto bestModel = trainer.GetModelFromBestSpeciesInLastGeneration();
 
-        auto game = game::Game(true, game::GameControlType::AI, 6, 6, 1000, 1000, *bestModel, 100, false);
+        auto game = game::Game(true, game::GameControlType::AI, 3, 3, 1000, 1000, *bestModel, 100, false);
 
         game.SetSpeed(8);
 
@@ -41,8 +41,6 @@ int main()
         const auto report = game.GenerateReport();
 
         std::cout << report << std::endl;
-
-        std::cout << fitnessFunction->operator()(report) << std::endl;
 
         std::cout << "Type in 'q' to quit... ";
 
