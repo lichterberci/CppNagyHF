@@ -9,12 +9,17 @@
 #include "NeatModel.hpp"
 #include "NeatTrainer.hpp"
 #include "SpeciesData.hpp"
+#include "HyperparameterLoader.hpp"
 
 int main()
 {
 
     srand((uint32_t)std::chrono::system_clock::now().time_since_epoch().count());
 
+    model::HyperparameterLoader()("test.json");
+
+    return 0;
+    
     //auto game = game::Game(true, game::GameControlType::KEYBOARD, 3, 3, 800, 800);
 
     //game.SetSpeed(2);
@@ -34,7 +39,7 @@ int main()
         6, 
         6, 
         fitnessFunction
-        //,"test.progress"
+        ,"test.progress"
     );
 
     trainer.chanceOfDentritInsertion = 0.09;

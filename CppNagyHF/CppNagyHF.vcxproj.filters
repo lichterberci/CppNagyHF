@@ -63,6 +63,9 @@
     <ClCompile Include="ModelParams.cpp">
       <Filter>Source Files\Model</Filter>
     </ClCompile>
+    <ClCompile Include="HyperparameterLoader.cpp">
+      <Filter>Source Files\Model</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game.hpp">
@@ -115,6 +118,9 @@
     </ClInclude>
     <ClInclude Include="SpeciesData.hpp">
       <Filter>Source Files\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="HyperparameterLoader.hpp">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -84,6 +84,8 @@ namespace model {
 		int speciesDropOffAge = 15;
 		double speciesDropOffFitnessThreshold = 0.05;
 
+		NeatTrainer() {}
+
 		NeatTrainer(
 			int populationCount, 
 			int numGenerations, 

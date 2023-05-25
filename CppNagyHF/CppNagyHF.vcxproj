@@ -149,6 +149,7 @@
     <ClCompile Include="GameReport.cpp" />
     <ClCompile Include="GameUtils.cpp" />
     <ClCompile Include="ConnectionGene.cpp" />
+    <ClCompile Include="HyperparameterLoader.cpp" />
     <ClCompile Include="matrix.hpp" />
     <ClCompile Include="ModelParams.cpp" />
     <ClCompile Include="NeatModel.cpp" />
@@ -167,6 +168,7 @@
     <ClInclude Include="GameReport.hpp" />
     <ClInclude Include="GameUtils.hpp" />
     <ClInclude Include="ConnectionGene.hpp" />
+    <ClInclude Include="HyperparameterLoader.hpp" />
     <ClInclude Include="ModelParams.hpp" />
     <ClInclude Include="ModelUtils.hpp" />
     <ClInclude Include="NeatModel.hpp" />
