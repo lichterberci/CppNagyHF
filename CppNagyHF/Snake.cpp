@@ -3,6 +3,8 @@
 
 #define RENDER_INPUT_SQUARES false
 
+#define BODY_WIDTH 0.9
+
 namespace game {
 
     void Snake::Move(bool grow) {
@@ -87,18 +89,102 @@ namespace game {
         window.draw(testRect);
 #endif
 
-        for (const auto& bodyPart : body) {
+        for (int i = 0; i < (int)body.size(); i++) {
 
-            auto size = Utils::GameUtils::GetPixelOfGamePosition(cstd::Position(1, 1), gameWidth, gameHeight, windowWidth, windowHeight);
+            const auto& bodyPart = body[i];
 
-            sf::RectangleShape bodyRect(size); // 1x1 square
+            const double delta = (1.0 - BODY_WIDTH) / 2;
+
+            auto unitSize = Utils::GameUtils::GetPixelOfGamePosition(cstd::Position(1, 1), gameWidth, gameHeight, windowWidth, windowHeight);
+
+            const double deltaX = unitSize.x * delta;
+            const double deltaY = unitSize.y * delta;
+            const double widthX = unitSize.x * BODY_WIDTH;
+            const double widthY = unitSize.y * BODY_WIDTH;
+
+            auto bodyPos = Utils::GameUtils::GetPixelOfGamePosition(bodyPart, gameWidth, gameHeight, windowWidth, windowHeight);
+
+            sf::RectangleShape bodyRect(sf::Vector2f(widthX, widthY)); // 1x1 square
             
+            const sf::Color bodyColor = body.size() > 1 && i == 0 ? sf::Color(255, 255, 50, 255) : sf::Color(0, 250, 0, 255);
+
             bodyRect.setOrigin(0, 0);
-            bodyRect.setPosition(Utils::GameUtils::GetPixelOfGamePosition(bodyPart, gameWidth, gameHeight, windowWidth, windowHeight));
-            bodyRect.setFillColor(sf::Color::Green);
+            bodyRect.setPosition(bodyPos + sf::Vector2f(deltaX, deltaY));
+            bodyRect.setFillColor(bodyColor);
             bodyRect.setOutlineThickness(0);
 
             window.draw(bodyRect);
+
+            if (i > 0) {
+
+                const auto& prevPos = body[i - 1];
+
+                sf::RectangleShape connectionRectToPrev(sf::Vector2f(unitSize.x * BODY_WIDTH, unitSize.y * BODY_WIDTH)); // 1x1 square
+
+                sf::Vector2f connectorPos = bodyPos;
+
+                if (prevPos.x < bodyPart.x) {
+                    connectorPos += sf::Vector2f(0, deltaY);
+                    connectionRectToPrev.setSize(sf::Vector2f(deltaX, widthY));
+                }
+                else if (prevPos.x > bodyPart.x) {
+                    connectorPos += sf::Vector2f(widthX + deltaX, deltaY);
+                    connectionRectToPrev.setSize(sf::Vector2f(deltaX, widthY));
+                } else if (prevPos.y < bodyPart.y) {
+                    connectorPos += sf::Vector2f(deltaX, 0);
+                    connectionRectToPrev.setSize(sf::Vector2f(widthX, deltaY));
+                }
+                else if (prevPos.y > bodyPart.y) {
+                    connectorPos += sf::Vector2f(deltaX, widthY + deltaY);
+                    connectionRectToPrev.setSize(sf::Vector2f(widthX, deltaY));
+                }
+
+                connectionRectToPrev.setOrigin(0, 0);
+                connectionRectToPrev.setPosition(
+                    connectorPos
+                );
+                connectionRectToPrev.setFillColor(bodyColor);
+                connectionRectToPrev.setOutlineThickness(0);
+
+                window.draw(connectionRectToPrev);    
+            }
+
+            if (i + 1 < (int)body.size()) {
+
+                const auto& nextPos = body[i + 1];
+
+                sf::RectangleShape connectionRectToNext(sf::Vector2f(unitSize.x * BODY_WIDTH, unitSize.y * BODY_WIDTH)); // 1x1 square
+
+                sf::Vector2f connectorPos = bodyPos;
+
+
+                if (nextPos.x < bodyPart.x) {
+                    connectorPos += sf::Vector2f(0, deltaY);
+                    connectionRectToNext.setSize(sf::Vector2f(deltaX, widthY));
+                }
+                else if (nextPos.x > bodyPart.x) {
+                    connectorPos += sf::Vector2f(widthX + deltaX, deltaY);
+                    connectionRectToNext.setSize(sf::Vector2f(deltaX, widthY));
+                }
+                else if (nextPos.y < bodyPart.y) {
+                    connectorPos += sf::Vector2f(deltaX, 0);
+                    connectionRectToNext.setSize(sf::Vector2f(widthX, deltaY));
+                }
+                else if (nextPos.y > bodyPart.y) {
+                    connectorPos += sf::Vector2f(deltaX, widthY + deltaY);
+                    connectionRectToNext.setSize(sf::Vector2f(widthX, deltaY));
+                }
+
+                connectionRectToNext.setOrigin(0, 0);
+                connectionRectToNext.setPosition(
+                    connectorPos
+                );
+                connectionRectToNext.setFillColor(bodyColor);
+                connectionRectToNext.setOutlineThickness(0);
+
+                window.draw(connectionRectToNext);
+            }
+
         }
     }
 #endif

@@ -5,7 +5,7 @@
 #include "NeatModel.hpp"
 #include "FitnessFunction.hpp"
 #include "SpeciesData.hpp"
-
+#include <fstream>
 #include <string>
 
 namespace model {
@@ -18,10 +18,11 @@ namespace model {
 		cstd::Vector<const NeatModel*> representativesOfThePrevGeneration;
 		cstd::Vector<double> avgFitnessOfGenerations;
 		cstd::Vector<SpeciesData> speciesData;
+		cstd::Vector<int> speciesIndiciesOfOrganisms;
 
 		std::unordered_map<long long, int> innovationNumberTable;
 
-		void ConstructInitialGenerationFromFile(const std::string& fileName);
+		void ConstructInitialGenerationFromFile(std::ifstream& file);
 		void ConstructInitialGeneration();
 		double EvaluateIndividual(const NeatModel& neatModel);
 		void TrainCurrentGeneration();
@@ -38,11 +39,16 @@ namespace model {
 		);
 		NeatModel GenerateOffSpring(const NeatModel& a, const NeatModel& b, double fitnessOfA, double fitnessOfB);
 
+		void KeyInterruptHandler(int code) const;
+
 	public:
+
+		static NeatTrainer* instance;
+
 		int populationCount;
 		int numGenerations;
-		const std::shared_ptr<const ActivationFunction>& activationFunction;
-		const FitnessFunction* fitnessFunction;
+		std::shared_ptr<const ActivationFunction> activationFunction;
+		std::shared_ptr<FitnessFunction> fitnessFunction;
 		int numMaxIdleSteps;
 		int numBestOrganismsToKeepFromPrevGenerations = 1;
 		unsigned int numberOfEvaluationSteps = 5;
@@ -85,7 +91,7 @@ namespace model {
 			int maxIdleSteps,
 			int gameWidth,
 			int gameHeight,
-			const FitnessFunction* fitnessFunction,
+			std::shared_ptr<FitnessFunction> fitnessFunction,
 			const std::string& fileName = ""
 		) 
 			: populationCount(populationCount), 
@@ -96,17 +102,49 @@ namespace model {
 			gameHeight(gameHeight),
 			fitnessFunction(fitnessFunction)
 		{
+			if (instance == nullptr)
+				instance = this;
+			else {
+				std::cerr << "ERROR: Could not create trainer object, due to instance being active!" << std::endl;
+				return;
+			}
+
+
 			NeatModel::ResetGlobalNeuronCount();
 			ConnectionGene::SetGlobalInnovationNumber(0);
 
 			organismsByGenerations.reserve_and_copy(numGenerations); // this is essential, so the pointers can safely point to these places
 			
-			if (fileName != "")
-				ConstructInitialGenerationFromFile(fileName);
-			else
+			bool loadFromFile = fileName != "";
+
+			if (loadFromFile) {
+				// check if file exists
+				std::ifstream file(fileName, std::ios::binary);
+
+				if (file) {
+					try {
+						ConstructInitialGenerationFromFile(file);
+					}
+					catch (...) {
+						loadFromFile = false;
+					}
+
+					file.close();
+				}
+				else {
+					loadFromFile = false;
+				}
+			} 
+			
+			if (loadFromFile == false) {
 				ConstructInitialGeneration();
 
-			NeatModel::ResetGlobalNeuronCount(NUM_SENSORS + NUM_OUTPUTS);
+				NeatModel::ResetGlobalNeuronCount(NUM_SENSORS + NUM_OUTPUTS);
+			}
+		}
+
+		~NeatTrainer() {
+			instance = nullptr;
 		}
 
 		inline void SetNeatConstants(double c1, double c2, double c3, double deltaSubT) {
@@ -118,8 +156,9 @@ namespace model {
 
 		void Train();
 
-		void SaveModels(const std::string& fileName);
-		void SaveBestSpecies(const std::string& fileName);
+		void SaveProgress(const std::string& fileName) const;
+
+		const NeatModel* GetModelFromBestSpeciesInLastGeneration() const;
 	public:
 		inline cstd::Vector<SpeciesData>& GetSpecies() { return speciesData; }
 	};

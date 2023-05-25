@@ -5,7 +5,7 @@
 
 # define M_PI           3.14159265358979323846  /* pi */
 
-#define CALC_AND_PRINT_MODEL_PARAMS true
+#define CALC_AND_PRINT_MODEL_PARAMS false
 
 namespace game {
 

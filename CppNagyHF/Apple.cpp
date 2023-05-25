@@ -1,6 +1,8 @@
 #include "Apple.hpp"
 #include "GameUtils.hpp"
 
+#define APPLE_WIDTH 0.8
+
 namespace game {
 
 	void Apple::PlaceAtRandom(int gameWidth, int gameHeight, const Snake& snake, bool placeInFrontOfSnake) {
@@ -47,11 +49,16 @@ namespace game {
 #ifndef CPORTA
     void Apple::Render(sf::RenderWindow& window, int gameWidth, int gameHeight, int windowWidth, int windowHeight) {
 
-        sf::RectangleShape appleRect(Utils::GameUtils::GetPixelOfGamePosition(cstd::Position(1, 1), gameWidth, gameHeight, windowWidth, windowHeight)); // 1x1 square
+        auto unitSize = Utils::GameUtils::GetPixelOfGamePosition(cstd::Position(1, 1), gameWidth, gameHeight, windowWidth, windowHeight);
+
+        sf::RectangleShape appleRect(sf::Vector2f(unitSize.x * APPLE_WIDTH, unitSize.y * APPLE_WIDTH)); // 1x1 square
         
         appleRect.setOrigin(0, 0);
-        appleRect.setPosition(Utils::GameUtils::GetPixelOfGamePosition(position, gameWidth, gameHeight, windowWidth, windowHeight));
-        appleRect.setFillColor(sf::Color::Red);
+        appleRect.setPosition(
+            Utils::GameUtils::GetPixelOfGamePosition(position, gameWidth, gameHeight, windowWidth, windowHeight)
+            + sf::Vector2f(unitSize.x * (1 - APPLE_WIDTH) / 2, unitSize.y * (1 - APPLE_WIDTH) / 2)
+        );
+        appleRect.setFillColor(sf::Color(255, 20, 20, 255));
         appleRect.setOutlineThickness(0);
 
         window.draw(appleRect);

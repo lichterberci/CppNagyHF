@@ -4,22 +4,92 @@
 #include <vector>
 #include <algorithm>
 #include "Persistence.hpp"
+#include <iostream>
+#include <fstream>
+#include "ModelUtils.hpp"
+#include <iostream>
+#include <cstdlib>
+#include <signal.h>
+#include <atomic>
 
 namespace model {
 
-	void NeatTrainer::ConstructInitialGenerationFromFile(const std::string& fileName) {
-		auto models = Persistence::LoadModelsFromFile(fileName);
+	NeatTrainer* NeatTrainer::instance = nullptr;
 
-		if (models.size() != populationCount) {
-			std::cout << "WARNING: population count != # models in file";
-			populationCount = models.size();
+	std::atomic<bool> g_stopLoop = false;
+
+	void NeatTrainer::ConstructInitialGenerationFromFile(std::ifstream& file) {
+
+		fitnessFunction = utils::GenerateFitnessFunctionFromTypeIndex(file.get());
+		fitnessFunction->ReadAndSetUpCoeffs(file);
+
+		int globalNeuronCount;
+		file.read((char*)&globalNeuronCount, sizeof(int));
+		NeatModel::ResetGlobalNeuronCount(globalNeuronCount);
+
+		file.read((char*)&populationCount, sizeof(int));
+
+		if (populationCount <= 0) {
+			std::cerr << "ERROR: Population count is 0 or negative in file!" << std::endl;
+			throw std::exception("Population count is 0 or negative in file!");
 		}
 
-		organismsByGenerations += models;
+		size_t innovationNumberTableSize;
+		file.read((char*)&innovationNumberTableSize, sizeof(size_t));
 
-		speciesData += { 0, 0, 0 };
+		innovationNumberTable.clear();
 
-		representativesOfThePrevGeneration += &organismsByGenerations[0][0];
+		for (size_t i = 0; i < innovationNumberTableSize; i++) {
+			long long key;
+			int value;
+			file.read((char*)&key, sizeof(long long));
+			file.read((char*)&value, sizeof(int));
+			innovationNumberTable[key] = value;
+		}
+
+		for (int i = 0; i < populationCount; i++) {
+			int speciesIndex;
+			file.read((char*)&speciesIndex, sizeof(int));
+			speciesIndiciesOfOrganisms += speciesIndex;
+		}
+
+		// count species <==> max species index + 1
+
+		size_t speciesCount = *std::min_element(speciesIndiciesOfOrganisms.begin(), speciesIndiciesOfOrganisms.end(), std::greater<int>()) + 1;
+
+		speciesData = cstd::Vector<SpeciesData>();
+
+		for (size_t i = 0; i < speciesCount; i++) {
+			SpeciesData data;
+
+			file.read((char*)&data, sizeof(SpeciesData));
+
+			speciesData += data;
+		}
+
+		cstd::Vector<NeatModel> initialGeneration;
+
+		for (int i = 0; i < populationCount; i++) {
+			NeatModel model;
+			model.DesrializeAndSetUp(file);
+			initialGeneration += model;
+		}
+
+		organismsByGenerations += std::move(initialGeneration);
+
+		// representatives
+
+		for (size_t i = 0; i < speciesData.size(); i++)
+			representativesOfThePrevGeneration += nullptr;
+
+		for (size_t i = 0; i < populationCount; i++) {
+			const int speciesIndex = speciesIndiciesOfOrganisms[i];
+
+			if (representativesOfThePrevGeneration[speciesIndex] == nullptr)
+				representativesOfThePrevGeneration[speciesIndex] = &organismsByGenerations[0][i];
+		}
+
+		file.close();
 	}
 
 	void NeatTrainer::ConstructInitialGeneration() {
@@ -136,6 +206,8 @@ namespace model {
 		// speciation
 
 		const cstd::Vector<int> speciesIndicies = Speciate(currentGeneration, speciesData);
+
+		speciesIndiciesOfOrganisms = speciesIndicies;
 
 		// sum up species sizes
 
@@ -693,6 +765,46 @@ namespace model {
 		return NeatModel(newGenes, activationFunction);
 	}
 
+	void NeatTrainer::KeyInterruptHandler(int code) const
+	{
+		g_stopLoop = true;
+
+		std::cout << std::endl << "Do you want to exit? (y/n) ";
+
+		if (tolower(std::cin.get()) != 'y') {
+			std::cout << "\33[2K\r"; // delete everything that might be on the new line
+			std::cout << "\033[1A\33[2K\r"; // delete the question with the answer
+			std::cout << "\033[1A\33[2K\r"; // delete the previous line
+			signal(SIGINT, [](int code) { NeatTrainer::instance->KeyInterruptHandler(code); });
+			g_stopLoop = false;
+			return;
+		}
+
+		std::cin.get(); // '\n'
+
+		std::cout << "Do you want to save your progress? (y/n)";
+
+		if (tolower(std::cin.get()) != 'y')
+			exit(code);
+
+		std::cin.get(); // '\n'
+
+		std::cout << "Filename:" << std::endl;
+
+		std::string fileName;
+		std::getline(std::cin, fileName);
+		
+		try {
+			SaveProgress(fileName);
+			std::cout << "Progres saved!" << std::endl;
+		}
+		catch (...) {
+			std::cerr << "ERROR: Could not save file!" << std::endl;
+		}
+
+		exit(code);
+	}
+
 	cstd::Vector<int> NeatTrainer::AllocatePlacesForSpecies(const cstd::Vector<double>& sumOfAdjustedFitnessForEachSpecies) {
 
  		const int numSpecies = (int)sumOfAdjustedFitnessForEachSpecies.size();
@@ -756,7 +868,11 @@ namespace model {
 
 		std::cout << "Training " << numGenerations << " generation with " << populationCount << " organisms in each..." << std::endl;
 
+		signal(SIGINT, [](int code) { NeatTrainer::instance->KeyInterruptHandler(code); });
+
 		for (size_t generationIndex = 0; generationIndex < numGenerations; generationIndex++) {
+
+			while (g_stopLoop) {}
 
 			//std::cout << "\33[2K\r";
 
@@ -835,14 +951,74 @@ namespace model {
 		}
 
 		std::cout << "\33[2K\rTraining done! Avg. fitness of the last generation was " << avgFitnessOfGenerations.last() << std::endl;
+
+		signal(SIGINT, exit);
 	}
 
-	void NeatTrainer::SaveModels(const std::string& fileName) {
-		Persistence::SaveModelsToFile(fileName, organismsByGenerations.last());
+	void NeatTrainer::SaveProgress(const std::string& fileName) const {
+		
+		std::ofstream file(fileName, std::ios::binary | std::ios::out);
+
+		// fitness function
+
+		uint8_t fitnessFunctionType = fitnessFunction->GetTypeIndex();
+		file.write((char*) & fitnessFunctionType, 1);
+		fitnessFunction->WriteCoeffs(file);
+
+		// global neuron count
+
+		int globalNeuronCount = NeatModel::GetGlobalNeuronCount();
+		file.write((char*)&globalNeuronCount, sizeof(int));
+
+		// pop count
+
+		file.write((char*)&populationCount, sizeof(int));
+
+		// innovation number table
+
+		size_t innovationNumberTableSize = innovationNumberTable.size();
+		file.write((char*)&innovationNumberTableSize, sizeof(size_t));
+
+		for (const auto[key, value] : innovationNumberTable) {
+			file.write((char*)&key, sizeof(long long));
+			file.write((char*)&value, sizeof(int));
+		}
+
+		// species indicies
+
+		for (const int speciesIndex : speciesIndiciesOfOrganisms)
+			file.write((char*)&speciesIndex, sizeof(int));
+
+		// species data
+
+		for (const SpeciesData& data : speciesData)
+			file.write((char*)&data, sizeof(SpeciesData));
+
+		// models
+
+		for (const auto& model : organismsByGenerations.last())
+			model.Serialize(file);
+
+		file.close();
 	}
 
-	void SaveBestSpecies(const std::string& fileName) {
+	const NeatModel* NeatTrainer::GetModelFromBestSpeciesInLastGeneration() const
+	{
+		const SpeciesData* dataOfBestSpecies = std::max_element(
+			speciesData.begin(),
+			speciesData.end(),
+			[&](const SpeciesData a, const SpeciesData b) {
+				return a.lastFitness < b.lastFitness;
+			});
 
+		int specIndex = 0;
+
+		for (int i = 0; i < speciesData.size(); i++)
+			if (&speciesData[i] == dataOfBestSpecies)
+				specIndex = i;
+
+		const NeatModel* bestModel = const_cast<NeatModel*>(representativesOfThePrevGeneration[specIndex]);
+
+		return bestModel;
 	}
-
 }

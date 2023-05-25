@@ -8,7 +8,7 @@
 #define BIAS_VALUE 1.0
 
 #if USE_RELATIVE_DIRECTION == true
-#define INPUT_SIZE 6
+#define INPUT_SIZE 9
 #else
 #define INPUT_SIZE 25
 #endif

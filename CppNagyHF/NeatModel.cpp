@@ -298,15 +298,17 @@ namespace model {
 	{
 		// genes
 
-		os << (size_t)genes.size();
+		size_t geneCount = genes.size();
+		os.write((char*)&geneCount, sizeof(size_t));
 
 		for (const auto& gene : genes)
-			for (size_t i = 0; i < sizeof(ConnectionGene); i++)
-				os << (uint8_t)(reinterpret_cast<const uint8_t*>(&gene)[i]); // treat it as a byte array
+			os.write((char*)&gene, sizeof(ConnectionGene));
 
 		// activation function type
 
-		os << activationFunction->GetTypeIndex();
+		uint8_t activationFunctionType = activationFunction->GetTypeIndex();
+
+		os.write((char*) & activationFunctionType, 1);
 
 		return os;
 	}
@@ -319,15 +321,13 @@ namespace model {
 		genes = cstd::Vector<ConnectionGene>();
 
 		size_t numGenes;
-		is >> numGenes;
+		is.read((char*) & numGenes, sizeof(size_t));
 
 		for (size_t geneIndex = 0; geneIndex < numGenes; geneIndex++) {
 			
 			ConnectionGene gene;
 
-			for (size_t i = 0; i < sizeof(ConnectionGene); i++) {
-				reinterpret_cast<uint8_t*>(&gene)[i] = is.get(); // no endianness issues, only 1 byte
-			}
+			is.read((char*)&gene, sizeof(ConnectionGene));
 
 			genes += gene;
 		}

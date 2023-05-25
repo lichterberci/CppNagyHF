@@ -3,6 +3,7 @@
 #include <stdint.h>
 #include <random>
 #include "ActivationFunction.hpp"
+#include "FitnessFunction.hpp"
 
 namespace model {
 
@@ -32,6 +33,21 @@ namespace model {
 				return std::make_shared<LReLU>();
 			default:
 				return std::make_shared<Sigmoid>();
+			}
+		}
+
+		inline std::shared_ptr<FitnessFunction> GenerateFitnessFunctionFromTypeIndex(uint8_t type) {
+			switch (type) {
+			case 1:
+				return std::make_shared<FitnessByApplesOnly>();
+			case 2:
+				return std::make_shared<FitnessByStepsOnly>();
+			case 3:
+				return std::make_shared<FitnessByApplesAndSteps>();
+			case 4:
+				return std::make_shared<FitnessByApplesAndStepsAndWin>();
+			default:
+				return std::make_shared<FitnessByApplesAndSteps>();
 			}
 		}
 	}

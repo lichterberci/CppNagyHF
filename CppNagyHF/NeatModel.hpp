@@ -167,6 +167,10 @@ namespace model {
 			s_globalNeuronCount = to;
 		}
 
+		static int GetGlobalNeuronCount() {
+			return s_globalNeuronCount;
+		}
+
 		friend std::ostream& operator<< (std::ostream& os, const NeatModel& model);
 
 		std::ostream& Serialize(std::ostream& os) const;

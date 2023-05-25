@@ -24,8 +24,9 @@ namespace model {
 		}
 	};
 
-	template<typename TCoeff, TCoeff coeff>
 	struct SteepSigmoid : public ActivationFunction {
+
+		double coeff;
 
 		double operator()(double x) const override {
 			x *= coeff;
