@@ -784,7 +784,7 @@ namespace model {
 
 		std::cin.get(); // '\n'
 
-		std::cout << "Do you want to save your progress? (y/n)";
+		std::cout << "Do you want to save your progress? (y/n) ";
 
 		if (tolower(std::cin.get()) != 'y')
 			exit(code);
@@ -798,7 +798,6 @@ namespace model {
 		
 		try {
 			SaveProgress(fileName);
-			std::cout << "Progres saved!" << std::endl;
 		}
 		catch (...) {
 			std::cerr << "ERROR: Could not save file!" << std::endl;
@@ -866,7 +865,7 @@ namespace model {
 		return placesAllocatedForSpecies;
 	}
 
-	void NeatTrainer::Train() {
+	bool NeatTrainer::Train() {
 
 		std::cout << "Training " << numGenerations << " generation with " << populationCount << " organisms in each..." << std::endl;
 
@@ -898,7 +897,7 @@ namespace model {
 			for (int i = sliderLength * generationIndex / numGenerations; i < sliderLength; i++)
 				std::cout << ' ';
 
-			std::cout << "\u001b[40;1m\033[0m";
+			std::cout << "\033[0m";
 
 			if (generationIndex > 0) {
 				std::cout << "   avg. fitness: " << std::fixed << std::setprecision(4) << avgFitnessOfGenerations.last();
@@ -945,7 +944,7 @@ namespace model {
 				for (int i = 0; i < 5; i++)
 					std::cout << "Score: " << EvaluateIndividual(*bestModel) << std::endl;
 
-				return;
+				return true;
 			}
 
 			chanceOfNeuronInsertion *= 0.99;
@@ -955,6 +954,8 @@ namespace model {
 		std::cout << "\33[2K\rTraining done! Avg. fitness of the last generation was " << avgFitnessOfGenerations.last() << std::endl;
 
 		signal(SIGINT, exit);
+
+		return false;
 	}
 
 	void NeatTrainer::SaveProgress(const std::string& fileName) const {
@@ -1002,6 +1003,8 @@ namespace model {
 			model.Serialize(file);
 
 		file.close();
+
+		std::cout << "Progress saved to [" << fileName << "]" << std::endl;
 	}
 
 	const NeatModel* NeatTrainer::GetModelFromBestSpeciesInLastGeneration() const

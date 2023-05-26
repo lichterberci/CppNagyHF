@@ -2,6 +2,9 @@
 #include <iostream>
 #include "Game.hpp"
 #include "NeatTrainer.hpp"
+#include "Tests.hpp"
+
+#ifndef CPORTA
 
 void Manager::MainWithUI(int argc, char* argv[]) {
 
@@ -49,6 +52,16 @@ void Manager::MainWithUI(int argc, char* argv[]) {
 		return;
 	}
 
+	if (hasFlag("--run-tests")) {
+
+		if (tests::ConvergenceTest(getOrDefault("-params", "params.json")) == false)
+			std::cout << "TEST FAILED!" << std::endl;
+		else
+			std::cout << "TEST PASSED!" << std::endl;
+
+		return;
+	}
+
 	if (hasFlag("--test-ai")) {
 
 		auto activationFunction = model::utils::GenerateActivationFunctionFromTypeIndex(1);
@@ -56,7 +69,7 @@ void Manager::MainWithUI(int argc, char* argv[]) {
 
 		auto trainer = model::NeatTrainer(
 			1,
-			5,
+			1,
 			activationFunction,
 			std::stoi(getOrDefault("-max-idle-steps", "40")),
 			std::stoi(getOrDefault("-game-width", "6")),
@@ -98,11 +111,44 @@ void Manager::MainWithUI(int argc, char* argv[]) {
 	}
 }
 
+#endif
 
 void Manager::MainWithoutUI(int argc, char* argv[]) {
 
+	auto args = ProcessCmdArguments(argc, argv);
 
+	auto hasFlag = [&args](const std::string& name) {
+		return args.find(name) != args.end();
+	};
 
+	auto getOrDefault = [&hasFlag, &args](const std::string& name, const std::string& defaultValue) {
+		if (hasFlag(name))
+			return args.at(name);
+
+		return defaultValue;
+	};
+
+	if (hasFlag("--train")) {
+
+		auto trainer = model::NeatTrainer(getOrDefault("-params", ""));
+
+		trainer.Train();
+
+		if (hasFlag("-save"))
+			trainer.SaveProgress(getOrDefault("-save", "output.progress"));
+
+		return;
+	}
+
+	if (hasFlag("--run-tests")) {
+
+		if (tests::ConvergenceTest(getOrDefault("-params", "params.json")) == false)
+			std::cout << "TEST FAILED!" << std::endl;
+		else
+			std::cout << "TEST PASSED!" << std::endl;
+
+		return;
+	}
 }
 
 std::unordered_map<std::string, std::string>  Manager::ProcessCmdArguments(int argc, char* argv[])
@@ -119,7 +165,7 @@ std::unordered_map<std::string, std::string>  Manager::ProcessCmdArguments(int a
 
 			if (currentItem[1] == '-') {
 				result[currentItem] = "FLAG";
-				std::cout << currentItem << ": FLAG" << std::endl;
+				//std::cout << currentItem << ": FLAG" << std::endl;
 				key = "";
 			}
 			
@@ -130,7 +176,7 @@ std::unordered_map<std::string, std::string>  Manager::ProcessCmdArguments(int a
 
 		if (key != "") {
 			result[key] = currentItem;
-			std::cout << key << ": " << currentItem << std::endl;
+			//std::cout << key << ": " << currentItem << std::endl;
 		}
 		else
 			std::cerr << "WARNING: cmd argument is not flag: " << currentItem << std::endl;

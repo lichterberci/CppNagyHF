@@ -279,7 +279,7 @@ namespace model {
 			neatDeltaSubT = deltaSubT;
 		}
 
-		void Train();
+		bool Train();
 
 		void SaveProgress(const std::string& fileName) const;
 

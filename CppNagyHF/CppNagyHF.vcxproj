@@ -179,6 +179,7 @@
     <ClInclude Include="RandomModel.hpp" />
     <ClInclude Include="Snake.hpp" />
     <ClInclude Include="SpeciesData.hpp" />
+    <ClInclude Include="Tests.hpp" />
   </ItemGroup>
   <ItemGroup>
     <Natvis Include="CustomDebuggerVisualization.natvis" />
