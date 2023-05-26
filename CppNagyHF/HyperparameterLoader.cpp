@@ -14,7 +14,7 @@ namespace model {
 
         if (!file) {
             std::cerr << "ERROR: file not found!" << std::endl;
-            throw std::exception("File not found!");
+            throw "File not found!";
         }
 
         bool inName = false;

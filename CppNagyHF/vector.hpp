@@ -10,9 +10,9 @@ namespace cstd {
 	class Vector {
 
 	private:
-		T* m_data;
-		size_t m_capacity;
 		size_t m_size;
+		size_t m_capacity;
+		T* m_data;
 
 	public:
 		Vector()
@@ -36,7 +36,7 @@ namespace cstd {
 		}
 
 		Vector(const Vector& other) noexcept
-			: m_capacity(other.m_capacity), m_size(other.m_size)
+			: m_size(other.m_size), m_capacity(other.m_capacity)
 		{
 			m_data = new T[m_capacity];
 
@@ -45,7 +45,7 @@ namespace cstd {
 		}
 
 		Vector(Vector&& other) noexcept
-			: m_capacity(other.m_capacity), m_size(other.m_size)
+			: m_size(other.m_size), m_capacity(other.m_capacity)
 		{
 			m_data = other.m_data;
 

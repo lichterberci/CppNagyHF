@@ -24,7 +24,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="CppNagyHF.cpp">
+    <ClCompile Include="Main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="vector.hpp">
@@ -129,6 +129,9 @@
       <Filter>Source Files\Model</Filter>
     </ClInclude>
     <ClInclude Include="Tests.hpp">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="memtrace.h">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>

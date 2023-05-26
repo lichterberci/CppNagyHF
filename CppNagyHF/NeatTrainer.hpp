@@ -47,15 +47,15 @@ namespace model {
 
 		static NeatTrainer* instance;
 
-		int populationCount;
-		int numGenerations;
+		int populationCount = 100;
+		int numGenerations = 100;
 		std::shared_ptr<const ActivationFunction> activationFunction;
 		std::shared_ptr<FitnessFunction> fitnessFunction;
-		int numMaxIdleSteps;
+		int numMaxIdleSteps = 10;
 		unsigned int numberOfEvaluationSteps = 5;
 
-		int gameWidth;
-		int gameHeight;
+		int gameWidth = 10;
+		int gameHeight = 10;
 
 		double chanceOfDentritInsertion = 0.3;
 		double chanceOfNeuronInsertion = 0.1;
@@ -115,7 +115,7 @@ namespace model {
 				}
 
 			if (didFindActivationFunction == false)
-				throw std::exception("Unknown activation function!");
+				throw "Unknown activation function!";
 
 			auto fitnessFunctionName = ToLower(Get<std::string>(JSONMap, "FitnessFunction.Name").value_or("onlyapples"));
 

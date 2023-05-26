@@ -37,13 +37,13 @@ namespace game {
 
         if (attempts >= MAX_ATTEMPTS_TO_PLACE_APPLE) {
             std::cerr << "ERROR: could not place apple!" << std::endl;
-            throw std::exception("Could not place apple!");
+            throw "Could not place apple!";
         }
 
 	}
 
     bool Apple::CanPlace(int gameWidth, int gameHeight, const Snake& snake) {
-        return snake.Body().size() < gameWidth * gameHeight;
+        return snake.Body().size() < (size_t)(gameWidth * gameHeight);
     }
 
 #ifndef CPORTA

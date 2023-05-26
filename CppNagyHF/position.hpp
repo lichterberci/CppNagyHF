@@ -33,7 +33,7 @@ namespace cstd {
 			return *this;
 		}
 
-		Position& operator= (Position&& other) {
+		Position& operator= (Position&& other) noexcept {
 			x = other.x;
 			y = other.y;
 			other.x = 0;
