@@ -94,16 +94,16 @@ namespace game {
 			p_controllerModel = &newModel;
 		}
 
-		void SetControlType(GameControlType controlType) {
-			controlType = controlType;
+		void SetControlType(GameControlType _controlType) {
+			controlType = _controlType;
 		}
 
 		void SetSpeed(float movesPerSec) {
 			snakeMovesPerSec = movesPerSec;
 		}
 
-		void SetNumMaxIdleSteps(int numMaxIdleSteps) {
-			this->numMaxIdleSteps = numMaxIdleSteps;
+		void SetNumMaxIdleSteps(int maxIdleSteps) {
+			this->numMaxIdleSteps = maxIdleSteps;
 		}
 
 		GameReport GenerateReport() const;

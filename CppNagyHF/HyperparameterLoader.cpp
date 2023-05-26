@@ -45,7 +45,7 @@ namespace model {
 
         while (file.eof() == false) {
 
-            char c = file.get();
+            char c = (char)file.get();
 
             if (inValue == false && inName == false && std::isspace(c))
                 continue;

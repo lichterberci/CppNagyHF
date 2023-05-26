@@ -2,7 +2,7 @@
 
 namespace model {
 
-	cstd::Vector<double> RandomModel::Predict(const model::ModelParams& modelParams) const {
+	cstd::Vector<double> RandomModel::Predict(const model::ModelParams&) const {
 
 		/*std::cout << "Model params:" << std::endl;
 		std::cout << "Distance to walls" << std::endl;

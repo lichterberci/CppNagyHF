@@ -8,7 +8,7 @@
 #include "memtrace.h"
 #endif
 
-int main(int argc, char* argv[])
+int main(int, char*[])
 {
 
     srand((uint32_t)std::chrono::system_clock::now().time_since_epoch().count());

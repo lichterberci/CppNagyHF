@@ -78,7 +78,7 @@ namespace model {
             std::string result;
 
             for (const char c : str)
-                result += tolower(c);
+                result += (char)tolower(c);
 
             return result;
         }

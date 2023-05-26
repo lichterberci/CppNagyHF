@@ -157,8 +157,8 @@ namespace model {
 		// we choose 2 inficies that are in order (to avoid any loops)
 		// --> we choose a separator index at random and then 2 indicies from its left and right
 
-		int from, to;
-		bool didCreateDentritThatIsNotYetPresentInThisOrganism;
+		int from = 0, to = 0;
+		bool didCreateDentritThatIsNotYetPresentInThisOrganism = false;
 
 		bool didFindGoodCombination = false;
 
@@ -334,7 +334,7 @@ namespace model {
 
 		// activation function type
 
-		activationFunction = utils::GenerateActivationFunctionFromTypeIndex(is.get());
+		activationFunction = utils::GenerateActivationFunctionFromTypeIndex((uint8_t)is.get());
 
 		GenerateLookUp();
 		GenerateNeuronIndiciesList();

@@ -21,7 +21,7 @@ namespace model {
 
 	void NeatTrainer::ConstructInitialGenerationFromFile(std::ifstream& file) {
 
-		fitnessFunction = utils::GenerateFitnessFunctionFromTypeIndex(file.get());
+		fitnessFunction = utils::GenerateFitnessFunctionFromTypeIndex((uint8_t)file.get());
 		fitnessFunction->ReadAndSetUpCoeffs(file);
 
 		int globalNeuronCount;
@@ -521,10 +521,10 @@ namespace model {
 		double sumDifferenceOfWeights = 0;
 		size_t numAllignedGenes = 0;
 
-		const int innovationNumberInGenomWithSmallerMaxInnovationNumber = std::min(
+		/*const int innovationNumberInGenomWithSmallerMaxInnovationNumber = std::min(
 			genesOfA.last().innovationNumber, 
 			genesOfB.last().innovationNumber
-		);
+		);*/
 
 		while (i < sizeOfSmaller && j < sizeOfSmaller) {
 
@@ -698,10 +698,10 @@ namespace model {
 
 		cstd::Vector<ConnectionGene> newGenes;
 
-		const int innovationNumberInGenomWithSmallerMaxInnovationNumber = std::min(
+		/*const int innovationNumberInGenomWithSmallerMaxInnovationNumber = std::min(
 			genesOfA.last().innovationNumber,
 			genesOfB.last().innovationNumber
-		);
+		);*/
 
 		size_t i = 0, j = 0; // indicies of the vectors
 

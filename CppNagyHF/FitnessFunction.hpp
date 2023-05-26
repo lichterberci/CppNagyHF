@@ -9,8 +9,8 @@ namespace model {
 	struct FitnessFunction {
 		virtual double operator()(const game::GameReport& report) const = 0;
 		virtual uint8_t GetTypeIndex() const = 0;
-		virtual void WriteCoeffs(std::ostream& os) const {}
-		virtual void ReadAndSetUpCoeffs(std::istream& is) {}
+		virtual void WriteCoeffs(std::ostream&) const {}
+		virtual void ReadAndSetUpCoeffs(std::istream&) {}
 	};
 
 	struct FitnessByApplesOnly : public FitnessFunction {

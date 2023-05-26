@@ -451,7 +451,7 @@ namespace game {
     }
 
     GameReport Game::GenerateReport() const {
-        return GameReport(points + 1 == gameWidth * gameHeight, points, numSteps);
+        return GameReport((int)points + 1 == gameWidth * gameHeight, points, numSteps);
     }
 
     int Game::CalculateAvailableSquares(const cstd::Position& pos, cstd::Matrix<bool>& checkedSquares, const cstd::Matrix<bool>& walkableSquares) const {
