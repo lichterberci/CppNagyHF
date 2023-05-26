@@ -135,7 +135,7 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="optional.hpp">
-      <Filter>Source Files\CSTD\Header Files</Filter>
+      <Filter>Source Files\CSTD</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

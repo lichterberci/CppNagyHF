@@ -1,6 +1,5 @@
 ﻿#include "NeatTrainer.hpp"
 #include "Game.hpp"
-#include "Persistence.hpp"
 #include "ModelUtils.hpp"
 
 #ifndef CPORTA

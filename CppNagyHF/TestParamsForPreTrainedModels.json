@@ -1,10 +1,11 @@
 {
+  "LoadProgressFile": "test.progress",
   "PopulationCount": 200,
   "NumGenerations": 100,
   "GameWidth": 3,
   "GameHeight": 3,
   "MaxIdleSteps": 15,
-  "PlaceFirstAppleInFronOfSnake": false,
+  "PlaceFirstAppleInFrontOfSnake": false,
 
   "TargetFitness": 4,
   "NumEvaluations": 10,
