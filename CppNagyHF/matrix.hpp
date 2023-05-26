@@ -107,7 +107,7 @@ namespace cstd {
 			T* new_data = new T[new_x * new_y];
 
 			for (size_t i = 0; i < std::min(new_x, m_size_x); i++)
-				for (rsize_t j = 0; j < std::min(new_y, m_size_y); j++)
+				for (size_t j = 0; j < std::min(new_y, m_size_y); j++)
 					new_data[i * new_y + j] = get(i, j);
 
 			delete[] m_data;
@@ -127,7 +127,7 @@ namespace cstd {
 			std::fill_n(new_data, new_x * new_y, default_value);
 
 			for (size_t i = 0; i < std::min(new_x, m_size_x); i++)
-				for (rsize_t j = 0; j < std::min(new_y, m_size_y); j++)
+				for (size_t j = 0; j < std::min(new_y, m_size_y); j++)
 					new_data[i * new_y + j] = get(i, j);
 
 			delete[] m_data;

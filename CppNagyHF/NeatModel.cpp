@@ -18,7 +18,7 @@ namespace model {
 
 		geneIndexLookupByOutputNeuronOfAllDentrits.clear();
 
-		for (int i = 0; i < genes.size(); i++) {
+		for (int i = 0; i < (int)genes.size(); i++) {
 
 			geneIndexLookupByOutputNeuronOfAllDentrits[genes[i].to] += i;
 		}

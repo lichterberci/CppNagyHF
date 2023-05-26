@@ -75,7 +75,7 @@ namespace model {
 			: neuronIndicies(other.neuronIndicies), 
 			genes(other.genes), 
 			topologicalOrderOfNeurons(other.topologicalOrderOfNeurons), 
-			geneIndexLookupByOutputNeuronOfAllDentrits(geneIndexLookupByOutputNeuronOfAllDentrits),
+			geneIndexLookupByOutputNeuronOfAllDentrits(other.geneIndexLookupByOutputNeuronOfAllDentrits),
 			activationFunction(other.activationFunction),
 			rawFitness(other.rawFitness),
 			adjustedFitness(other.adjustedFitness)
@@ -85,7 +85,7 @@ namespace model {
 			: neuronIndicies(std::move(other.neuronIndicies)),
 			genes(std::move(other.genes)),
 			topologicalOrderOfNeurons(std::move(other.topologicalOrderOfNeurons)),
-			geneIndexLookupByOutputNeuronOfAllDentrits(std::move(geneIndexLookupByOutputNeuronOfAllDentrits)),
+			geneIndexLookupByOutputNeuronOfAllDentrits(std::move(other.geneIndexLookupByOutputNeuronOfAllDentrits)),
 			activationFunction(other.activationFunction),
 			rawFitness(other.rawFitness),
 			adjustedFitness(other.adjustedFitness)

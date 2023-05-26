@@ -52,10 +52,10 @@ namespace model {
 		std::shared_ptr<const ActivationFunction> activationFunction;
 		std::shared_ptr<FitnessFunction> fitnessFunction;
 		int numMaxIdleSteps = 10;
-		unsigned int numberOfEvaluationSteps = 5;
-
 		int gameWidth = 10;
 		int gameHeight = 10;
+
+		unsigned int numberOfEvaluationSteps = 5;
 
 		double chanceOfDentritInsertion = 0.3;
 		double chanceOfNeuronInsertion = 0.1;
@@ -140,6 +140,12 @@ namespace model {
 					didFindFitnessFunciton = true;
 				}
 
+			if (didFindFitnessFunciton == false) {
+				std::cerr << "ERROR: Fitness function not found!" << std::endl;
+				throw "Unknown fitness function!";
+			}
+
+
 			numMaxIdleSteps = Get<int>(JSONMap, "MaxIdleSteps").value_or(40);
 			numberOfEvaluationSteps = Get<int>(JSONMap, "NumEvaluations").value_or(5);
 
@@ -222,10 +228,10 @@ namespace model {
 			: populationCount(populationCount), 
 			numGenerations(numGenerations), 
 			activationFunction(activationFunction), 
+			fitnessFunction(fitnessFunction),
 			numMaxIdleSteps(maxIdleSteps),
 			gameWidth(gameWidth),
-			gameHeight(gameHeight),
-			fitnessFunction(fitnessFunction)
+			gameHeight(gameHeight)
 		{
 			if (instance == nullptr)
 				instance = this;

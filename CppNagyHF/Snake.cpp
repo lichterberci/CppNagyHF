@@ -24,7 +24,7 @@ namespace game {
         if (newHead.x < 0 || newHead.x >= gameWidth || newHead.y < 0 || newHead.y >= gameHeight)
             return true;
 
-        for (int i = 1; i < body.size(); i++) {
+        for (size_t i = 1; i < body.size(); i++) {
             if (newHead == body[i])
                 return true;
         }

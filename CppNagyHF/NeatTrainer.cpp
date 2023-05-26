@@ -1,12 +1,15 @@
 ﻿#include "NeatTrainer.hpp"
 #include "Game.hpp"
+#include "Persistence.hpp"
+#include "ModelUtils.hpp"
+
+#ifndef CPORTA
 #include <execution>
+#endif
 #include <vector>
 #include <algorithm>
-#include "Persistence.hpp"
 #include <iostream>
 #include <fstream>
-#include "ModelUtils.hpp"
 #include <iostream>
 #include <cstdlib>
 #include <signal.h>
@@ -17,7 +20,11 @@ namespace model {
 
 	NeatTrainer* NeatTrainer::instance = nullptr;
 
+#ifndef CPORTA
 	std::atomic<bool> g_stopLoop = false;
+#else
+	bool g_stopLoop = false;
+#endif
 
 	void NeatTrainer::ConstructInitialGenerationFromFile(std::ifstream& file) {
 
@@ -32,7 +39,7 @@ namespace model {
 
 		if (populationCount <= 0) {
 			std::cerr << "ERROR: Population count is 0 or negative in file!" << std::endl;
-			throw std::exception("Population count is 0 or negative in file!");
+			throw "Population count is 0 or negative in file!";
 		}
 
 		size_t innovationNumberTableSize;
@@ -83,7 +90,7 @@ namespace model {
 		for (size_t i = 0; i < speciesData.size(); i++)
 			representativesOfThePrevGeneration += nullptr;
 
-		for (size_t i = 0; i < populationCount; i++) {
+		for (int i = 0; i < populationCount; i++) {
 			const int speciesIndex = speciesIndiciesOfOrganisms[i];
 
 			if (representativesOfThePrevGeneration[speciesIndex] == nullptr)
@@ -98,7 +105,7 @@ namespace model {
 		cstd::Vector<NeatModel> initialGeneration;
 		initialGeneration.reserve_and_copy(populationCount);
 
-		for (size_t i = 0; i < populationCount; i++) {
+		for (int i = 0; i < populationCount; i++) {
 			initialGeneration += NeatModel(activationFunction, innovationNumberTable);
 		}
 
@@ -181,7 +188,7 @@ namespace model {
 		auto& currentGeneration = organismsByGenerations.last();
 
 		cstd::Vector<double> fitnessScores(currentGeneration.size());
-
+#ifndef CPORTA
 		std::vector<double> fitnessScoresAsyncResults;
 		
 		for (int i = 0; i < populationCount; i++)
@@ -200,10 +207,10 @@ namespace model {
 
 		for (const double fitness : fitnessScoresAsyncResults)
 			fitnessScores += fitness;
-
-		//for (auto& organism : currentGeneration)
-		//	fitnessScores += EvaluateIndividual(organism);
-
+#else
+		for (auto& organism : currentGeneration)
+			fitnessScores += EvaluateIndividual(organism);
+#endif
 		// speciation
 
 		const cstd::Vector<int> speciesIndicies = Speciate(currentGeneration, speciesData);
@@ -487,7 +494,7 @@ namespace model {
 		// handle speciesAge
 		cstd::Vector<SpeciesData> newSpeciesAgeData;
 
-		for (int newSpeciesIndex = 0; newSpeciesIndex < representativesOfSpeciesInNewGeneration.size(); newSpeciesIndex++) {
+		for (int newSpeciesIndex = 0; newSpeciesIndex < (int)representativesOfSpeciesInNewGeneration.size(); newSpeciesIndex++) {
 
 			if (newToOldSpeciesMap.find(newSpeciesIndex) == newToOldSpeciesMap.end()) {
 				newSpeciesAgeData += { 0, 0, 0 }; // it is new
@@ -582,7 +589,7 @@ namespace model {
 
 		cstd::Vector<cstd::Vector<int>> organismIndiciesBySpecies;
 
-		for (int i = 0; i < numPlacesAllocatedForSpecies.size(); i++)
+		for (size_t i = 0; i < numPlacesAllocatedForSpecies.size(); i++)
 			organismIndiciesBySpecies += cstd::Vector<int>();
 
 		// generate lookup
@@ -596,7 +603,7 @@ namespace model {
 			});
 
 		// chop off those deemed useless
-		for (int speciesIndex = 0; speciesIndex < organismIndiciesBySpecies.size(); speciesIndex++) {
+		for (int speciesIndex = 0; speciesIndex < (int)organismIndiciesBySpecies.size(); speciesIndex++) {
 
 			auto& species = organismIndiciesBySpecies[speciesIndex];
 
@@ -610,11 +617,11 @@ namespace model {
 		cstd::Vector<NeatModel> newGeneration;
 		newGeneration.reserve_and_copy(populationCount);
 
-		int recievingSpeciesIndex = 0;
+		size_t recievingSpeciesIndex = 0;
 
 		// if a species' organisms were killed off in the decimation part, but places were allocated, 
 		// we want to give them away for another species
-		for (int speciesIndex = 0; speciesIndex < organismIndiciesBySpecies.size(); speciesIndex++) {
+		for (int speciesIndex = 0; speciesIndex < (int)organismIndiciesBySpecies.size(); speciesIndex++) {
 
 			const auto& species = organismIndiciesBySpecies[speciesIndex];
 
@@ -643,7 +650,7 @@ namespace model {
 			recievingSpeciesIndex = (recievingSpeciesIndex + 1) % numPlacesAllocatedForSpecies.size();
 		}
 
-		for (int speciesIndex = 0; speciesIndex < organismIndiciesBySpecies.size(); speciesIndex++) {
+		for (size_t speciesIndex = 0; speciesIndex < organismIndiciesBySpecies.size(); speciesIndex++) {
 
 			const auto& species = organismIndiciesBySpecies[speciesIndex];
 
@@ -677,9 +684,9 @@ namespace model {
 			}
 		}
 
-		if (newGeneration.size() != populationCount) {
+		if ((int)newGeneration.size() != populationCount) {
 			std::cout << "ERROR: new generation has invalid length!" << std::endl;
-			throw std::exception("New generation has invalid length!");
+			throw "New generation has invalid length!";
 		}
 
 
@@ -872,7 +879,7 @@ namespace model {
 
 		signal(SIGINT, [](int code) { NeatTrainer::instance->KeyInterruptHandler(code); });
 
-		for (size_t generationIndex = 0; generationIndex < numGenerations; generationIndex++) {
+		for (int generationIndex = 0; generationIndex < numGenerations; generationIndex++) {
 
 			while (g_stopLoop) {}
 
@@ -895,7 +902,7 @@ namespace model {
 
 			std::cout << "\u001b[47;1m";
 
-			for (size_t i = sliderLength * generationIndex / numGenerations; i < sliderLength; i++)
+			for (int i = sliderLength * generationIndex / numGenerations; i < sliderLength; i++)
 				std::cout << ' ';
 
 			std::cout << "\033[0m";
@@ -934,7 +941,7 @@ namespace model {
 
 				int specIndex = 0; 
 
-				for (int i = 0; i < speciesData.size(); i++)
+				for (size_t i = 0; i < speciesData.size(); i++)
 					if (&speciesData[i] == dataOfBestSpecies)
 						specIndex = i;
 
@@ -983,7 +990,10 @@ namespace model {
 		size_t innovationNumberTableSize = innovationNumberTable.size();
 		file.write((char*)&innovationNumberTableSize, sizeof(size_t));
 
-		for (const auto[key, value] : innovationNumberTable) {
+		for (const auto item : innovationNumberTable) {
+			const auto key = item.first;
+			const auto value = item.second;
+
 			file.write((char*)&key, sizeof(long long));
 			file.write((char*)&value, sizeof(int));
 		}
@@ -1019,7 +1029,7 @@ namespace model {
 
 		int specIndex = 0;
 
-		for (int i = 0; i < speciesData.size(); i++)
+		for (size_t i = 0; i < speciesData.size(); i++)
 			if (&speciesData[i] == dataOfBestSpecies)
 				specIndex = i;
 

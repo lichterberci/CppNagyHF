@@ -40,7 +40,7 @@ namespace cstd {
 		{
 			m_data = new T[m_capacity];
 
-			for (size_t i = 0; i < other.m_size; i++)
+			for (size_t i = 0; i < m_size; i++)
 				m_data[i] = other.m_data[i];
 		}
 

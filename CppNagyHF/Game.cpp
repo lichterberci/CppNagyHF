@@ -222,7 +222,7 @@ namespace game {
         
         if (controlType == KEYBOARD) {
             std::cout << "ERROR: you are trying playing with keyboards without UI!" << std::endl;
-            throw std::exception("You are trying playing with keyboards without UI!");
+            throw "You are trying playing with keyboards without UI!";
         }
 
         snake = Snake({ gameWidth / 2, gameHeight / 2 }, { 1, 0 });

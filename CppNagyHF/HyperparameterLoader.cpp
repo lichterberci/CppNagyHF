@@ -4,6 +4,7 @@
 #include <fstream>
 #include <exception>
 #include <unordered_map>
+#include <vector>
 
 namespace model {
 

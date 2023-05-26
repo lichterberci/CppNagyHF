@@ -5,7 +5,7 @@
 #include "ActivationFunction.hpp"
 #include "FitnessFunction.hpp"
 #include <string>
-#include "optional"
+#include "optional.hpp"
 #include <unordered_map>
 
 namespace model {

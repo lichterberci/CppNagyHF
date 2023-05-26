@@ -34,14 +34,14 @@ namespace model {
 	struct ModelParams {
 
 #if USE_RELATIVE_DIRECTION
-		double angleToAppleOnRight;
-		double angleToAppleOnLeft;
-		double blockInFront;
-		double blockToRight;
-		double blockToLeft;
-		double squaresAvailableFront;
-		double squaresAvailableRight;
-		double squaresAvailableLeft;
+		double angleToAppleOnRight = 0;
+		double angleToAppleOnLeft = 0;
+		double blockInFront = 0;
+		double blockToRight = 0;
+		double blockToLeft = 0;
+		double squaresAvailableFront = 0;
+		double squaresAvailableRight = 0;
+		double squaresAvailableLeft = 0;
 		// NOT MODEL PARAM
 		// only needed for calculating relative to absolute direction
 		// 0 = right, 1 = down, 2 = left, 3 = up

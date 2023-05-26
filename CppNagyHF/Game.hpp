@@ -30,20 +30,20 @@ namespace game {
 		static model::RandomModel s_defaultModel;
 
 		bool useUI;
-		int windowWidth, windowHeight;
+		GameControlType controlType;
 		int gameWidth, gameHeight;
+		int windowWidth, windowHeight;
+		const model::ControllerModel* p_controllerModel;
+		unsigned int points;
 		float snakeMovesPerSec;
 		int numSteps;
 		int numIdleSteps;
 		int numMaxIdleSteps;
-		GameState gameState = GameState::UNINITIALIZED;
-		GameControlType controlType;
-		const model::ControllerModel* p_controllerModel;
 		bool placeFirstAppleInFrontOfSnake;
+		GameState gameState = GameState::UNINITIALIZED;
 
 		Snake snake;
 		Apple apple;
-		unsigned int points;
 
 #ifndef CPORTA
 		sf::Clock deltaClock;

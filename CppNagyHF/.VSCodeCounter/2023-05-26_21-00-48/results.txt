@@ -1,0 +1,81 @@
+Date : 2023-05-26 21:00:48
+Directory : e:\CppNagyHF\CppNagyHF
+Total : 48 files,  3858 codes, 274 comments, 1390 blanks, all 5522 lines
+
+Languages
++----------+------------+------------+------------+------------+------------+
+| language | files      | code       | comment    | blank      | total      |
++----------+------------+------------+------------+------------+------------+
+| C++      |         38 |      3,253 |        235 |      1,331 |      4,819 |
+| XML      |          1 |        200 |          0 |          0 |        200 |
+| C        |          2 |        174 |         39 |         46 |        259 |
+| Log      |          5 |        153 |          0 |          5 |        158 |
+| JSON     |          2 |         78 |          0 |          8 |         86 |
++----------+------------+------------+------------+------------+------------+
+
+Directories
++-----------------------------------------------------------------+------------+------------+------------+------------+------------+
+| path                                                            | files      | code       | comment    | blank      | total      |
++-----------------------------------------------------------------+------------+------------+------------+------------+------------+
+| .                                                               |         48 |      3,858 |        274 |      1,390 |      5,522 |
+| . (Files)                                                       |         43 |      3,705 |        274 |      1,385 |      5,364 |
+| Debug                                                           |          1 |         47 |          0 |          1 |         48 |
+| x64                                                             |          4 |        106 |          0 |          4 |        110 |
+| x64\Debug                                                       |          2 |         59 |          0 |          2 |         61 |
+| x64\Release                                                     |          2 |         47 |          0 |          2 |         49 |
++-----------------------------------------------------------------+------------+------------+------------+------------+------------+
+
+Files
++-----------------------------------------------------------------+----------+------------+------------+------------+------------+
+| filename                                                        | language | code       | comment    | blank      | total      |
++-----------------------------------------------------------------+----------+------------+------------+------------+------------+
+| e:\CppNagyHF\CppNagyHF\ActivationFunction.hpp                   | C++      |         52 |          1 |         22 |         75 |
+| e:\CppNagyHF\CppNagyHF\Apple.cpp                                | C++      |         48 |          0 |         19 |         67 |
+| e:\CppNagyHF\CppNagyHF\Apple.hpp                                | C++      |         23 |          0 |         10 |         33 |
+| e:\CppNagyHF\CppNagyHF\ConnectionGene.cpp                       | C++      |         45 |          1 |         20 |         66 |
+| e:\CppNagyHF\CppNagyHF\ConnectionGene.hpp                       | C++      |         70 |          0 |         25 |         95 |
+| e:\CppNagyHF\CppNagyHF\ControllerModel.hpp                      | C++      |         11 |          0 |          3 |         14 |
+| e:\CppNagyHF\CppNagyHF\CppNagyHF.vcxproj                        | XML      |        200 |          0 |          0 |        200 |
+| e:\CppNagyHF\CppNagyHF\Debug\CppNagyHF.log                      | Log      |         47 |          0 |          1 |         48 |
+| e:\CppNagyHF\CppNagyHF\Direction.hpp                            | C++      |         34 |          0 |          8 |         42 |
+| e:\CppNagyHF\CppNagyHF\FitnessFunction.hpp                      | C++      |         77 |          0 |         19 |         96 |
+| e:\CppNagyHF\CppNagyHF\Game.cpp                                 | C++      |        320 |         38 |        137 |        495 |
+| e:\CppNagyHF\CppNagyHF\Game.hpp                                 | C++      |         95 |          0 |         16 |        111 |
+| e:\CppNagyHF\CppNagyHF\GameReport.cpp                           | C++      |          7 |          0 |          3 |         10 |
+| e:\CppNagyHF\CppNagyHF\GameReport.hpp                           | C++      |         14 |          0 |          7 |         21 |
+| e:\CppNagyHF\CppNagyHF\GameUtils.cpp                            | C++      |         11 |          0 |          4 |         15 |
+| e:\CppNagyHF\CppNagyHF\GameUtils.hpp                            | C++      |         14 |          0 |          6 |         20 |
+| e:\CppNagyHF\CppNagyHF\HyperparameterLoader.cpp                 | C++      |        100 |          3 |         37 |        140 |
+| e:\CppNagyHF\CppNagyHF\HyperparameterLoader.hpp                 | C++      |          9 |          0 |          3 |         12 |
+| e:\CppNagyHF\CppNagyHF\Main.cpp                                 | C++      |         19 |          2 |          6 |         27 |
+| e:\CppNagyHF\CppNagyHF\Manager.cpp                              | C++      |        127 |          3 |         57 |        187 |
+| e:\CppNagyHF\CppNagyHF\Manager.hpp                              | C++      |         12 |          0 |          6 |         18 |
+| e:\CppNagyHF\CppNagyHF\ModelParams.cpp                          | C++      |         48 |          0 |         14 |         62 |
+| e:\CppNagyHF\CppNagyHF\ModelParams.hpp                          | C++      |         32 |         18 |         11 |         61 |
+| e:\CppNagyHF\CppNagyHF\ModelUtils.hpp                           | C++      |        139 |          0 |         36 |        175 |
+| e:\CppNagyHF\CppNagyHF\NeatModel.cpp                            | C++      |        223 |         41 |        123 |        387 |
+| e:\CppNagyHF\CppNagyHF\NeatModel.hpp                            | C++      |        133 |          9 |         40 |        182 |
+| e:\CppNagyHF\CppNagyHF\NeatTrainer.cpp                          | C++      |        605 |        104 |        332 |      1,041 |
+| e:\CppNagyHF\CppNagyHF\NeatTrainer.hpp                          | C++      |        223 |          3 |         71 |        297 |
+| e:\CppNagyHF\CppNagyHF\Persistence.cpp                          | C++      |          5 |          0 |          5 |         10 |
+| e:\CppNagyHF\CppNagyHF\Persistence.hpp                          | C++      |         11 |          0 |          4 |         15 |
+| e:\CppNagyHF\CppNagyHF\RandomModel.cpp                          | C++      |         26 |         11 |         11 |         48 |
+| e:\CppNagyHF\CppNagyHF\RandomModel.hpp                          | C++      |          9 |          0 |          4 |         13 |
+| e:\CppNagyHF\CppNagyHF\Snake.cpp                                | C++      |        140 |          0 |         52 |        192 |
+| e:\CppNagyHF\CppNagyHF\Snake.hpp                                | C++      |         46 |          0 |         14 |         60 |
+| e:\CppNagyHF\CppNagyHF\SpeciesData.hpp                          | C++      |          8 |          0 |          4 |         12 |
+| e:\CppNagyHF\CppNagyHF\Tests.hpp                                | C++      |          9 |          1 |          5 |         15 |
+| e:\CppNagyHF\CppNagyHF\hyperparams.json                         | JSON     |         40 |          0 |          4 |         44 |
+| e:\CppNagyHF\CppNagyHF\matrix.hpp                               | C++      |        130 |          0 |         49 |        179 |
+| e:\CppNagyHF\CppNagyHF\memtrace.h                               | C        |        166 |         34 |         44 |        244 |
+| e:\CppNagyHF\CppNagyHF\optional.hpp                             | C++      |         26 |          0 |          4 |         30 |
+| e:\CppNagyHF\CppNagyHF\position.hpp                             | C++      |         60 |          0 |         18 |         78 |
+| e:\CppNagyHF\CppNagyHF\resource.h                               | C        |          8 |          5 |          2 |         15 |
+| e:\CppNagyHF\CppNagyHF\testparams.json                          | JSON     |         38 |          0 |          4 |         42 |
+| e:\CppNagyHF\CppNagyHF\vector.hpp                               | C++      |        292 |          0 |        126 |        418 |
+| e:\CppNagyHF\CppNagyHF\x64\Debug\CppNagyHF.Build.CppClean.log   | Log      |         25 |          0 |          1 |         26 |
+| e:\CppNagyHF\CppNagyHF\x64\Debug\CppNagyHF.log                  | Log      |         34 |          0 |          1 |         35 |
+| e:\CppNagyHF\CppNagyHF\x64\Release\CppNagyHF.Build.CppClean.log | Log      |         26 |          0 |          1 |         27 |
+| e:\CppNagyHF\CppNagyHF\x64\Release\CppNagyHF.log                | Log      |         21 |          0 |          1 |         22 |
+| Total                                                           |          |      3,858 |        274 |      1,390 |      5,522 |
++-----------------------------------------------------------------+----------+------------+------------+------------+------------+
