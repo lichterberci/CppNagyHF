@@ -171,7 +171,7 @@ namespace model {
 
 			targetFitness = Get<double>(JSONMap, "TargetFitness").value_or(std::numeric_limits<double>::max());
 
-			speciesDropOffAge = Get<double>(JSONMap, "SpeciesDropOffAge").value_or(15);
+			speciesDropOffAge = Get<int>(JSONMap, "SpeciesDropOffAge").value_or(15);
 			speciesDropOffFitnessThreshold = Get<double>(JSONMap, "SpeciesDropOffFitnessThreshold").value_or(0.05);
 
 			std::string inputProgressFileName = Get<std::string>(JSONMap, "InputProgressFile").value_or("");

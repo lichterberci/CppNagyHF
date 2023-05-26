@@ -5,7 +5,7 @@
 
 namespace tests {
 
-	bool ConvergenceTest(const std::string& paramsFileName) {
+	inline bool ConvergenceTest(const std::string& paramsFileName) {
 
 		auto trainer = model::NeatTrainer(paramsFileName);
 

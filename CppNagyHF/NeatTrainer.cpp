@@ -11,6 +11,7 @@
 #include <cstdlib>
 #include <signal.h>
 #include <atomic>
+#include <iomanip>
 
 namespace model {
 
@@ -158,7 +159,7 @@ namespace model {
 #else
 		double avgFitness = 0;
 
-		for (int i = 0; i < numberOfEvaluationSteps; i++) {
+		for (size_t i = 0; i < numberOfEvaluationSteps; i++) {
 
 			auto game = game::Game(false, game::GameControlType::AI, gameWidth, gameHeight, 800, 800, neatModel, numMaxIdleSteps, placeFirstAppleInFrontOfSnake);
 
@@ -439,7 +440,7 @@ namespace model {
 						representativesOfSpeciesInNewGeneration += representativesOfThePrevGeneration[speciesIndex];
 
 						// the new index, this species is inserted in
-						const int newIndexOfSpecies = representativesOfSpeciesInNewGeneration.size() - 1;
+						const int newIndexOfSpecies = (int)representativesOfSpeciesInNewGeneration.size() - 1;
 
 						// we mark the current organism as a candidate, so after speciation, we can swap the old ones to these
 						representativeCandidatesFromTheNewGeneration += std::make_tuple(newIndexOfSpecies, &organism);
@@ -505,7 +506,7 @@ namespace model {
 
 	double NeatTrainer::GetSpeciesDifferenceDelta(const NeatModel& a, const NeatModel& b) {
 
-		const unsigned int N = std::max<const unsigned int>(a.Genes().size(), b.Genes().size());
+		const size_t N = std::max<const size_t>(a.Genes().size(), b.Genes().size());
 
 		unsigned int numDisjointGenes = 0;
 		unsigned int numExcessGenes = 0;
@@ -558,7 +559,7 @@ namespace model {
 			}
 		}
 
-		numExcessGenes += (int)genesOfA.size() - i + (int)genesOfB.size() - j;
+		numExcessGenes += (uint32_t)genesOfA.size() - (uint32_t)i + (uint32_t)genesOfB.size() - (uint32_t)j;
 
 		const double wBar = sumDifferenceOfWeights / numAllignedGenes;
 
@@ -659,8 +660,8 @@ namespace model {
 
 			for (int i = 0; i < numPlacesAllocatedForSpecies[speciesIndex]; i++) {
 
-				int indexInSpeciesOfParentA = (int)utils::RandomInt(0, species.size());
-				int indexInSpeciesOfParentB = (int)utils::RandomInt(0, species.size());
+				int indexInSpeciesOfParentA = (int)utils::RandomInt(0, (int)species.size());
+				int indexInSpeciesOfParentB = (int)utils::RandomInt(0, (int)species.size());
 
 				int indexOfParentA = species[indexInSpeciesOfParentA];
 				int indexOfParentB = species[indexInSpeciesOfParentB];
@@ -823,7 +824,7 @@ namespace model {
 
 			double placesDouble = populationCount * sumOfAdjustedFitnessForEachSpecies[i] / totalSum;
 
-			int places = std::floor<int>(placesDouble);
+			int places = (int)std::floor<int>((int)placesDouble);
 
 			placesAllocatedForSpecies += places;
 
@@ -835,7 +836,7 @@ namespace model {
 
 			cstd::Vector<int> speciesIndiciesOderedByFitness;
 
-			for (size_t i = 0; i < sumOfAdjustedFitnessForEachSpecies.size(); i++)
+			for (int i = 0; i < (int)sumOfAdjustedFitnessForEachSpecies.size(); i++)
 				speciesIndiciesOderedByFitness += i;
 
 			std::sort(
@@ -894,7 +895,7 @@ namespace model {
 
 			std::cout << "\u001b[47;1m";
 
-			for (int i = sliderLength * generationIndex / numGenerations; i < sliderLength; i++)
+			for (size_t i = sliderLength * generationIndex / numGenerations; i < sliderLength; i++)
 				std::cout << ' ';
 
 			std::cout << "\033[0m";

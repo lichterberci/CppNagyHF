@@ -10,6 +10,8 @@ mem_dump:   2016.
 inclue-ok:  2017., 2018., 2019., 2021.
 *********************************/
 
+#pragma warning(disable : 4996)
+
 #ifndef MEMTRACE_H
 #define MEMTRACE_H
 

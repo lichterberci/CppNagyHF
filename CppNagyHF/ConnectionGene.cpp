@@ -1,6 +1,7 @@
 #include <cstdlib>
 #include "ConnectionGene.hpp"
 #include "ModelUtils.hpp"
+#include <iomanip>
 
 namespace model {
 

@@ -4,7 +4,7 @@
 #include "Tests.hpp"
 
 #ifdef CPORTA
-#define MEMTRACE
+//#define MEMTRACE
 #include "memtrace.h"
 #endif
 

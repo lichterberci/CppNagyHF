@@ -6,7 +6,7 @@
   "MaxIdleSteps": 15,
   "PlaceFirstAppleInFronOfSnake": false,
 
-  "TargetFitness": 2.5,
+  "TargetFitness": 5,
   "NumEvaluations": 10,
   "FitnessFunction": {
     "Name": "ApplesAndSteps",
