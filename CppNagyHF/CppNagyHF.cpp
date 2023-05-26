@@ -10,29 +10,34 @@
 #include "NeatTrainer.hpp"
 #include "SpeciesData.hpp"
 #include "HyperparameterLoader.hpp"
+#include "Manager.hpp"
 
-int main()
+int main(int argc, char* argv[])
 {
 
     srand((uint32_t)std::chrono::system_clock::now().time_since_epoch().count());
 
-    model::NeatTrainer trainer("hyperparams.json");
+    Manager::MainWithUI(argc, argv);
 
-    trainer.Train();
+    return 0;
 
-    //auto game = game::Game(true, game::GameControlType::KEYBOARD, 3, 3, 800, 800);
+    //auto game = game::Game(true, game::GameControlType::KEYBOARD, 8, 8, 800, 800);
 
-    //game.SetSpeed(2);
+    //game.SetSpeed(5);
 
     //game.Start();
 
     //return 0;
+
+    model::NeatTrainer trainer("../CppNagyHF/hyperparams.json");
+
+    trainer.Train();
     
     while (true) {
 
         auto bestModel = trainer.GetModelFromBestSpeciesInLastGeneration();
 
-        auto game = game::Game(true, game::GameControlType::AI, 3, 3, 1000, 1000, *bestModel, 100, false);
+        auto game = game::Game(true, game::GameControlType::AI, 7, 7, 1000, 1000, *bestModel, 100, false);
 
         game.SetSpeed(8);
 

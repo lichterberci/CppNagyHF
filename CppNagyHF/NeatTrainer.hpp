@@ -87,6 +87,13 @@ namespace model {
 
 		NeatTrainer(const std::string& fileName) {
 		
+			if (instance == nullptr)
+				instance = this;
+			else {
+				std::cerr << "ERROR: Could not create trainer object, due to instance being active!" << std::endl;
+				return;
+			}
+
 			auto JSONMap = HyperparameterLoader()(fileName);
 
 			using utils::Get;
@@ -167,14 +174,39 @@ namespace model {
 			speciesDropOffAge = Get<double>(JSONMap, "SpeciesDropOffAge").value_or(15);
 			speciesDropOffFitnessThreshold = Get<double>(JSONMap, "SpeciesDropOffFitnessThreshold").value_or(0.05);
 
+			std::string inputProgressFileName = Get<std::string>(JSONMap, "InputProgressFile").value_or("");
+
 			NeatModel::ResetGlobalNeuronCount();
 			ConnectionGene::SetGlobalInnovationNumber(0);
 
 			organismsByGenerations.reserve_and_copy(numGenerations); // this is essential, so the pointers can safely point to these places
 
-			ConstructInitialGeneration();
+			bool loadFromFile = inputProgressFileName != "";
 
-			NeatModel::ResetGlobalNeuronCount(NUM_SENSORS + NUM_OUTPUTS);
+			if (loadFromFile) {
+				// check if file exists
+				std::ifstream file(inputProgressFileName, std::ios::binary);
+
+				if (file) {
+					try {
+						ConstructInitialGenerationFromFile(file);
+					}
+					catch (...) {
+						loadFromFile = false;
+					}
+
+					file.close();
+				}
+				else {
+					loadFromFile = false;
+				}
+			}
+
+			if (loadFromFile == false) {
+				ConstructInitialGeneration();
+
+				NeatModel::ResetGlobalNeuronCount(NUM_SENSORS + NUM_OUTPUTS);
+			}
 		}
 
 		NeatTrainer(

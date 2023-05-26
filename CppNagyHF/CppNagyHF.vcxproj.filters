@@ -66,6 +66,9 @@
     <ClCompile Include="HyperparameterLoader.cpp">
       <Filter>Source Files\Model</Filter>
     </ClCompile>
+    <ClCompile Include="Manager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game.hpp">
@@ -119,8 +122,11 @@
     <ClInclude Include="SpeciesData.hpp">
       <Filter>Source Files\Model</Filter>
     </ClInclude>
+    <ClInclude Include="Manager.hpp">
+      <Filter>Source Files</Filter>
+    </ClInclude>
     <ClInclude Include="HyperparameterLoader.hpp">
-      <Filter>Header Files</Filter>
+      <Filter>Source Files\Model</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -128,5 +134,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="ClassDiagram.cd" />
+    <None Include="hyperparams.json" />
   </ItemGroup>
 </Project>

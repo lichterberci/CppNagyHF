@@ -898,7 +898,7 @@ namespace model {
 			for (int i = sliderLength * generationIndex / numGenerations; i < sliderLength; i++)
 				std::cout << ' ';
 
-			std::cout << "|\u001b[40;1m";
+			std::cout << "\u001b[40;1m\033[0m";
 
 			if (generationIndex > 0) {
 				std::cout << "   avg. fitness: " << std::fixed << std::setprecision(4) << avgFitnessOfGenerations.last();

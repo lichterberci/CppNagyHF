@@ -150,6 +150,7 @@
     <ClCompile Include="GameUtils.cpp" />
     <ClCompile Include="ConnectionGene.cpp" />
     <ClCompile Include="HyperparameterLoader.cpp" />
+    <ClCompile Include="Manager.cpp" />
     <ClCompile Include="matrix.hpp" />
     <ClCompile Include="ModelParams.cpp" />
     <ClCompile Include="NeatModel.cpp" />
@@ -169,6 +170,7 @@
     <ClInclude Include="GameUtils.hpp" />
     <ClInclude Include="ConnectionGene.hpp" />
     <ClInclude Include="HyperparameterLoader.hpp" />
+    <ClInclude Include="Manager.hpp" />
     <ClInclude Include="ModelParams.hpp" />
     <ClInclude Include="ModelUtils.hpp" />
     <ClInclude Include="NeatModel.hpp" />
@@ -183,6 +185,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="ClassDiagram.cd" />
+    <None Include="hyperparams.json" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
